@@ -244,10 +244,10 @@
 				var maxTantatives = 100;
 				for(var i=0; i<this.nbInitialDePointDeNourriture; i++) {
 					var tantatives = 0;
-					while( && tantatives < maxTantatives ) {
+					while( tantatives < maxTantatives ) {
 						var x = this.random(1, this.width);
 						var y = this.random(1, this.height);
-						if(this.laPlaceEstElleLibre(x, y) {
+						if(this.laPlaceEstElleLibre(x, y)) {
 							this.creerUnPointDeNourriture(x, y);
 							break;
 						} else tantatives++;
@@ -283,8 +283,8 @@
 				// En attendant..
 				for(var uneEntitee in this.entitees) {
 					for(var i=0; i<this.entitees[uneEntitee].length; i++){
-						if(this.entitees[uneEntitee][i].x = x 
-						&& this.entitees[uneEntitee][i].y = y) {
+						if(this.entitees[uneEntitee][i].x == x 
+						&& this.entitees[uneEntitee][i].y == y) {
 							return false;
 						}
 					}
