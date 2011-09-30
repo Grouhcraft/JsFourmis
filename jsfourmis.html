@@ -12,7 +12,37 @@
 		JSFOURMIS.Matrix = {
 			aggrandir: function(matrix) {
 			}
-		}
+		};
+		
+		/** --------------------------------------------------- *
+		 * @class Fourmi 
+		 * Fait tout ce que fait une fourmi :)
+		 * ---------------------------------------------------- */
+		 
+		/**
+		 * Constructeur 
+		 * @param kanvasObj: instance de JSFOURMIS.Kanvas appellante (son "this" quoi)
+		 * @param parentObj: instance de l'objet dans lequel se trouve la nourriture.
+		 */
+		JSFOURMIS.Nourriture = function(kanvasObj, parentObj) {
+			parentObj = parentObj || kanvasObj;
+			this.kanvasObj = kanvasObj;
+			this.parentObj = parentObj;
+		};
+		
+		/** 
+		 * Méthodes publiques
+		 */
+		JSFOURMIS.Nourriture.prototype = {
+			kanvasObj: {},
+			parentObj: {},
+			couleur: function() {/* @TODO: dépend de la quantité */},
+			x: 0,
+			y: 0,
+			quantitee: 0,
+			estDessinable: function(){return true; /* @TODO: sauf si transporté par une fourmis, etc.. */},
+			dessine: function(){/* @TODO */}
+		};
 		
 		/** --------------------------------------------------- *
 		 * @class Fourmi 
@@ -40,7 +70,7 @@
 			aller: true,		// Indique si la fourmi cherche..
 			retour: false,		// ..ou si elle revient à la fourmilière (consciament s'entend)
 			direction: null,	// Direction de la fourmi. cf. l'Enum "JSFOURMIS.Direction"
-			transporte: 0,		// Quantitée de nourriture transportée
+			nourritures: [],	// instances des "Nourriture" transportées
 			age: 0,				// Age de la fourmi (en Cycles)
 			couleur: {r:0, g:0, b:0, a:0xff},	// Couleur de la fourmis
 
@@ -211,6 +241,55 @@
 			width: 0,
 			
 			disperseDeLaNourriture: function() {
+				var maxTantatives = 100;
+				for(var i=0; i<this.nbInitialDePointDeNourriture; i++) {
+					var tantatives = 0;
+					while( && tantatives < maxTantatives ) {
+						var x = this.random(1, this.width);
+						var y = this.random(1, this.height);
+						if(this.laPlaceEstElleLibre(x, y) {
+							this.creerUnPointDeNourriture(x, y);
+							break;
+						} else tantatives++;
+					}
+				}
+			},
+			
+			creerUnPointDeNourriture: function(x, y) {
+				// nbMinNourritureParPointDeNourriture: 1,
+				// nbMaxNourritureParPointDeNourriture: 10,
+				// quantiteeMinParNourriture: 1,
+				// quantiteeMaxParNourriture: 10,
+				//new JSFOURMIS.Nourriture(this, 
+				//KNOO:J'en suis la
+			},
+			
+			/**
+			 * Indique la présence ou non d'une entitée à la position donnée
+			 * @param x
+			 * @param y
+			 * @return bool: vrai s'il n'y à rien, faux sinon.
+			 */
+			laPlaceEstElleLibre: function( x, y ) {
+				//FIXME: Problème ! 
+				// Comment savoir si la place est libre
+				// sans avoir à itérer toutes les entitées
+				// déssinables..
+				// faudrait garder dans un tableau de la taille de l'image
+				// un genre de référence des objets à cette position
+				// un truc comme ça.. sinon, ca peut être relou pour rien
+				// je pense. Nope ?
+				//
+				// En attendant..
+				for(var uneEntitee in this.entitees) {
+					for(var i=0; i<this.entitees[uneEntitee].length; i++){
+						if(this.entitees[uneEntitee][i].x = x 
+						&& this.entitees[uneEntitee][i].y = y) {
+							return false;
+						}
+					}
+				}
+				return true;
 			},
 			
 			/** 
@@ -336,6 +415,16 @@
 			 */
 			nbCycles: 0,
 			
+			//nourriture stuff
+			nbInitialDePointDeNourriture: 50,
+			nbMinNourritureParPointDeNourriture: 1,
+			nbMaxNourritureParPointDeNourriture: 10,
+			quantiteeMinParNourriture: 1,
+			quantiteeMaxParNourriture: 10,
+			
+			/**
+			 * Drapeau indiquant l'état actuel de la boucle principale
+			 */
 			running: false,
 			
 			/**
@@ -361,6 +450,9 @@
 				
 				// A chaque nouveau départ, on ré-init le compteur
 				JSFOURMIS.Kanvas.compteurCycles = 0;
+				
+				//dispersion du mangé
+				this.disperseDeLaNourriture();
 				
 				//création des fourmis
 				for(var i=0; i<nbfourmis; i++){	
