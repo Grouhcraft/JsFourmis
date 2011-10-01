@@ -44,7 +44,7 @@
 			},
 
 			/**
-			 * Vérifie si la forme est valide pour une entité. Une forme valide
+			 * Vérifie si la matrice est valide pour une entité. Une matrice valide
 			 * doit avoir une largeur et une hauteur impaires, comme ça, on peut la
 			 * centrer sur la position donnéee.
 			 * 
@@ -57,10 +57,12 @@
 			},
 
 			/**
-			 * Dessine une forme. Typiquement la forme d'une entité. Une forme
-			 * est un objet {} doté de 3 propriétés: w: la largeur de la forme
-			 * h: la hauteur de la forme data: un tableau *à une dimension*
-			 * représentant la forme. data doit contenir soit 1: plein, soit 0:
+			 * Dessine une matrice. Typiquement la matrice d'une entité. Une matrice
+			 * est un objet {} doté de 3 propriétés: 
+			 * w: la largeur de la matrice
+			 * h: la hauteur de la forme 
+			 * data: un tableau *à une dimension* représentant la forme. 
+			 * data doit contenir soit 1: plein, soit 0:
 			 * vide. Exemple d'une forme de croix: <code>
 			 * var croix = { 
 			 *		h: 3, w: 3,

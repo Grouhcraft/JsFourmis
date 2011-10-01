@@ -80,15 +80,12 @@
 		 * @param y
 		 */
 		dessine : function() {
-			var matrice = {
-				h : 5,
-				w : 3,
-				data : [ 1, 1, 1,
-				         0, 1, 0,
-				         1, 1, 1,
-				         0, 1, 0,
-				         1, 1, 1 ]
-			};
+			data = [ 1, 1, 1,
+			         0, 1, 0,
+			         1, 1, 1,
+			         0, 1, 0,
+			         1, 1, 1 ];
+			matrice = new JSFOURMIS.Matrice (5,3,data);
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
 		}
 	};
