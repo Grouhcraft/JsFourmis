@@ -12,7 +12,7 @@
 		 * Constructeur
 		 */
 		JSFOURMIS.Kanvas = function() {
-			this.entitees.fourmis = this.fourmis;
+			this.entites.fourmis = this.fourmis;
 		};
 		/**
 		 * Méthodes publiques
@@ -162,10 +162,10 @@
 				// je pense. Nope ?
 				//
 				// En attendant..
-				for ( var uneEntitee in this.entitees) {
-					for ( var i = 0; i < this.entitees[uneEntitee].length; i++) {
-						if (this.entitees[uneEntitee][i].x == x
-								&& this.entitees[uneEntitee][i].y == y) {
+				for ( var uneEntite in this.entites) {
+					for ( var i = 0; i < this.entites[uneEntite].length; i++) {
+						if (this.entites[uneEntite][i].x == x
+								&& this.entites[uneEntite][i].y == y) {
 							return false;
 						}
 					}
@@ -242,10 +242,10 @@
 			 * logiquement quand leurs positions sont déjà mises à jour
 			 */
 			dessineTout : function() {
-				for ( var uneEntitee in this.entitees) {
-					for ( var i = 0; i < this.entitees[uneEntitee].length; i++) {
-						if (this.entitees[uneEntitee][i].estDessinable()) {
-							this.entitees[uneEntitee][i].dessine();
+				for ( var uneEntite in this.entites) {
+					for ( var i = 0; i < this.entites[uneEntite].length; i++) {
+						if (this.entites[uneEntite][i].estDessinable()) {
+							this.entites[uneEntite][i].dessine();
 						}
 					}
 				}
@@ -256,7 +256,7 @@
 			 * Liste les différentes entités et le tableau les stockant pour
 			 * chaqune d'entre elles
 			 */
-			entitees : {
+			entites : {
 				fourmis : this.fourmis
 			// nourritures: this.nourritures,
 			// pheromones: this.pheromones
@@ -361,13 +361,6 @@
 			}
 		};
 
-		JSFOURMIS.Directions = {
-			NORD : 1,
-			SUD : 2,
-			EST : 3,
-			OUEST : 4,
-			AUCUNE : 5
-		};
 		var self = JSFOURMIS.Kanvas;
 	}
 
