@@ -46,18 +46,18 @@
 		 * @param y
 		 */
 		dessine : function() {
-			data = [ 0, 1, 0,
+			var data = [ 0, 1, 0,
 			         0, 1, 0, 
 			         1, 1, 1, 
 			         1, 1, 1, 
 			         1, 1, 1 ];
-			matrice = new JSFOURMIS.Matrice(5, 3, data);
-			if (this.direction == JSFOURMIS.EST) {
+			var matrice = new JSFOURMIS.Matrice(5, 3, data);
+			if (this.direction == JSFOURMIS.Directions.EST) {
 				matrice = matrice.rotation(JSFOURMIS.AnglesRotation.DROITE);
 			} else {
-				if (this.direction == JSFOURMIS.OUEST) {
+				if (this.direction == JSFOURMIS.Directions.OUEST) {
 					matrice = matrice.rotation(JSFOURMIS.AnglesRotation.GAUCHE);
-				} else if (this.direction == JSFOURMIS.SUD) {
+				} else if (this.direction == JSFOURMIS.Directions.SUD) {
 					matrice = matrice.rotation(JSFOURMIS.AnglesRotation.DEMITOUR);
 				}
 			}

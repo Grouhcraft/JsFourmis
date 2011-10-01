@@ -118,17 +118,17 @@
 			width : 0,
 
 			disperseDeLaNourriture : function() {
-				var maxTantatives = 100;
+				var maxTentatives = 100;
 				for ( var i = 0; i < this.nbInitialDePointDeNourriture; i++) {
-					var tantatives = 0;
-					while (tantatives < maxTantatives) {
+					var tentatives = 0;
+					while (tentatives < maxTentatives) {
 						var x = this.random(1, this.width);
 						var y = this.random(1, this.height);
 						if (this.laPlaceEstElleLibre(x, y)) {
 							this.creerUnPointDeNourriture(x, y);
 							break;
 						} else { 
-							tantatives++;
+							tentatives++;
 						}
 					}
 				}
@@ -290,7 +290,7 @@
 				for (i = 0; i < this.fourmis.length; i++) {
 					this.fourmis[i].age++;
 					if (this.fourmis[i].doitMourir()) {
-						this.fourmis[i].meur();
+						this.fourmis[i].meurt();
 					}
 				}
 				this.dessineTout();
