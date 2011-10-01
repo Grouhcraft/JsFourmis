@@ -4,9 +4,7 @@
  * @class Fourmi Fait tout ce que fait une fourmi :)
  *        ----------------------------------------------------
  */
-
 (function() {
-
 	/**
 	 * Constructeur On la place dans la fourmilière, sans direction précise.
 	 * 
@@ -23,22 +21,15 @@
 	 * Méthodes publiques
 	 */
 	JSFOURMIS.Fourmi.prototype = {
-		kanvasObj : {}, // cf. Constructeur
-		x : 0, // Position x de la fourmi
-		y : 0, // Position y de la fourmi
-		aller : true, // Indique si la fourmi cherche..
-		retour : false, // ..ou si elle revient à la fourmilière (consciament
-		// s'entend)
-		direction : null, // Direction de la fourmi. cf. l'Enum
-		// "JSFOURMIS.Direction"
-		nourritures : [], // instances des "Nourriture" transportées
-		age : 0, // Age de la fourmi (en Cycles)
-		couleur : {
-			r : 0,
-			g : 0,
-			b : 0,
-			a : 0xff
-		}, // Couleur de la fourmi
+		kanvasObj: {},		// cf. Constructeur
+		x : 0,				// Position x de la fourmi
+		y : 0,				// Position y de la fourmi
+		aller: true,		// Indique si la fourmi cherche..
+		retour : false,		// ..ou si elle revient à la fourmilière (consciament s'entend)
+		direction : null,	// Direction de la fourmi. cf. l'Enum "JSFOURMIS.Direction"
+		nourritures : [],	// instances des "Nourriture" transportées
+		age : 0,			// Age de la fourmi (en Cycles)
+		couleur : { r:0, g:0, b:0, a:0xff },	// Couleur de la fourmi
 
 		/**
 		 * Indique si la fourmi doit mourir (parcequ'elle est trop vielle par
@@ -80,12 +71,12 @@
 		 * @param y
 		 */
 		dessine : function() {
-			data = [ 1, 1, 1,
-			         0, 1, 0,
-			         1, 1, 1,
-			         0, 1, 0,
-			         1, 1, 1 ];
-			matrice = new JSFOURMIS.Matrice (5,3,data);
+			var data = [ 1, 1, 1,
+				         0, 1, 0,
+				         1, 1, 1,
+				         0, 1, 0,
+				         1, 1, 1 ];
+			var matrice = new JSFOURMIS.Matrice(5,3,data);
 			matrice = matrice.rotation(JSFOURMIS.AnglesRotation.DROITE);
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
 		}

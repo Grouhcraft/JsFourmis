@@ -2,17 +2,15 @@
  * ---------------------------------------------------
  * 
  * @class Kanvas Classe principale du bouzin, fait un peu tout.
- *        ----------------------------------------------------
+ * ----------------------------------------------------
  */
-
 (function() {
-	{
-
 		/**
 		 * Constructeur
 		 */
 		JSFOURMIS.Kanvas = function() {
 			this.entites.fourmis = this.fourmis;
+			this.entites.nourritures = this.nourritures;
 		};
 		/**
 		 * Méthodes publiques
@@ -53,7 +51,7 @@
 			estUneMatriceValide : function(matrice) {
 				var reste_h = matrice.h % 2;
 				var reste_w = matrice.w % 2;
-				return !(reste_w + reste_h == 0);
+				return reste_w + reste_h !== 0;
 			},
 
 			/**
@@ -129,8 +127,9 @@
 						if (this.laPlaceEstElleLibre(x, y)) {
 							this.creerUnPointDeNourriture(x, y);
 							break;
-						} else
+						} else { 
 							tantatives++;
+						}
 					}
 				}
 			},
@@ -142,6 +141,17 @@
 				// quantiteeMaxParNourriture: 10,
 				// new JSFOURMIS.Nourriture(this,
 				// KNOO:J'en suis la
+				var nbDeNourriture = this.random(this.nbMinNourritureParPointDeNourriture, this.nbMaxNourritureParPointDeNourriture);
+				//Création du point centrale aux coordonnées données
+				var pointCentral = new JSFOURMIS.Nourriture(this); 
+				pointCentral.x = x; 
+				pointCentral.y = y;
+				pointCentral.quantitee = this.random(this.quantiteeMinParNourriture, this.quantiteeMaxParNourriture);
+				this.nourritures.push(pointCentral);
+				for(var i=0; i < nbDeNourriture -1; i++) {
+					//var nourriture = new JSFOURMIS.Nourriture();
+					//KNOO TODO: Ben.. faire ça :)
+				}
 			},
 
 			/**
@@ -164,8 +174,8 @@
 				// En attendant..
 				for ( var uneEntite in this.entites) {
 					for ( var i = 0; i < this.entites[uneEntite].length; i++) {
-						if (this.entites[uneEntite][i].x == x
-								&& this.entites[uneEntite][i].y == y) {
+						if (this.entites[uneEntite][i].x == x &&
+							this.entites[uneEntite][i].y == y) {
 							return false;
 						}
 					}
@@ -219,10 +229,11 @@
 			 */
 			estDansLaZone : function(x, y) {
 				var yEst = true;
-				if (x < 0 || x >= this.width)
+				if (x < 0 || x >= this.width) {
 					yEst = false;
-				if (y < 0 || y >= this.height)
-					yEst = false;
+				} if (y < 0 || y >= this.height) {
+					yEst = false;	
+				}
 				return yEst;
 			},
 
@@ -256,10 +267,11 @@
 			 * Liste les différentes entités et le tableau les stockant pour
 			 * chaqune d'entre elles
 			 */
+			
 			entites : {
-				fourmis : this.fourmis
-			// nourritures: this.nourritures,
-			// pheromones: this.pheromones
+				fourmis : this.fourmis,
+				nourritures: this.nourritures
+			    // pheromones: this.pheromones
 			},
 
 			/**
@@ -275,18 +287,18 @@
 					var nouvellePos = this.avance(this.fourmis[i]);
 				}
 
-				for ( var i = 0; i < this.fourmis.length; i++) {
+				for (i = 0; i < this.fourmis.length; i++) {
 					this.fourmis[i].age++;
-					if (this.fourmis[i].doitMourir())
+					if (this.fourmis[i].doitMourir()) {
 						this.fourmis[i].meur();
+					}
 				}
 				this.dessineTout();
 				if (this.running) {
-					if (JSFOURMIS.Kanvas.compteurCycles <= this.nbCycles
-							|| this.nbCycles == -1)
-						window.setTimeout(function(thisObj) {
-							thisObj.main();
-						}, this.delaiCycle, this);
+					if (JSFOURMIS.Kanvas.compteurCycles <= this.nbCycles ||
+						this.nbCycles == -1) {
+						window.setTimeout(function(thisObj) { thisObj.main(); }, this.delaiCycle, this);
+					}
 				}
 			},
 
@@ -327,8 +339,7 @@
 				this.foyer.x = this.width / 2;
 
 				// créé une "imageData", zone de travail par pixel
-				this.imageData = this.ctx.createImageData(this.width,
-						this.height); // /!\
+				this.imageData = this.ctx.createImageData(this.width, this.height); // /!\
 
 				var nbfourmis = parseInt($('nbFourmis').value);
 				this.nbCycles = parseInt($('nbCycles').value);
@@ -351,6 +362,11 @@
 			 * Tableau des JSFOURMIS.Fourmi (des fourmis quoi)
 			 */
 			fourmis : [],
+			
+			/**
+			 * Tableau des JSFOURMIS.Nourritures
+			 */
+			nourritures: [],
 
 			/**
 			 * Stoppe l'écoulement des cycles
@@ -360,8 +376,4 @@
 				this.running = false;
 			}
 		};
-
-		var self = JSFOURMIS.Kanvas;
-	}
-
 })();

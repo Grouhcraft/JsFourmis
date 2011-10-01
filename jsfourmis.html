@@ -1,25 +1,27 @@
 <html>
  <head>
-  <script type="application/x-javascript">
+  <script type="application/javascript">
 	var JSFOURMIS = {};	// Création du namespace
   </script>
-  <script type="application/x-javascript" src="Direction.js"></script>
-  <script type="application/x-javascript" src="AnglesRotation.js"></script>
-  <script type="application/x-javascript" src="Matrice.js"></script>
-  <script type="application/x-javascript" src="Fourmi.js"></script>
-  <script type="application/x-javascript" src="Fleche.js"></script>
-  <script type="application/x-javascript" src="Kanvas.js"></script>
- <script type="application/x-javascript">
-	var $ = function(e){ return document.getElementById(e); }
+  <script type="application/javascript" src="Direction.js"></script>
+  <script type="application/javascript" src="AnglesRotation.js"></script>
+  <script type="application/javascript" src="Matrice.js"></script>
+  <script type="application/javascript" src="Fourmi.js"></script>
+  <script type="application/javascript" src="Fleche.js"></script>
+  <script type="application/javascript" src="Nourriture.js"></script>
+  <script type="application/javascript" src="Kanvas.js"></script>
+  <script type="application/javascript">
+	var $ = function(e){ return document.getElementById(e); };
 	var k = new JSFOURMIS.Kanvas();
   </script>
   <style type="text/css">
 	td.orientation { text-align: center;}
   </style>
+  <title>JsFourmis</title>
  </head>
  <body>
 	<center>
-		<table>
+		<table summary="Boussole et Canvas">
 			<tr>
 				<td></td>
 				<td id='nord' class="orientation">Nord</td>
