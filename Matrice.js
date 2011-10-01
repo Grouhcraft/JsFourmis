@@ -11,7 +11,7 @@
  * h: la hauteur de la matrice 
  * data: un tableau *à une dimension* représentant ses coefficients.
  * data doit contenir soit 1: plein, soit 0: vide. 
- * Exemple d'une matrice en forme de croix: <code>
+ * Exemple d'une forme de croix: <code>
  * var croix = { 
  *		h: 3, w: 3,
  *		data: [	0,1,0,
@@ -67,6 +67,18 @@
 				}
 			}
 			return agrandi;
+		},
+		
+		rotation : function(angle) {
+			if (angle==JSFOURMIS.AnglesRotation.DROITE) {
+				tourne = new JSFOURMIS.Matrice(this.w, this.h, []);
+				for (x = 0; x < this.h; x++) {
+					for (y = 0; y < this.w; y++) {
+						tourne.setvalue(y, x, this.getvalue(x, y));
+					}
+				}
+				return tourne;
+			}
 		}
 	}
 

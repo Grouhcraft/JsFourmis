@@ -86,6 +86,7 @@
 			         0, 1, 0,
 			         1, 1, 1 ];
 			matrice = new JSFOURMIS.Matrice (5,3,data);
+			matrice = matrice.rotation(JSFOURMIS.AnglesRotation.DROITE);
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
 		}
 	};
