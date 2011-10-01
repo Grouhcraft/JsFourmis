@@ -46,7 +46,7 @@
 		 * 
 		 * @return: booléan
 		 */
-		doitMourrir : function() {
+		doitMourir : function() {
 			// ...if(this.age)...
 			return false;
 		},
@@ -56,7 +56,7 @@
 		 * 
 		 * @TODO
 		 */
-		meur : function() {
+		meurt : function() {
 		},
 
 		/**
@@ -80,12 +80,16 @@
 		 * @param y
 		 */
 		dessine : function() {
-			var forme = {
+			var matrice = {
 				h : 5,
 				w : 3,
-				data : [ 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1 ]
+				data : [ 1, 1, 1,
+				         0, 1, 0,
+				         1, 1, 1,
+				         0, 1, 0,
+				         1, 1, 1 ]
 			};
-			this.kanvasObj.dessineForme(forme, this.x, this.y, this.couleur);
+			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
 		}
 	};
 })();

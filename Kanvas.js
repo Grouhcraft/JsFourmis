@@ -50,9 +50,9 @@
 			 * 
 			 * @TODO vérifier la concordance h*w = taille du tableau
 			 */
-			estUneFormeValide : function(forme) {
-				var reste_h = forme.data.h % 2;
-				var reste_w = forme.data.w % 2;
+			estUneMatriceValide : function(matrice) {
+				var reste_h = matrice.h % 2;
+				var reste_w = matrice.w % 2;
 				return !(reste_w + reste_h == 0);
 			},
 
@@ -69,18 +69,18 @@
 			 *				0,1,1 ] };
 			 * </code>
 			 */
-			dessineForme : function(forme, x, y, couleur) {
-				if (!this.estUneFormeValide(forme)) {
+			dessineForme : function(matrice, x, y, couleur) {
+				if (!this.estUneMatriceValide(matrice)) {
 					throw "La forme fournie n'est pas une forme valide.";
 				}
-				var centre_h_forme = forme.h % 2;
-				var centre_w_forme = forme.w % 2;
+				var centre_h_forme = matrice.h % 2;
+				var centre_w_forme = matrice.w % 2;
 				var pix_x = 0;
 				var pix_y = 0;
-				for ( var fy = 0; fy < forme.h; fy++) {
-					for ( var fx = 0; fx < forme.w; fx++) {
-						var index = fy * forme.w + fx;
-						if (forme.data[index] == 1) {
+				for ( var fy = 0; fy < matrice.h; fy++) {
+					for ( var fx = 0; fx < matrice.w; fx++) {
+						var index = fy * matrice.w + fx;
+						if (matrice.data[index] == 1) {
 							// x
 							if (x < centre_w_forme) {
 								pix_x = x - fx;
@@ -275,7 +275,7 @@
 
 				for ( var i = 0; i < this.fourmis.length; i++) {
 					this.fourmis[i].age++;
-					if (this.fourmis[i].doitMourrir())
+					if (this.fourmis[i].doitMourir())
 						this.fourmis[i].meur();
 				}
 				this.dessineTout();
