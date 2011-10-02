@@ -94,28 +94,33 @@ var JSFOURMIS = JSFOURMIS || {};
 		champVision : function (distance) {
 			var posDroite;
 			var posGauche;
+			var posDevant;
 			switch(this.direction) {
 				case JSFOURMIS.Directions.NORD :
-					posDroite = {x: this.x-distance, y : this.y};
-					posGauche = {x: this.x+distance, y : this.y};
+					posDevant = {x : this.x-1, y : this.y-distance};
+					posDroite = {x: this.x-distance-1, y : this.y-5};
+					posGauche = {x: this.x+distance-1, y : this.y-5};
 					break;
 				case JSFOURMIS.Directions.SUD :
-					posDroite = {x: this.x+distance, y : this.y};
-					posGauche = {x: this.x-distance, y : this.y};
+					posDevant = {x : this.x-1, y : this.y+distance};
+					posDroite = {x: this.x+distance-1, y : this.y+5};
+					posGauche = {x: this.x-distance-1, y : this.y+5};
 					break;
 				case JSFOURMIS.Directions.EST :
-					posDroite = {x : this.x, y : this.y+distance};
-					posGauche = {x : this.x, y : this.y-distance};
+					posDevant = {x: this.x-distance, y : this.y-1};
+					posDroite = {x : this.x-5, y : this.y+distance-1};
+					posGauche = {x : this.x-5, y : this.y-distance-1};
 					break;
 				case JSFOURMIS.Directions.OUEST:
-					posDroite = {x : this.x, y : this.y-distance};
-					posGauche = {x : this.x, y : this.y+distance};
+					posDevant = {x: this.x+distance, y : this.y-1};
+					posDroite = {x : this.x+5, y : this.y-distance-1};
+					posGauche = {x : this.x+5, y : this.y+distance-1};
 					break;
 				default :
 					throw("Aucune direction n'est encore fixée..");
 			}
 			return {
-				devant: this.prochainePosition(distance),
+				devant: posDevant,
 				droite: posDroite,
 				gauche: posGauche
 			}
@@ -177,6 +182,21 @@ var JSFOURMIS = JSFOURMIS || {};
 				matrice = matrice.rotation(angle);
 			}
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
+			this.dessineChampVision();
+		},
+		
+		dessineChampVision : function () {
+			var rayon = 7;
+			var champVision = this.champVision(rayon);
+			var t = [];
+			var tailleChamp = rayon*rayon;
+			for (var i=0; i<tailleChamp; i++) {
+				t.push(1);
+			}
+			var m = new JSFOURMIS.Matrice(rayon,rayon,t);
+			this.kanvasObj.dessineForme(m, champVision.devant.x,  champVision.devant.y, { r:255, g:255, b:0, a:0xff });
+			this.kanvasObj.dessineForme(m, champVision.droite.x,  champVision.droite.y, { r:255, g:128, b:0, a:0xff });
+			this.kanvasObj.dessineForme(m, champVision.gauche.x,  champVision.gauche.y, { r:128, g:255, b:0, a:0xff });
 		}
 	};
 })();
