@@ -4,6 +4,7 @@
  * @class Kanvas Classe principale du bouzin, fait un peu tout.
  * ----------------------------------------------------
  */
+var JSFOURMIS = JSFOURMIS || {};
 (function() {
 		/**
 		 * Constructeur
@@ -189,30 +190,50 @@
 			random : function(lower, higher) {
 				return Math.floor((Math.random() * (higher - lower)) + lower);
 			},
+			
+			// en %tage
+			chancesDeFaireDemiTour: 3, 
+			chanceDeChangerDeDirection: 8,
+			distanceAParcourrirParFourmis: 1,
+			
 
 			/**
 			 * Fait avancer une fourmi (pour un cycle).
 			 */
 			avance : function(fourmi) {
-				// TODO: faire la *vrai* fonction..
-				// la c'est une direction aléatoire..
-				var distanceAParcourrir = 1;
+				if(fourmi.direction == JSFOURMIS.Directions.AUCUNE) {
+					fourmi.direction = this.choisiUneDirectionAuHasard();
+				}
+				if(this.random(1,100) < this.chancesDeFaireDemiTour) {
+					 fourmi.direction = -fourmi.direction;
+				} else if(this.random(1,100) < this.chanceDeChangerDeDirection) {
+					var nouvelleDirection = fourmi.direction; 
+					while(nouvelleDirection == fourmi.direction || nouvelleDirection == -fourmi.direction) {
+						nouvelleDirection = this.choisiUneDirectionAuHasard();
+					}
+					fourmi.direction = nouvelleDirection; 
+				}
+				fourmi.avanceDansSaDirection(this.distanceAParcourrirParFourmis);
+			},
+			
+			choisiUneDirectionAuHasard: function() {
 				var xOuY = this.random(1, 100);
 				var moinsOuPlus = this.random(1, 100);
 				if (xOuY <= 50) {
 					if (moinsOuPlus <= 50) {
-						fourmi.x += distanceAParcourrir;
+						return JSFOURMIS.Directions.EST;
 					} else {
-						fourmi.x -= distanceAParcourrir;
+						return JSFOURMIS.Directions.OUEST;
 					}
 				} else {
 					if (moinsOuPlus <= 50) {
-						fourmi.y += distanceAParcourrir;
+						return JSFOURMIS.Directions.SUD;
 					} else {
-						fourmi.y -= distanceAParcourrir;
+						return JSFOURMIS.Directions.NORD;
 					}
 				}
 			},
+			
 
 			/**
 			 * Emplacement de la fourmilière. En principe choisi dans le
@@ -331,8 +352,8 @@
 				// Récup du canvas et de sa taille
 				this.canvas = document.getElementById("canvas");
 				this.ctx = this.canvas.getContext("2d");
-				this.height = parseInt(this.canvas.getAttribute('height'));
-				this.width = parseInt(this.canvas.getAttribute('width'));
+				this.height = parseInt(this.canvas.getAttribute('height'), 10);
+				this.width = parseInt(this.canvas.getAttribute('width'), 10);
 
 				// on place la fourmilière au centre
 				this.foyer.y = this.height / 2;

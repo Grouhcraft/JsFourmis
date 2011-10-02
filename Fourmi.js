@@ -2,8 +2,10 @@
  * ---------------------------------------------------
  * 
  * @class Fourmi Fait tout ce que fait une fourmi :)
- *        ----------------------------------------------------
+ * 
+ * ----------------------------------------------------
  */
+var JSFOURMIS = JSFOURMIS || {};
 (function() {
 	/**
 	 * Constructeur On la place dans la fourmilière, sans direction précise.
@@ -61,6 +63,19 @@
 		estDessinable : function() {
 			return true;
 		},
+		
+		avanceDansSaDirection: function (distance) {
+			distance = distance || 1;
+			switch(this.direction) {
+				case JSFOURMIS.Directions.NORD:		this.y-=distance; break;
+				case JSFOURMIS.Directions.SUD:		this.y+=distance; break; 
+				case JSFOURMIS.Directions.EST:		this.x-=distance; break;
+				case JSFOURMIS.Directions.OUEST:	this.x+=distance; break;
+				case JSFOURMIS.Directions.AUCUNE:
+					throw("Aucune direction n'est encore fixée..");
+					break;
+			};
+		},
 
 		/**
 		 * Dessine la fourmi. Définit la forme de la fourmi, et apelle la
@@ -71,13 +86,24 @@
 		 * @param y
 		 */
 		dessine : function() {
-			var data = [ 1, 1, 1,
+			var data = [ 0, 1, 0,
 				         0, 1, 0,
 				         1, 1, 1,
 				         0, 1, 0,
 				         1, 1, 1 ];
 			var matrice = new JSFOURMIS.Matrice(5,3,data);
-			//matrice = matrice.rotation(JSFOURMIS.AnglesRotation.DROITE);
+			var angle = null; 
+			switch(this.direction) {
+				case JSFOURMIS.Directions.NORD:
+				case JSFOURMIS.Directions.AUCUNE:		
+				break;
+				case JSFOURMIS.Directions.SUD:		angle = JSFOURMIS.AnglesRotation.DEMITOUR ; break; 
+				case JSFOURMIS.Directions.EST:		angle = JSFOURMIS.AnglesRotation.GAUCHE ; break;
+				case JSFOURMIS.Directions.OUEST:	angle = JSFOURMIS.AnglesRotation.DROITE ; break;
+			}
+			if(angle !== null) {
+				matrice = matrice.rotation(angle);
+			}
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
 		}
 	};

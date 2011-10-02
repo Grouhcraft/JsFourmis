@@ -4,6 +4,7 @@
  * @class Nourriture (pour donner à manger aux fourmis)
  *        ----------------------------------------------------
  */
+var JSFOURMIS = JSFOURMIS || {};
 (function(){
 	/**
 	 * Constructeur

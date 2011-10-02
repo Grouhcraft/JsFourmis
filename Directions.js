@@ -1,9 +1,10 @@
+var JSFOURMIS = JSFOURMIS || {};
 (function() {
 	JSFOURMIS.Directions = {
 			NORD : 1,
-			SUD : 2,
-			EST : 3,
-			OUEST : 4,
-			AUCUNE : 5
+			SUD : -1,
+			EST : 2,
+			OUEST : -2,
+			AUCUNE : 3
 		};
 })();

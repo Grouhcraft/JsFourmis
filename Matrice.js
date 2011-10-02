@@ -17,6 +17,7 @@
  *				0,1,1 ] };
  * </code>
  */
+var JSFOURMIS = JSFOURMIS || {};
 (function() {
 
 	JSFOURMIS.Matrice = function(h, w, data) {
@@ -46,7 +47,7 @@
 		},
 
 		agrandir : function(coeff) {
-			coeff = parseInt(coeff);
+			coeff = parseInt(coeff, 10);
 			if (coeff < 1) { return null; }
 			if (coeff == 1) { return this; }
 			var agrandi = new JSFOURMIS.Matrice(coeff * this.h, coeff * this.w, []);
@@ -66,17 +67,19 @@
 		},
 		
 		rotation : function(angle) {
+			var tourne, x, y;
+		
 			if (angle==JSFOURMIS.AnglesRotation.DROITE) {
-				var tourne = new JSFOURMIS.Matrice(this.w, this.h, []);
-				for (var x = 0; x < this.h; x++) {
-					for (var y = 0; y < this.w; y++) {
+				tourne = new JSFOURMIS.Matrice(this.w, this.h, []);
+				for (x = 0; x < this.h; x++) {
+					for (y = 0; y < this.w; y++) {
 						tourne.setvalue(y, x, this.getvalue(x, y));
 					}
 				}
 				return tourne;
 			}
 			if (angle==JSFOURMIS.AnglesRotation.DEMITOUR) {
-				tourne = new JSFOURMIS.Matrice(this.w, this.h, []);
+				tourne = new JSFOURMIS.Matrice(this.h, this.w, []);
 				for (x = 0; x < this.h; x++) {
 					for (y = 0; y < this.w; y++) {
 						tourne.setvalue(this.h-x-1, this.w-y-1, this.getvalue(x, y));
