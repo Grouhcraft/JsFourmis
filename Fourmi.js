@@ -27,7 +27,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		x : 0,				// Position x de la fourmi
 		y : 0,				// Position y de la fourmi
 		aller: true,		// Indique si la fourmi cherche..
-		retour : false,		// ..ou si elle revient à la fourmilière (consciament s'entend)
+		retour : false,		// ..ou si elle revient à la fourmilière (consciemment s'entend)
 		direction : null,	// Direction de la fourmi. cf. l'Enum "JSFOURMIS.Direction"
 		nourritures : [],	// instances des "Nourriture" transportées
 		age : 0,			// Age de la fourmi (en Cycles)
@@ -53,10 +53,10 @@ var JSFOURMIS = JSFOURMIS || {};
 		},
 
 		/**
-		 * La fourmi est-elle dessinable ? Exemple: on peu vouloir une fourmi
+		 * La fourmi est-elle dessinable ? Exemple: on peut vouloir une fourmi
 		 * "fantôme", ou encore une fourmi "pré-paramétrée" pour plus tard, ou
 		 * filtrer l'affichage par type de fourmis, ou que sais-je encore.. Par
-		 * défaut, une fourmis est dessinable.
+		 * défaut, une fourmi est dessinable.
 		 * 
 		 * @return booléen
 		 */
@@ -90,7 +90,18 @@ var JSFOURMIS = JSFOURMIS || {};
 				this.y = y;
 			}
 		},
-
+		
+		prochainePosition : function (distance)
+		{
+			switch (this.direction) {
+				case JSFOURMIS.Directions.NORD:		return {x : this.x, y : this.y-distance}; break;
+				case JSFOURMIS.Directions.SUD:		return {x : this.x, y : this.y+distance}; break; 
+				case JSFOURMIS.Directions.EST:		return {x: this.x-distance, y : this.y}; break;
+				case JSFOURMIS.Directions.OUEST:	return {x: this.x+distance, y : this.y}; break;
+				default:							return {x: this.x, y : this.y}; break;
+			}
+		},
+		
 		/**
 		 * Dessine la fourmi. Définit la forme de la fourmi, et apelle la
 		 * méthode de JSFOURMIS.Kanvas de dessin de forme (dessineForme()) avec
@@ -123,7 +134,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			var matrice = new JSFOURMIS.Matrice(7,5,data);
 			var angle = null; 
 			
-			// On tourne la fourmis selon sa direction
+			// On tourne la fourmi selon sa direction
 			switch(this.direction) {
 				case JSFOURMIS.Directions.NORD:
 				case JSFOURMIS.Directions.AUCUNE:		
