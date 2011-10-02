@@ -91,6 +91,36 @@ var JSFOURMIS = JSFOURMIS || {};
 			}
 		},
 		
+		champVision : function (distance) {
+			var posDroite;
+			var posGauche;
+			switch(this.direction) {
+				case JSFOURMIS.Directions.NORD :
+					posDroite = {x: this.x-distance, y : this.y};
+					posGauche = {x: this.x+distance, y : this.y};
+					break;
+				case JSFOURMIS.Directions.SUD :
+					posDroite = {x: this.x+distance, y : this.y};
+					posGauche = {x: this.x-distance, y : this.y};
+					break;
+				case JSFOURMIS.Directions.EST :
+					posDroite = {x : this.x, y : this.y+distance};
+					posGauche = {x : this.x, y : this.y-distance};
+					break;
+				case JSFOURMIS.Directions.OUEST:
+					posDroite = {x : this.x, y : this.y-distance};
+					posGauche = {x : this.x, y : this.y+distance};
+					break;
+				default :
+					throw("Aucune direction n'est encore fixée..");
+			}
+			return {
+				devant: this.prochainePosition(distance),
+				droite: posDroite,
+				gauche: posGauche
+			}
+		},
+		
 		prochainePosition : function (distance)
 		{
 			switch (this.direction) {
