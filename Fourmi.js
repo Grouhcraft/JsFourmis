@@ -91,30 +91,30 @@ var JSFOURMIS = JSFOURMIS || {};
 			}
 		},
 		
-		champVision : function (distance) {
+		champVision : function (distance, versAvant) {
 			var posDroite;
 			var posGauche;
 			var posDevant;
 			switch(this.direction) {
 				case JSFOURMIS.Directions.NORD :
 					posDevant = {x : this.x-1, y : this.y-distance};
-					posDroite = {x: this.x-distance-1, y : this.y-5};
-					posGauche = {x: this.x+distance-1, y : this.y-5};
+					posDroite = {x: this.x-distance-1, y : this.y-versAvant};
+					posGauche = {x: this.x+distance-1, y : this.y-versAvant};
 					break;
 				case JSFOURMIS.Directions.SUD :
 					posDevant = {x : this.x-1, y : this.y+distance};
-					posDroite = {x: this.x+distance-1, y : this.y+5};
-					posGauche = {x: this.x-distance-1, y : this.y+5};
+					posDroite = {x: this.x+distance-1, y : this.y+versAvant};
+					posGauche = {x: this.x-distance-1, y : this.y+versAvant};
 					break;
 				case JSFOURMIS.Directions.EST :
 					posDevant = {x: this.x-distance, y : this.y-1};
-					posDroite = {x : this.x-5, y : this.y+distance-1};
-					posGauche = {x : this.x-5, y : this.y-distance-1};
+					posDroite = {x : this.x-versAvant, y : this.y+distance-1};
+					posGauche = {x : this.x-versAvant, y : this.y-distance-1};
 					break;
 				case JSFOURMIS.Directions.OUEST:
 					posDevant = {x: this.x+distance, y : this.y-1};
-					posDroite = {x : this.x+5, y : this.y-distance-1};
-					posGauche = {x : this.x+5, y : this.y+distance-1};
+					posDroite = {x : this.x+versAvant, y : this.y-distance-1};
+					posGauche = {x : this.x+versAvant, y : this.y+distance-1};
 					break;
 				default :
 					throw("Aucune direction n'est encore fixée..");
@@ -183,12 +183,13 @@ var JSFOURMIS = JSFOURMIS || {};
 			}
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
 			// Test : dessin du champ de vision
-			// this.dessineChampVision();
+			this.dessineChampVision();
 		},
 		
 		dessineChampVision : function () {
 			var rayon = 7;
-			var champVision = this.champVision(rayon);
+			var versAvant = 5;
+			var champVision = this.champVision(rayon, versAvant);
 			var t = [];
 			var tailleChamp = rayon*rayon;
 			for (var i=0; i<tailleChamp; i++) {
