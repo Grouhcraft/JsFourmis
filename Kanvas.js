@@ -136,22 +136,39 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			creerUnPointDeNourriture : function(x, y) {
-				// nbMinNourritureParPointDeNourriture: 1,
-				// nbMaxNourritureParPointDeNourriture: 10,
-				// quantiteeMinParNourriture: 1,
-				// quantiteeMaxParNourriture: 10,
-				// new JSFOURMIS.Nourriture(this,
-				// KNOO:J'en suis la
 				var nbDeNourriture = this.random(this.nbMinNourritureParPointDeNourriture, this.nbMaxNourritureParPointDeNourriture);
+
 				//Création du point centrale aux coordonnées données
 				var pointCentral = new JSFOURMIS.Nourriture(this); 
 				pointCentral.x = x; 
 				pointCentral.y = y;
 				pointCentral.quantitee = this.random(this.quantiteeMinParNourriture, this.quantiteeMaxParNourriture);
 				this.nourritures.push(pointCentral);
+				
+				//Création des points autour
+				var maxEssais = 100;
 				for(var i=0; i < nbDeNourriture -1; i++) {
-					//var nourriture = new JSFOURMIS.Nourriture();
-					//KNOO TODO: Ben.. faire ça :)
+					var px = x;
+					var py = y;
+					var decalage_y, decalage_x;
+					var plusOuMoins;
+					var nbEssais = 0;
+					while(!this.laPlaceEstElleLibre(px, py) && nbEssais < 1 && nbEssais < maxEssais) {
+						nbEssais++;
+						decalage_y = this.random(1, nbDeNourriture);
+						decalage_x = this.random(1, nbDeNourriture);
+						plusOuMoins = this.random(1,100) > 50;
+						if(plusOuMoins) px = x + decalage_x;
+						else			px = x - decalage_x;
+						plusOuMoins = this.random(1,100) > 50;
+						if(plusOuMoins) py = y + decalage_y;
+						else			py = y - decalage_y;
+					}
+					var pointAnnexe = new JSFOURMIS.Nourriture(this); 
+					pointAnnexe.x = px; 
+					pointAnnexe.y = py;
+					pointAnnexe.quantitee = this.random(this.quantiteeMinParNourriture, this.quantiteeMaxParNourriture);
+					this.nourritures.push(pointAnnexe);	
 				}
 			},
 
@@ -163,16 +180,6 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * @return bool: vrai s'il n'y à rien, faux sinon.
 			 */
 			laPlaceEstElleLibre : function(x, y) {
-				// FIXME: Problème !
-				// Comment savoir si la place est libre
-				// sans avoir à itérer toutes les entitées
-				// déssinables..
-				// faudrait garder dans un tableau de la taille de l'image
-				// un genre de référence des objets à cette position
-				// un truc comme ça.. sinon, ca peut être relou pour rien
-				// je pense. Nope ?
-				//
-				// En attendant..
 				for ( var uneEntite in this.entites) {
 					for ( var i = 0; i < this.entites[uneEntite].length; i++) {
 						if (this.entites[uneEntite][i].x == x &&
@@ -199,6 +206,11 @@ var JSFOURMIS = JSFOURMIS || {};
 
 			/**
 			 * Fait avancer une fourmi (pour un cycle).
+			 * Déroulement:
+			 * 1- Si la fourmis n'a pas de direction, on lui en donne une au pif 
+			 * 2- La fourmi à un % (faible) de chance de faire demi-tour
+			 * 3- Si la fourmi ne fait pas demi-tour, % de chance d'aller sur le côté
+			 * 4- On demande à la fourmis d'avancer.
 			 */
 			avance : function(fourmi) {
 				if(fourmi.direction == JSFOURMIS.Directions.AUCUNE) {
@@ -216,6 +228,10 @@ var JSFOURMIS = JSFOURMIS || {};
 				fourmi.avanceDansSaDirection(this.distanceAParcourrirParFourmis);
 			},
 			
+			/**
+			 * Comme son titre l'indique, choisi
+			 * une direction au hazard parmis JSFOURMIS.Directions
+			 */
 			choisiUneDirectionAuHasard: function() {
 				var xOuY = this.random(1, 100);
 				var moinsOuPlus = this.random(1, 100);
@@ -247,12 +263,15 @@ var JSFOURMIS = JSFOURMIS || {};
 			/**
 			 * Indique si la position donnée est incluse dans la zone de dessin
 			 * ou dépasse
+			 * @param padding: marge de "sécurité"
 			 */
-			estDansLaZone : function(x, y) {
+			estDansLaZone : function(x, y, padding) {
 				var yEst = true;
-				if (x < 0 || x >= this.width) {
+				padding = padding || 6;
+				
+				if (x <= padding || x >= this.width - padding) {
 					yEst = false;
-				} if (y < 0 || y >= this.height) {
+				} if (y <= padding || y >= this.height - padding) {
 					yEst = false;	
 				}
 				return yEst;
@@ -334,9 +353,9 @@ var JSFOURMIS = JSFOURMIS || {};
 			nbCycles : 0,
 
 			// nourriture stuff
-			nbInitialDePointDeNourriture : 50,
-			nbMinNourritureParPointDeNourriture : 1,
-			nbMaxNourritureParPointDeNourriture : 10,
+			nbInitialDePointDeNourriture : 15,
+			nbMinNourritureParPointDeNourriture : 0,
+			nbMaxNourritureParPointDeNourriture : 20,
 			quantiteeMinParNourriture : 1,
 			quantiteeMaxParNourriture : 10,
 

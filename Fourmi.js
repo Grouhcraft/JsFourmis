@@ -64,17 +64,31 @@ var JSFOURMIS = JSFOURMIS || {};
 			return true;
 		},
 		
+		/**
+		 *  Avec de <distance> dans la direction enregistrée
+		 */
 		avanceDansSaDirection: function (distance) {
 			distance = distance || 1;
+			var x = this.x;
+			var y = this.y;
 			switch(this.direction) {
-				case JSFOURMIS.Directions.NORD:		this.y-=distance; break;
-				case JSFOURMIS.Directions.SUD:		this.y+=distance; break; 
-				case JSFOURMIS.Directions.EST:		this.x-=distance; break;
-				case JSFOURMIS.Directions.OUEST:	this.x+=distance; break;
+				case JSFOURMIS.Directions.NORD:		y-=distance; break;
+				case JSFOURMIS.Directions.SUD:		y+=distance; break; 
+				case JSFOURMIS.Directions.EST:		x-=distance; break;
+				case JSFOURMIS.Directions.OUEST:	x+=distance; break;
 				case JSFOURMIS.Directions.AUCUNE:
 					throw("Aucune direction n'est encore fixée..");
 					break;
 			};
+			
+			// Lorsque l'on touche le bord, on repart en arrière
+			if(!this.kanvasObj.estDansLaZone(x,y)) {
+				this.direction = -this.direction;
+				this.avanceDansSaDirection(distance);
+			} else {
+				this.x = x;
+				this.y = y;
+			}
 		},
 
 		/**
@@ -86,20 +100,37 @@ var JSFOURMIS = JSFOURMIS || {};
 		 * @param y
 		 */
 		dessine : function() {
-			var data = [ 0, 1, 0,
-				         0, 1, 0,
-				         1, 1, 1,
-				         0, 1, 0,
-				         1, 1, 1 ];
-			var matrice = new JSFOURMIS.Matrice(5,3,data);
+			var data = [];
+			// 2 coups sur 4, on change la position
+			// des p'tites pattes de fourmis
+			if(this.age % 4 > 1) {
+				data = [0,1,0,1,0,
+						0,0,1,0,0,
+						0,0,1,0,1,
+						1,1,1,1,0,
+						0,0,1,0,0,
+						0,1,1,1,1,
+						1,0,1,0,0];
+			} else {
+				data = [0,1,0,1,0,
+						0,0,1,0,0,
+						1,0,1,0,0,
+						0,1,1,1,1,
+						0,0,1,0,0,
+						1,1,1,1,0,
+						0,0,1,0,1];				
+			}
+			var matrice = new JSFOURMIS.Matrice(7,5,data);
 			var angle = null; 
+			
+			// On tourne la fourmis selon sa direction
 			switch(this.direction) {
 				case JSFOURMIS.Directions.NORD:
 				case JSFOURMIS.Directions.AUCUNE:		
 				break;
-				case JSFOURMIS.Directions.SUD:		angle = JSFOURMIS.AnglesRotation.DEMITOUR ; break; 
-				case JSFOURMIS.Directions.EST:		angle = JSFOURMIS.AnglesRotation.GAUCHE ; break;
-				case JSFOURMIS.Directions.OUEST:	angle = JSFOURMIS.AnglesRotation.DROITE ; break;
+				case JSFOURMIS.Directions.SUD:	angle = JSFOURMIS.AnglesRotation.DEMITOUR ; break; 
+				case JSFOURMIS.Directions.OUEST:angle = JSFOURMIS.AnglesRotation.GAUCHE ; break;
+				case JSFOURMIS.Directions.EST:	angle = JSFOURMIS.AnglesRotation.DROITE ; break;
 			}
 			if(angle !== null) {
 				matrice = matrice.rotation(angle);

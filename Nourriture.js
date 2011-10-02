@@ -35,11 +35,11 @@ var JSFOURMIS = JSFOURMIS || {};
 			return true; /* @TODO: sauf si transporté par une fourmi, etc.. */
 		},
 		dessine : function() {/* @TODO */
-			var data = [0,0,1,0,0,
-						0,1,1,1,0,
-						1,1,1,1,1,
-						0,1,1,1,0,
-						0,0,1,0,0];
+			var data = [0,1,1,1,0,
+						1,0,0,0,1,
+						1,0,1,0,1,
+						1,0,0,0,1,
+						0,1,1,1,0];
 			var matrice = new JSFOURMIS.Matrice(5,5,data);
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, { r:0, g:127, b:0, a:0xff }); // FIXME: couleur provisoire
 		}
