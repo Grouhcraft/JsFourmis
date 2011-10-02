@@ -88,9 +88,9 @@ var JSFOURMIS = JSFOURMIS || {};
 				return tourne;
 			}
 			if (angle==JSFOURMIS.AnglesRotation.GAUCHE) {
-				var tourne = new JSFOURMIS.Matrice(this.w, this.h, []);
-				for (var x = 0; x < this.h; x++) {
-					for (var y = 0; y < this.w; y++) {
+				tourne = new JSFOURMIS.Matrice(this.w, this.h, []);
+				for (x = 0; x < this.h; x++) {
+					for (y = 0; y < this.w; y++) {
 						tourne.setvalue(this.w-y-1, this.h-x-1, this.getvalue(x, y));
 					}
 				}
