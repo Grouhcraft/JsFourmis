@@ -45,6 +45,10 @@ var JSFOURMIS = JSFOURMIS || {};
 		size : function() {
 			return this.h * this.w;
 		},
+		
+		estValide: function() {
+			return this.h * this.w === this.data.length;
+		},
 
 		agrandir : function(coeff) {
 			coeff = parseInt(coeff, 10);
@@ -56,9 +60,7 @@ var JSFOURMIS = JSFOURMIS || {};
 				for (var m = 0; m < coeff; m++) {
 					for (var x = 0; x < this.h; x++) {
 						for (var y = 0; y < this.w; y++) {
-
-							agrandi.setvalue(x * coeff + n, y * coeff + m, this
-									.getvalue(x, y));
+							agrandi.setvalue(x * coeff + n, y * coeff + m, this.getvalue(x, y));
 						}
 					}
 				}

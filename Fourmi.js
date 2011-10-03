@@ -13,17 +13,21 @@ var JSFOURMIS = JSFOURMIS || {};
 	 * @param kanvasObj:
 	 *            instance de JSFOURMIS.Kanvas appellante (son "this" quoi)
 	 */
-	JSFOURMIS.Fourmi = function(kanvasObj) {
+	JSFOURMIS.Fourmi = function(kanvasObj, options) {
+		options = options || {};
 		this.kanvasObj = kanvasObj;
 		this.direction = JSFOURMIS.Directions.AUCUNE;
 		this.x = this.kanvasObj.foyer.x;
 		this.y = this.kanvasObj.foyer.y;
+		
+		this.numero = options.numero || 0;
 	};
 	/**
 	 * Méthodes publiques
 	 */
 	JSFOURMIS.Fourmi.prototype = {
 		kanvasObj: {},		// cf. Constructeur
+		numero: 0,			// sorte d'ID de la fourmis, //TODO: Doc ici meme
 		x : 0,				// Position x de la fourmi
 		y : 0,				// Position y de la fourmi
 		aller: true,		// Indique si la fourmi cherche..
@@ -50,7 +54,12 @@ var JSFOURMIS = JSFOURMIS || {};
 		 * @TODO
 		 */
 		meurt : function() {
+			// TODO: 
+			//delete this.kanvasObj.entites.fourmis[this.numero];
+			this.vivante = false;
 		},
+		
+		vivante: true,
 
 		/**
 		 * La fourmi est-elle dessinable ? Exemple: on peut vouloir une fourmi
@@ -61,7 +70,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		 * @return booléen
 		 */
 		estDessinable : function() {
-			return true;
+			return this.vivante;
 		},
 		
 		/**

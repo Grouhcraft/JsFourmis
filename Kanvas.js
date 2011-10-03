@@ -33,9 +33,11 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * @param y
 			 * @param couleur:
 			 *            objet {} ayant 4 propriétés r,g,b et a (transparence)
+			 *			  l'alpha ("a") est facultatif. défaut: opaque.
 			 */
 			setPixel : function(x, y, couleur) {
 				var index = (x + y * this.imageData.width) * 4;
+				couleur.a = couleur.a || 0xff;
 				this.imageData.data[index + 0] = couleur.r;
 				this.imageData.data[index + 1] = couleur.g;
 				this.imageData.data[index + 2] = couleur.b;
@@ -45,14 +47,12 @@ var JSFOURMIS = JSFOURMIS || {};
 			/**
 			 * Vérifie si la matrice est valide pour une entité. Une matrice valide
 			 * doit avoir une largeur et une hauteur impaires, comme ça, on peut la
-			 * centrer sur la position donnéee.
-			 * 
-			 * @TODO vérifier la concordance h*w = taille du tableau
+			 * centrer sur la position donnéee. Valide aussi la matrice.
 			 */
-			estUneMatriceValide : function(matrice) {
-				var reste_h = matrice.h % 2;
-				var reste_w = matrice.w % 2;
-				return reste_w + reste_h !== 0;
+			estUneFormeValide : function(matrice) {
+				return (
+					matrice.h % 2 + matrice.w % 2 !== 0 && 
+					matrice.estValide());
 			},
 
 			/**
@@ -71,30 +71,29 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * </code>
 			 */
 			dessineForme : function(matrice, x, y, couleur) {
-				if (!this.estUneMatriceValide(matrice)) {
+				if (!this.estUneFormeValide(matrice)) {
 					throw "La forme fournie n'est pas une forme valide.";
 				}
-				var centre_h_forme = matrice.h % 2;
-				var centre_w_forme = matrice.w % 2;
+				var centre_h_forme = (matrice.h -1) / 2; 
+				var centre_w_forme = (matrice.w -1) / 2;
 				var pix_x = 0;
 				var pix_y = 0;
 				for ( var fy = 0; fy < matrice.h; fy++) {
 					for ( var fx = 0; fx < matrice.w; fx++) {
-						var index = fy * matrice.w + fx;
-						if (matrice.data[index] == 1) {
+						if (matrice.data[fy * matrice.w + fx] === 1) {
 							// x
-							if (x < centre_w_forme) {
-								pix_x = x - fx;
-							} else if (x > centre_h_forme) {
-								pix_x = x + fx;
+							if (fx < centre_w_forme) {
+								pix_x = x - centre_w_forme + fx;
+							} else if (fx > centre_w_forme) {
+								pix_x = x + fx - centre_w_forme;
 							} else {
 								pix_x = x;
 							}
 							// y
-							if (y < centre_h_forme) {
-								pix_y = y - fy;
-							} else if (y > centre_h_forme) {
-								pix_y = y + fy;
+							if (fy < centre_h_forme) {
+								pix_y = y - centre_h_forme + fy;
+							} else if (fy > centre_h_forme) {
+								pix_y = y + fy - centre_h_forme;
 							} else {
 								pix_y = y;
 							}
@@ -301,7 +300,7 @@ var JSFOURMIS = JSFOURMIS || {};
 					}
 				}
 				if(this.curseurSurCanvas) {
-					this.dessineForme(this.matriceDuCurseur, this.curseurPosition.x, this.curseurPosition.y, {r:0,g:0,b:254,a:0xff});
+					this.dessineForme(this.matriceDuCurseur, this.curseurPosition.x, this.curseurPosition.y, {r:0,g:0,b:254});
 				}
 				this.ctx.putImageData(this.imageData, 0, 0); // at coords 0,0
 			},
@@ -386,6 +385,18 @@ var JSFOURMIS = JSFOURMIS || {};
 			onMouseOut: function(ev) {
 				this.curseurSurCanvas = false;
 			},
+			onClick: function(ev){
+				var x = ev.clientX - this.totalCancasOffset.left;
+				var y = ev.clientY - this.totalCancasOffset.top;
+				var rayon = 8;
+				for (i = 0; i < this.entites.fourmis.length; i++) {
+					if(	this.entites.fourmis[i].x <= x + rayon  && this.entites.fourmis[i].x >= x - rayon && 
+						this.entites.fourmis[i].y <= y + rayon  && this.entites.fourmis[i].y >= y - rayon) {
+						//alert('Arrrrrghhh!!.. je meurt ! *pof*');
+						this.entites.fourmis[i].meurt();
+					}
+				}
+			},
 
 			matriceDuCurseur: {},
 			
@@ -409,17 +420,21 @@ var JSFOURMIS = JSFOURMIS || {};
 				var nbfourmis = parseInt($('nbFourmis').value);
 				this.nbCycles = parseInt($('nbCycles').value);
 
-				this.matriceDuCurseur = new JSFOURMIS.Matrice(5,5,[
-									0,1,1,1,0,
-									1,0,1,0,1,
-									1,1,1,1,1,
-									1,0,1,0,1,
-									0,1,1,1,0 ]).agrandir(3);;
+				// Curseur, TODO: KNOO: A nettoyer toute cette histoire de curseur..
+				this.matriceDuCurseur = new JSFOURMIS.Matrice(7,7,[
+									0,0,1,1,1,0,0,
+									0,1,0,0,0,1,0,
+									1,0,0,1,0,0,1,
+									1,0,1,1,1,0,1,
+									1,0,0,1,0,0,1,
+									0,1,0,0,0,1,0,
+									0,0,1,1,1,0,0]).agrandir(3);
 
 				this.totalCancasOffset = $totalOffset(this.canvas); 
 				this.canvas.addEventListener('mousemove', bind(this, this.dessineLeCurseur), false);
 				this.canvas.addEventListener('mouseover', bind(this, this.onMouseOver), false);
 				this.canvas.addEventListener('mouseout', bind(this, this.onMouseOut), false);
+				this.canvas.addEventListener('click', bind(this, this.onClick), false);
 
 				// A chaque nouveau départ, on ré-init le compteur
 				JSFOURMIS.Kanvas.compteurCycles = 0;
@@ -429,7 +444,7 @@ var JSFOURMIS = JSFOURMIS || {};
 
 				// création des fourmis
 				for ( var i = 0; i < nbfourmis; i++) {
-					this.fourmis.push(new JSFOURMIS.Fourmi(this));
+					this.fourmis.push(new JSFOURMIS.Fourmi(this, {numero: this.fourmis.length}));
 				}
 				this.running = true;
 				this.main();
