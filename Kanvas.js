@@ -300,6 +300,9 @@ var JSFOURMIS = JSFOURMIS || {};
 						}
 					}
 				}
+				if(this.curseurSurCanvas) {
+					this.dessineForme(this.matriceDuCurseur, this.curseurPosition.x, this.curseurPosition.y, {r:0,g:0,b:254,a:0xff});
+				}
 				this.ctx.putImageData(this.imageData, 0, 0); // at coords 0,0
 			},
 
@@ -334,6 +337,7 @@ var JSFOURMIS = JSFOURMIS || {};
 					}
 				}
 				this.dessineTout();
+				
 				if (this.running) {
 					if (JSFOURMIS.Kanvas.compteurCycles <= this.nbCycles ||
 						this.nbCycles == -1) {
@@ -363,7 +367,28 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * Drapeau indiquant l'état actuel de la boucle principale
 			 */
 			running : false,
+			
+			totalCancasOffset: {left:0, top:0 },
+			
+			dessineLeCurseur: function (ev) {
+				this.curseurPosition = {
+					x: ev.clientX - this.totalCancasOffset.left,
+					y: ev.clientY - this.totalCancasOffset.top
+				};
+			},
+			
+			curseurPosition: {x:0, y:0},
+			curseurSurCanvas: false,
+			
+			onMouseOver: function(ev) {
+				this.curseurSurCanvas = true;
+			},
+			onMouseOut: function(ev) {
+				this.curseurSurCanvas = false;
+			},
 
+			matriceDuCurseur: {},
+			
 			/**
 			 * Initialisation Déclenché au clic du bouton start
 			 */
@@ -383,6 +408,18 @@ var JSFOURMIS = JSFOURMIS || {};
 
 				var nbfourmis = parseInt($('nbFourmis').value);
 				this.nbCycles = parseInt($('nbCycles').value);
+
+				this.matriceDuCurseur = new JSFOURMIS.Matrice(5,5,[
+									0,1,1,1,0,
+									1,0,1,0,1,
+									1,1,1,1,1,
+									1,0,1,0,1,
+									0,1,1,1,0 ]).agrandir(3);;
+
+				this.totalCancasOffset = $totalOffset(this.canvas); 
+				this.canvas.addEventListener('mousemove', bind(this, this.dessineLeCurseur), false);
+				this.canvas.addEventListener('mouseover', bind(this, this.onMouseOver), false);
+				this.canvas.addEventListener('mouseout', bind(this, this.onMouseOut), false);
 
 				// A chaque nouveau départ, on ré-init le compteur
 				JSFOURMIS.Kanvas.compteurCycles = 0;

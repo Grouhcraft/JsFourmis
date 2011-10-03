@@ -2,6 +2,21 @@
  <head>
   <script type="application/javascript">
 	var JSFOURMIS = {};	// Création du namespace
+	function bind(scope, fn) {
+	    return function () {
+	        fn.apply(scope, arguments);
+	    };
+	}
+	function $totalOffset(e) {
+		var curleft = 0, curtop = 0;
+		if (e.offsetParent) {
+			do {
+				curleft += e.offsetLeft;
+				curtop += e.offsetTop;
+			} while (e = e.offsetParent);
+			return {left:curleft, top:curtop};
+		}
+	}
   </script>
   <script type="application/javascript" src="Directions.js"></script>
   <script type="application/javascript" src="AnglesRotation.js"></script>
@@ -16,6 +31,7 @@
   </script>
   <style type="text/css">
 	td.orientation { text-align: center;}
+	.fourmis { height: 500px;}
   </style>
   <title>JsFourmis</title>
  </head>
@@ -23,9 +39,11 @@
 	<center>
 		<table summary="Boussole et Canvas">
 			<tr>
+				<td rowspan="4"><img src="ant_01.jpg" class="fourmis"/></td>
 				<td></td>
 				<td id='nord' class="orientation">Nord</td>
 				<td></td>
+				<td rowspan="4"><img src="ant_02.jpg" class="fourmis"/></td>
 			</tr>
 			<tr>
 				<td id='est' class="orientation">Est</td>
@@ -40,16 +58,22 @@
 				<td id='sud' class="orientation">Sud</td>
 				<td></td>
 			</tr>
+			<tr>
+				<td></td>
+				<td style="text-align: center;">
+					<!-- Nombre de cycles à executer -->
+					Cycles: <input type="text" id="nbCycles" value="5"/><br/>
+					
+					<!-- Nombre de fourmis en jeux -->
+					Fourmis: <input type="text" id="nbFourmis" value="20"/><br/>
+					
+					<button onclick="k.start();">START</button>
+					<button onclick="k.stop();">STOP</button>
+				</td>
+				<td></td>
+			</tr>
 		</table>
-		
-		<!-- Nombre de cycles à executer -->
-		Cycles: <input type="text" id="nbCycles" value="5"/><br/>
-		
-		<!-- Nombre de fourmis en jeux -->
-		Fourmis: <input type="text" id="nbFourmis" value="20"/><br/>
-		
-		<button onclick="k.start();">START</button>
-		<button onclick="k.stop();">STOP</button>
+		<input type="text" id="log" value="" style="width: 300px; border: none;" />
 	</center>
  </body>
 </html>
