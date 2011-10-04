@@ -1,12 +1,12 @@
 /**
- * Dessine une matrice. Typiquement la matrice d'une entité.
+ * Dessine une matrice. Typiquement la matrice d'une entitï¿½.
  * ----------------------------------------------------------
- * @class Matrice Classe statique "boite à outil" pour manipuler les formes,
+ * @class Matrice Classe statique "boite ï¿½ outil" pour manipuler les formes,
  * 
- * Une matrice est un objet {} doté de 3 propriétés: 
+ * Une matrice est un objet {} dotï¿½ de 3 propriï¿½tï¿½s: 
  * w: la largeur de la matrice
  * h: la hauteur de la matrice 
- * data: un tableau *à une dimension* représentant ses coefficients.
+ * data: un tableau *ï¿½ une dimension* reprï¿½sentant ses coefficients.
  * data doit contenir soit 1: plein, soit 0: vide. 
  * Exemple d'une forme de croix: 
  * <code>
@@ -27,7 +27,7 @@ var JSFOURMIS = JSFOURMIS || {};
 	};
 
 	/**
-	 * Méthodes publiques
+	 * Mï¿½thodes publiques
 	 */
 	JSFOURMIS.Matrice.prototype = {
 		h : 0,
@@ -68,37 +68,71 @@ var JSFOURMIS = JSFOURMIS || {};
 			return agrandi;
 		},
 		
+		// KNOO: Mis quelques optimisations, impact Ã  voir..
+		// (variables d'avantage locales, comparaison strict (===) et for() optimisÃ©s)
+		// Evidament, s'il Ã©tait possible de NE PAS instancier une nouvelle matrice Ã  
+		// chaque fois... 
 		rotation : function(angle) {
-			var tourne, x, y;
-		
-			if (angle==JSFOURMIS.AnglesRotation.DROITE) {
-				tourne = new JSFOURMIS.Matrice(this.w, this.h, []);
-				for (x = 0; x < this.h; x++) {
-					for (y = 0; y < this.w; y++) {
+			if (angle === JSFOURMIS.AnglesRotation.DROITE) {
+				var tourne = new JSFOURMIS.Matrice(this.w, this.h, []);
+				for (var x = this.h-1; x >=0; x--) {
+					for (var y = this.w-1; y >=0; y--) {
 						tourne.setvalue(y, x, this.getvalue(x, y));
 					}
 				}
 				return tourne;
 			}
-			if (angle==JSFOURMIS.AnglesRotation.DEMITOUR) {
-				tourne = new JSFOURMIS.Matrice(this.h, this.w, []);
-				for (x = 0; x < this.h; x++) {
-					for (y = 0; y < this.w; y++) {
+			else if (angle === JSFOURMIS.AnglesRotation.DEMITOUR) {
+				var tourne = new JSFOURMIS.Matrice(this.h, this.w, []);
+				for (var x = this.h-1; x >= 0 ; x--) {
+					for (var y = this.w-1; y >=0 ; y--) {
 						tourne.setvalue(this.h-x-1, this.w-y-1, this.getvalue(x, y));
 					}
 				}
 				return tourne;
 			}
-			if (angle==JSFOURMIS.AnglesRotation.GAUCHE) {
-				tourne = new JSFOURMIS.Matrice(this.w, this.h, []);
-				for (x = 0; x < this.h; x++) {
-					for (y = 0; y < this.w; y++) {
+			else if (angle === JSFOURMIS.AnglesRotation.GAUCHE) {
+				var tourne = new JSFOURMIS.Matrice(this.w, this.h, []);
+				for (var x = this.h-1; x >= 0; x--) {
+					for (var y = this.w-1; y >= 0; y--) {
 						tourne.setvalue(this.w-y-1, this.h-x-1, this.getvalue(x, y));
 					}
 				}
 				return tourne;
 			}
 			return null;
+		}
+		
+		rotation_optimise : function(angle) {
+			var nouvelleMatrice = new Array(this.data.length); // dÃ©jÃ  la bonne taille
+			var w = this.width;
+			var h = this.height;
+			if (angle === JSFOURMIS.AnglesRotation.DROITE) {
+				for (var x = h-1; x >=0; x--) {
+					for (var y = w-1; y >=0; y--) {
+						nouvelleMatrice[y * w + x] = this.data[x * w + y];
+					}
+				}
+			}
+			else if (angle === JSFOURMIS.AnglesRotation.DEMITOUR) {
+				for (var x = h-1; x >= 0 ; x--) {
+					for (var y = w-1; y >=0 ; y--) {
+						nouvelleMatrice[h-x-1 * w + w-y-1] = this.data[x * w + y];
+					}
+				}
+			}
+			else if (angle === JSFOURMIS.AnglesRotation.GAUCHE) {
+				for (var x = h-1; x >= 0; x--) {
+					for (var y = w-1; y >= 0; y--) {
+						nouvelleMatrice[w-y-1 * w + h-x-1] = this.data[x * w + y];
+					}
+				}
+			}
+			delete this.data; // utile ???
+			this.data = nouvelleMatrice;
+			// Ã©ventuellement:
+			//	return this;
+			// pour prÃ©server la compatibilitÃ©
 		}
 	};
 })();
