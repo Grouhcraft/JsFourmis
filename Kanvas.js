@@ -267,7 +267,6 @@ var JSFOURMIS = JSFOURMIS || {};
 			estDansLaZone : function(x, y, padding) {
 				var yEst = true;
 				padding = padding || 6;
-				
 				if (x <= padding || x >= this.width - padding) {
 					yEst = false;
 				} if (y <= padding || y >= this.height - padding) {
@@ -283,8 +282,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * Efface tout le contenu du canvas
 			 */
 			effaceTout : function() {
-				this.imageData = this.ctx.createImageData(this.width,
-						this.height);
+				this.imageData = this.ctx.createImageData(this.width, this.height);
 			},
 
 			/**
@@ -299,8 +297,12 @@ var JSFOURMIS = JSFOURMIS || {};
 						}
 					}
 				}
-				if(this.curseurSurCanvas) {
-					this.dessineForme(this.matriceDuCurseur, this.curseurPosition.x, this.curseurPosition.y, {r:0,g:0,b:254});
+				if(this.curseur.estSurLeCanvas) {
+					this.dessineForme(
+						this.curseur.matrice, 
+						this.curseur.position.x, 
+						this.curseur.position.y, 
+						this.curseur.couleur);
 				}
 				this.ctx.putImageData(this.imageData, 0, 0); // at coords 0,0
 			},
@@ -329,10 +331,10 @@ var JSFOURMIS = JSFOURMIS || {};
 					var nouvellePos = this.avance(this.fourmis[i]);
 				}
 
-				for (i = 0; i < this.fourmis.length; i++) {
-					this.fourmis[i].age++;
-					if (this.fourmis[i].doitMourir()) {
-						this.fourmis[i].meurt();
+				for (i = 0; i < this.entites.fourmis.length; i++) {
+					this.entites.fourmis[i].age++;
+					if (this.entites.fourmis[i].doitMourir()) {
+						this.entites.fourmis[i].meurt();
 					}
 				}
 				this.dessineTout();
@@ -367,38 +369,54 @@ var JSFOURMIS = JSFOURMIS || {};
 			 */
 			running : false,
 			
-			totalCancasOffset: {left:0, top:0 },
-			
-			dessineLeCurseur: function (ev) {
-				this.curseurPosition = {
-					x: ev.clientX - this.totalCancasOffset.left,
-					y: ev.clientY - this.totalCancasOffset.top
-				};
-			},
-			
-			curseurPosition: {x:0, y:0},
-			curseurSurCanvas: false,
-			
-			onMouseOver: function(ev) {
-				this.curseurSurCanvas = true;
-			},
-			onMouseOut: function(ev) {
-				this.curseurSurCanvas = false;
-			},
-			onClick: function(ev){
-				var x = ev.clientX - this.totalCancasOffset.left;
-				var y = ev.clientY - this.totalCancasOffset.top;
-				var rayon = 8;
-				for (i = 0; i < this.entites.fourmis.length; i++) {
-					if(	this.entites.fourmis[i].x <= x + rayon  && this.entites.fourmis[i].x >= x - rayon && 
-						this.entites.fourmis[i].y <= y + rayon  && this.entites.fourmis[i].y >= y - rayon) {
-						//alert('Arrrrrghhh!!.. je meurt ! *pof*');
-						this.entites.fourmis[i].meurt();
+			/**
+			 * Gestion de la souris
+			 */
+			mouse: {
+				onMove: function(ev) {
+					this.curseur.position = {
+						x: ev.clientX - this.navigateur.totalCancasOffset.left,
+						y: ev.clientY - this.navigateur.totalCancasOffset.top
+					};					
+				},
+				
+				onOver: function(ev) {
+					this.curseur.estSurLeCanvas = true;
+				},
+				
+				onOut: function(ev) {
+					this.curseur.estSurLeCanvas = false;
+				},
+				
+				onClick: function(ev){
+					var x = ev.clientX - this.navigateur.totalCancasOffset.left;
+					var y = ev.clientY - this.navigateur.totalCancasOffset.top;
+					var rayon = 8;
+					for (i = 0; i < this.entites.fourmis.length; i++) {
+						if(	this.entites.fourmis[i].x <= x + rayon  && this.entites.fourmis[i].x >= x - rayon && 
+							this.entites.fourmis[i].y <= y + rayon  && this.entites.fourmis[i].y >= y - rayon) {
+							this.entites.fourmis[i].meurt();
+						}
 					}
-				}
+				},
+			}, 
+			
+			/**
+			 * Curseur
+			 */
+			curseur: {
+				matrice: {},
+				estSurLeCanvas: false,
+				position: { x: 0, y: 0 },
+				couleur: {r:0, g:0, b:254}
 			},
-
-			matriceDuCurseur: {},
+			
+			/**
+			 * Paramètres "systeme", "navigateur"
+			 */
+			navigateur: {
+				totalCancasOffset: {left:0, top:0 }
+			},
 			
 			/**
 			 * Initialisation Déclenché au clic du bouton start
@@ -420,8 +438,8 @@ var JSFOURMIS = JSFOURMIS || {};
 				var nbfourmis = parseInt($('nbFourmis').value);
 				this.nbCycles = parseInt($('nbCycles').value);
 
-				// Curseur, TODO: KNOO: A nettoyer toute cette histoire de curseur..
-				this.matriceDuCurseur = new JSFOURMIS.Matrice(7,7,[
+				// Curseur & autre broutilles "systeme"
+				this.curseur.matrice = new JSFOURMIS.Matrice(7,7,[
 									0,0,1,1,1,0,0,
 									0,1,0,0,0,1,0,
 									1,0,0,1,0,0,1,
@@ -430,11 +448,11 @@ var JSFOURMIS = JSFOURMIS || {};
 									0,1,0,0,0,1,0,
 									0,0,1,1,1,0,0]).agrandir(3);
 
-				this.totalCancasOffset = $totalOffset(this.canvas); 
-				this.canvas.addEventListener('mousemove', bind(this, this.dessineLeCurseur), false);
-				this.canvas.addEventListener('mouseover', bind(this, this.onMouseOver), false);
-				this.canvas.addEventListener('mouseout', bind(this, this.onMouseOut), false);
-				this.canvas.addEventListener('click', bind(this, this.onClick), false);
+				this.navigateur.totalCancasOffset = $totalOffset(this.canvas); 
+				this.canvas.addEventListener('mousemove', bind(this, this.mouse.onMove), false);
+				this.canvas.addEventListener('mouseover', bind(this, this.mouse.onOver), false);
+				this.canvas.addEventListener('mouseout', bind(this, this.mouse.onOut), false);
+				this.canvas.addEventListener('click', bind(this, this.mouse.onClick), false);
 
 				// A chaque nouveau départ, on ré-init le compteur
 				JSFOURMIS.Kanvas.compteurCycles = 0;

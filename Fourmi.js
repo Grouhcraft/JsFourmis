@@ -192,7 +192,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			}
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
 			// Test : dessin du champ de vision
-			this.dessineChampVision();
+			//this.dessineChampVision();
 		},
 		
 		dessineChampVision : function () {
