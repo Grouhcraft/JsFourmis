@@ -101,7 +101,7 @@ var JSFOURMIS = JSFOURMIS || {};
 				return tourne;
 			}
 			return null;
-		}
+		},
 		
 		rotation_optimise : function(angle) {
 			var nouvelleMatrice = new Array(this.data.length); // déjà la bonne taille
