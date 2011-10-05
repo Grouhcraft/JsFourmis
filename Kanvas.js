@@ -69,6 +69,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			 *				1,1,1,
 			 *				0,1,1 ] };
 			 * </code>
+			 * TODO: Optimiser ! 
 			 */
 			dessineForme : function(matrice, x, y, couleur) {
 				if (!this.estUneFormeValide(matrice)) {
@@ -119,7 +120,7 @@ var JSFOURMIS = JSFOURMIS || {};
 
 			disperseDeLaNourriture : function() {
 				var maxTentatives = 100;
-				for ( var i = 0; i < this.nbInitialDePointDeNourriture; i++) {
+				for ( var i = 0; i < this.nourriture.nbInitialDePoints; i++) {
 					var tentatives = 0;
 					while (tentatives < maxTentatives) {
 						var x = this.random(1, this.width);
@@ -135,18 +136,18 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			creerUnPointDeNourriture : function(x, y) {
-				var nbDeNourriture = this.random(this.nbMinNourritureParPointDeNourriture, this.nbMaxNourritureParPointDeNourriture);
+				var nbDeNourriture = this.random(this.nourriture.nombreParPoint.min, this.nourriture.nombreParPoint.max);
 
 				//Création du point centrale aux coordonnées données
 				var pointCentral = new JSFOURMIS.Nourriture(this); 
 				pointCentral.x = x; 
 				pointCentral.y = y;
-				pointCentral.quantitee = this.random(this.quantiteeMinParNourriture, this.quantiteeMaxParNourriture);
+				pointCentral.quantitee = this.random(this.nourriture.quantitee.min, this.nourriture.quantitee.max);
 				this.nourritures.push(pointCentral);
 				
 				//Création des points autour
 				var maxEssais = 100;
-				for(var i=0; i < nbDeNourriture -1; i++) {
+				for(var i=nbDeNourriture -1; i >=0 ; i--) {
 					var px = x;
 					var py = y;
 					var decalage_y, decalage_x;
@@ -166,7 +167,7 @@ var JSFOURMIS = JSFOURMIS || {};
 					var pointAnnexe = new JSFOURMIS.Nourriture(this); 
 					pointAnnexe.x = px; 
 					pointAnnexe.y = py;
-					pointAnnexe.quantitee = this.random(this.quantiteeMinParNourriture, this.quantiteeMaxParNourriture);
+					pointAnnexe.quantitee = this.random(this.nourriture.quantitee.min, this.nourriture.quantitee.max);
 					this.nourritures.push(pointAnnexe);	
 				}
 			},
@@ -180,7 +181,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			 */
 			laPlaceEstElleLibre : function(x, y) {
 				for ( var uneEntite in this.entites) {
-					for ( var i = 0; i < this.entites[uneEntite].length; i++) {
+					for ( var i = this.entites[uneEntite].length -1; i >= 0; i--) {
 						if (this.entites[uneEntite][i].x == x &&
 							this.entites[uneEntite][i].y == y) {
 							return false;
@@ -194,14 +195,17 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * Random borné (têtu celui-là..)
 			 */
 			random : function(lower, higher) {
-				return Math.floor((Math.random() * (higher - lower)) + lower);
+				return ((Math.random() * (higher - lower)) + lower)|0;
 			},
 			
-			// en %tage
-			chancesDeFaireDemiTour: 3, 
-			chanceDeChangerDeDirection: 8,
-			distanceAParcourrirParFourmis: 1,
-			
+			/**
+			 * Déplacement des fourmis
+			 */
+			deplacement: {
+				chancesDeFaireDemiTour: 3, 
+				chanceDeChangerDeDirection: 8,
+				distanceAParcourrirParFourmis: 1
+			},		
 
 			/**
 			 * Fait avancer une fourmi (pour un cycle).
@@ -215,16 +219,16 @@ var JSFOURMIS = JSFOURMIS || {};
 				if(fourmi.direction == JSFOURMIS.Directions.AUCUNE) {
 					fourmi.direction = this.choisiUneDirectionAuHasard();
 				}
-				if(this.random(1,100) < this.chancesDeFaireDemiTour) {
+				if(this.random(1,100) < this.deplacement.chancesDeFaireDemiTour) {
 					 fourmi.direction = -fourmi.direction;
-				} else if(this.random(1,100) < this.chanceDeChangerDeDirection) {
+				} else if(this.random(1,100) < this.deplacement.chanceDeChangerDeDirection) {
 					var nouvelleDirection = fourmi.direction; 
 					while(nouvelleDirection == fourmi.direction || nouvelleDirection == -fourmi.direction) {
 						nouvelleDirection = this.choisiUneDirectionAuHasard();
 					}
 					fourmi.direction = nouvelleDirection; 
 				}
-				fourmi.avanceDansSaDirection(this.distanceAParcourrirParFourmis);
+				fourmi.avanceDansSaDirection(this.deplacement.distanceAParcourrirParFourmis);
 			},
 			
 			/**
@@ -276,6 +280,15 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			ilYADeLaNourriture : function(x, y) {
+				for (var i = this.entites.nourritures.length - 1; i >= 0; i--){
+					if(this.entites.nourritures[i].estDessinable()) {
+						if(	this.entites.nourritures[i].x === x &&
+							this.entites.nourritures[i].y === y) {
+								return true;
+							}			
+					}
+				}
+				return false;
 			},
 
 			/**
@@ -291,7 +304,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			 */
 			dessineTout : function() {
 				for ( var uneEntite in this.entites) {
-					for ( var i = 0; i < this.entites[uneEntite].length; i++) {
+					for ( var i = this.entites[uneEntite].length -1; i >= 0; i--) {
 						if (this.entites[uneEntite][i].estDessinable()) {
 							this.entites[uneEntite][i].dessine();
 						}
@@ -327,11 +340,11 @@ var JSFOURMIS = JSFOURMIS || {};
 				}
 				this.effaceTout();
 
-				for ( var i = 0; i < this.fourmis.length; i++) {
+				for ( var i = this.fourmis.length -1; i >=0; i--) {
 					var nouvellePos = this.avance(this.fourmis[i]);
 				}
 
-				for (i = 0; i < this.entites.fourmis.length; i++) {
+				for (i = this.entites.fourmis.length -1; i >=0; i--) {
 					this.entites.fourmis[i].age++;
 					if (this.entites.fourmis[i].doitMourir()) {
 						this.entites.fourmis[i].meurt();
@@ -357,13 +370,20 @@ var JSFOURMIS = JSFOURMIS || {};
 			 */
 			nbCycles : 0,
 
-			// nourriture stuff
-			nbInitialDePointDeNourriture : 15,
-			nbMinNourritureParPointDeNourriture : 0,
-			nbMaxNourritureParPointDeNourriture : 20,
-			quantiteeMinParNourriture : 1,
-			quantiteeMaxParNourriture : 10,
-
+			/**
+			 * Nourriture
+			 */
+			nourriture: {
+				nbInitialDePoints: 15,
+				nombreParPoint: {
+					min: 0,
+					max: 20
+				}, 
+				quantitee: {
+					min: 1,
+					max: 10
+				} 
+			},
 			/**
 			 * Drapeau indiquant l'état actuel de la boucle principale
 			 */
