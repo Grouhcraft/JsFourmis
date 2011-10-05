@@ -8,7 +8,7 @@
 var JSFOURMIS = JSFOURMIS || {};
 (function() {
 	/**
-	 * Constructeur On la place dans la fourmilière, sans direction précise.
+	 * Constructeur On la place dans la fourmiliï¿½re, sans direction prï¿½cise.
 	 * 
 	 * @param kanvasObj:
 	 *            instance de JSFOURMIS.Kanvas appellante (son "this" quoi)
@@ -23,7 +23,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		this.numero = options.numero || 0;
 	};
 	/**
-	 * Méthodes publiques
+	 * Mï¿½thodes publiques
 	 */
 	JSFOURMIS.Fourmi.prototype = {
 		kanvasObj: {},		// cf. Constructeur
@@ -31,9 +31,9 @@ var JSFOURMIS = JSFOURMIS || {};
 		x : 0,				// Position x de la fourmi
 		y : 0,				// Position y de la fourmi
 		aller: true,		// Indique si la fourmi cherche..
-		retour : false,		// ..ou si elle revient à la fourmilière (consciemment s'entend)
+		retour : false,		// ..ou si elle revient ï¿½ la fourmiliï¿½re (consciemment s'entend)
 		direction : null,	// Direction de la fourmi. cf. l'Enum "JSFOURMIS.Direction"
-		nourritures : [],	// instances des "Nourriture" transportées
+		nourritures : [],	// instances des "Nourriture" transportï¿½es
 		age : 0,			// Age de la fourmi (en Cycles)
 		couleur : { r:0, g:0, b:0, a:0xff },	// Couleur de la fourmi
 
@@ -41,7 +41,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		 * Indique si la fourmi doit mourir (parcequ'elle est trop vielle par
 		 * exemple)
 		 * 
-		 * @return: booléan
+		 * @return: boolï¿½an
 		 */
 		doitMourir : function() {
 			// ...if(this.age)...
@@ -63,18 +63,18 @@ var JSFOURMIS = JSFOURMIS || {};
 
 		/**
 		 * La fourmi est-elle dessinable ? Exemple: on peut vouloir une fourmi
-		 * "fantôme", ou encore une fourmi "pré-paramétrée" pour plus tard, ou
+		 * "fantï¿½me", ou encore une fourmi "prï¿½-paramï¿½trï¿½e" pour plus tard, ou
 		 * filtrer l'affichage par type de fourmis, ou que sais-je encore.. Par
-		 * défaut, une fourmi est dessinable.
+		 * dï¿½faut, une fourmi est dessinable.
 		 * 
-		 * @return booléen
+		 * @return boolï¿½en
 		 */
 		estDessinable : function() {
 			return this.vivante;
 		},
 		
 		/**
-		 *  Avec de <distance> dans la direction enregistrée
+		 *  Avec de <distance> dans la direction enregistrï¿½e
 		 */
 		avanceDansSaDirection: function (distance) {
 			distance = distance || 1;
@@ -86,11 +86,11 @@ var JSFOURMIS = JSFOURMIS || {};
 				case JSFOURMIS.Directions.EST:		x-=distance; break;
 				case JSFOURMIS.Directions.OUEST:	x+=distance; break;
 				case JSFOURMIS.Directions.AUCUNE:
-					throw("Aucune direction n'est encore fixée..");
+					throw("Aucune direction n'est encore fixï¿½e..");
 					break;
 			};
 			
-			// Lorsque l'on touche le bord, on repart en arrière
+			// Lorsque l'on touche le bord, on repart en arriï¿½re
 			if(!this.kanvasObj.estDansLaZone(x,y)) {
 				this.direction = -this.direction;
 				this.avanceDansSaDirection(distance);
@@ -104,6 +104,10 @@ var JSFOURMIS = JSFOURMIS || {};
 			var posDroite;
 			var posGauche;
 			var posDevant;
+			
+			versAvant = versAvant || 1;
+			distance = distance || 1; 
+			
 			switch(this.direction) {
 				case JSFOURMIS.Directions.NORD :
 					posDevant = {x : this.x-1, y : this.y-distance};
@@ -126,7 +130,7 @@ var JSFOURMIS = JSFOURMIS || {};
 					posGauche = {x : this.x+versAvant, y : this.y+distance-1};
 					break;
 				default :
-					throw("Aucune direction n'est encore fixée..");
+					throw("Aucune direction n'est encore fixï¿½e..");
 			}
 			return {
 				devant: posDevant,
@@ -147,8 +151,8 @@ var JSFOURMIS = JSFOURMIS || {};
 		},
 		
 		/**
-		 * Dessine la fourmi. Définit la forme de la fourmi, et apelle la
-		 * méthode de JSFOURMIS.Kanvas de dessin de forme (dessineForme()) avec
+		 * Dessine la fourmi. Dï¿½finit la forme de la fourmi, et apelle la
+		 * mï¿½thode de JSFOURMIS.Kanvas de dessin de forme (dessineForme()) avec
 		 * la bonne position, forme, et couleur.
 		 * 
 		 * @param x
@@ -159,16 +163,16 @@ var JSFOURMIS = JSFOURMIS || {};
 			// 2 coups sur 4, on change la position
 			// des p'tites pattes de fourmis
 			if(this.age % 4 > 1) {
-				data = [0,1,0,1,0,
-						0,0,1,0,0,
+				data = [0,1,1,1,0,
+						0,1,1,1,0,
 						0,0,1,0,1,
 						1,1,1,1,0,
 						0,0,1,0,0,
 						0,1,1,1,1,
 						1,0,1,0,0];
 			} else {
-				data = [0,1,0,1,0,
-						0,0,1,0,0,
+				data = [0,1,1,1,0,
+						0,1,1,1,0,
 						1,0,1,0,0,
 						0,1,1,1,1,
 						0,0,1,0,0,
@@ -189,6 +193,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			}
 			if(angle !== null) {
 				matrice = matrice.rotation(angle);
+				//matrice.rotation_optimise(angle);
 			}
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
 			// Test : dessin du champ de vision
