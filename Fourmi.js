@@ -1,5 +1,4 @@
-/*******************************************************************************
- * ---------------------------------------------------
+/** ---------------------------------------------------
  * 
  * @class Fourmi Fait tout ce que fait une fourmi :)
  * 
@@ -8,7 +7,7 @@
 var JSFOURMIS = JSFOURMIS || {};
 (function() {
 	/**
-	 * Constructeur On la place dans la fourmili�re, sans direction pr�cise.
+	 * Constructeur On la place dans la fourmilière, sans direction précise.
 	 * 
 	 * @param kanvasObj:
 	 *            instance de JSFOURMIS.Kanvas appellante (son "this" quoi)
@@ -23,7 +22,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		this.numero = options.numero || 0;
 	};
 	/**
-	 * M�thodes publiques
+	 * Méthodes publiques
 	 */
 	JSFOURMIS.Fourmi.prototype = {
 		kanvasObj: {},		// cf. Constructeur
@@ -31,9 +30,9 @@ var JSFOURMIS = JSFOURMIS || {};
 		x : 0,				// Position x de la fourmi
 		y : 0,				// Position y de la fourmi
 		aller: true,		// Indique si la fourmi cherche..
-		retour : false,		// ..ou si elle revient � la fourmili�re (consciemment s'entend)
+		retour : false,		// ..ou si elle revient à la fourmilière (consciemment s'entend)
 		direction : null,	// Direction de la fourmi. cf. l'Enum "JSFOURMIS.Direction"
-		nourritures : [],	// instances des "Nourriture" transport�es
+		nourritures : [],	// instances des "Nourriture" transportées
 		age : 0,			// Age de la fourmi (en Cycles)
 		couleur : { r:0, g:0, b:0, a:0xff },	// Couleur de la fourmi
 
@@ -41,7 +40,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		 * Indique si la fourmi doit mourir (parcequ'elle est trop vielle par
 		 * exemple)
 		 * 
-		 * @return: bool�an
+		 * @return: booléen
 		 */
 		doitMourir : function() {
 			// ...if(this.age)...
@@ -63,18 +62,18 @@ var JSFOURMIS = JSFOURMIS || {};
 
 		/**
 		 * La fourmi est-elle dessinable ? Exemple: on peut vouloir une fourmi
-		 * "fant�me", ou encore une fourmi "pr�-param�tr�e" pour plus tard, ou
+		 * "fantôme", ou encore une fourmi "pré-parametrée" pour plus tard, ou
 		 * filtrer l'affichage par type de fourmis, ou que sais-je encore.. Par
-		 * d�faut, une fourmi est dessinable.
+		 * défaut, une fourmi est dessinable.
 		 * 
-		 * @return bool�en
+		 * @return booléen
 		 */
 		estDessinable : function() {
 			return this.vivante;
 		},
 		
 		/**
-		 *  Avec de <distance> dans la direction enregistr�e
+		 *  Avec de <distance> dans la direction enregistrée
 		 */
 		avanceDansSaDirection: function (distance) {
 			distance = distance || 1;
@@ -86,11 +85,11 @@ var JSFOURMIS = JSFOURMIS || {};
 				case JSFOURMIS.Directions.EST:		x-=distance; break;
 				case JSFOURMIS.Directions.OUEST:	x+=distance; break;
 				case JSFOURMIS.Directions.AUCUNE:
-					throw("Aucune direction n'est encore fix�e..");
+					throw("Aucune direction n'est encore fixée..");
 					break;
 			};
 			
-			// Lorsque l'on touche le bord, on repart en arri�re
+			// Lorsque l'on touche le bord, on repart en arrière
 			if(!this.kanvasObj.estDansLaZone(x,y)) {
 				this.direction = -this.direction;
 				this.avanceDansSaDirection(distance);
@@ -130,7 +129,7 @@ var JSFOURMIS = JSFOURMIS || {};
 					posGauche = {x : this.x+versAvant, y : this.y+distance-1};
 					break;
 				default :
-					throw("Aucune direction n'est encore fix�e..");
+					throw("Aucune direction n'est encore fixée..");
 			}
 			return {
 				devant: posDevant,
@@ -151,8 +150,8 @@ var JSFOURMIS = JSFOURMIS || {};
 		},
 		
 		/**
-		 * Dessine la fourmi. D�finit la forme de la fourmi, et apelle la
-		 * m�thode de JSFOURMIS.Kanvas de dessin de forme (dessineForme()) avec
+		 * Dessine la fourmi. Définit la forme de la fourmi, et apelle la
+		 * méthode de JSFOURMIS.Kanvas de dessin de forme (dessineForme()) avec
 		 * la bonne position, forme, et couleur.
 		 * 
 		 * @param x

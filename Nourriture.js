@@ -1,7 +1,7 @@
 /*******************************************************************************
  * ---------------------------------------------------
  * 
- * @class Nourriture (pour donner à manger aux fourmis)
+ * @class Nourriture (pour donner Ã  manger aux fourmis)
  *        ----------------------------------------------------
  */
 var JSFOURMIS = JSFOURMIS || {};
@@ -21,18 +21,18 @@ var JSFOURMIS = JSFOURMIS || {};
 	};
 	
 	/**
-	 * Méthodes publiques
+	 * MÃ©thodes publiques
 	 */
 	JSFOURMIS.Nourriture.prototype = {
 		kanvasObj : {},
 		parentObj : {},
-		couleur : function() {/* @TODO: dépend de la quantité */
+		couleur : function() {/* @TODO: dÃ©pend de la quantitÃ© */
 		},
 		x : 0,
 		y : 0,
 		quantitee : 0,
 		estDessinable : function() {
-			return true; /* @TODO: sauf si transporté par une fourmi, etc.. */
+			return true; /* @TODO: sauf si transportÃ© par une fourmi, etc.. */
 		},
 		dessine : function() {/* @TODO */
 			var data = [0,1,1,1,0,

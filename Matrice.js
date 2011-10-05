@@ -1,12 +1,12 @@
 /**
- * Dessine une matrice. Typiquement la matrice d'une entit�.
+ * Dessine une matrice. Typiquement la matrice d'une entité.
  * ----------------------------------------------------------
- * @class Matrice Classe statique "boite � outil" pour manipuler les formes,
+ * @class Matrice Classe statique "boite à outil" pour manipuler les formes,
  * 
- * Une matrice est un objet {} dot� de 3 propri�t�s: 
+ * Une matrice est un objet {} doté de 3 propriétés: 
  * w: la largeur de la matrice
  * h: la hauteur de la matrice 
- * data: un tableau *� une dimension* repr�sentant ses coefficients.
+ * data: un tableau *à une dimension* représentant ses coefficients.
  * data doit contenir soit 1: plein, soit 0: vide. 
  * Exemple d'une forme de croix: 
  * <code>
@@ -27,7 +27,7 @@ var JSFOURMIS = JSFOURMIS || {};
 	};
 
 	/**
-	 * M�thodes publiques
+	 * Méthodes publiques
 	 */
 	JSFOURMIS.Matrice.prototype = {
 		h : 0,

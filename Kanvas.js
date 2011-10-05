@@ -14,7 +14,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			this.entites.nourritures = this.nourritures;
 		};
 		/**
-		 * M�thodes publiques
+		 * Méthodes publiques
 		 */
 		JSFOURMIS.Kanvas.prototype = {
 			canvas : null, // <@ Canvas
@@ -32,8 +32,8 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * @param x
 			 * @param y
 			 * @param couleur:
-			 *            objet {} ayant 4 propri�t�s r,g,b et a (transparence)
-			 *			  l'alpha ("a") est facultatif. d�faut: opaque.
+			 *            objet {} ayant 4 propriétés r,g,b et a (transparence)
+			 *			  l'alpha ("a") est facultatif. défaut: opaque.
 			 */
 			setPixel : function(x, y, couleur) {
 				var index = (x + y * this.imageData.width) * 4;
@@ -45,9 +45,9 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			/**
-			 * V�rifie si la matrice est valide pour une entit�. Une matrice valide
-			 * doit avoir une largeur et une hauteur impaires, comme �a, on peut la
-			 * centrer sur la position donn�ee. Valide aussi la matrice.
+			 * Vérifie si la matrice est valide pour une entité. Une matrice valide
+			 * doit avoir une largeur et une hauteur impaires, comme ça, on peut la
+			 * centrer sur la position donnéee. Valide aussi la matrice.
 			 */
 			estUneFormeValide : function(matrice) {
 				return (
@@ -56,11 +56,11 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			/**
-			 * Dessine une matrice. Typiquement la matrice d'une entit�. Une matrice
-			 * est un objet {} dot� de 3 propri�t�s: 
+			 * Dessine une matrice. Typiquement la matrice d'une entité. Une matrice
+			 * est un objet {} doté de 3 propriétés: 
 			 * w: la largeur de la matrice
 			 * h: la hauteur de la forme 
-			 * data: un tableau *� une dimension* repr�sentant la forme. 
+			 * data: un tableau *à une dimension* représentant la forme. 
 			 * data doit contenir soit 1: plein, soit 0:
 			 * vide. Exemple d'une forme de croix: <code>
 			 * var croix = { 
@@ -108,13 +108,13 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			/**
-			 * Hauteur du canvas DOIT �tre Impaire (c'est mieux, on a un centre)
-			 * Renseign�e en principe dans le constructeur ou le start()
+			 * Hauteur du canvas DOIT être Impaire (c'est mieux, on a un centre)
+			 * Renseignée en principe dans le constructeur ou le start()
 			 */
 			height : 0,
 			/**
-			 * Largeur du canvas DOIT �tre Impaire (c'est mieux, on � un centre)
-			 * Renseign�e en principe dans le constructeur ou le start()
+			 * Largeur du canvas DOIT être Impaire (c'est mieux, on à un centre)
+			 * Renseignée en principe dans le constructeur ou le start()
 			 */
 			width : 0,
 
@@ -138,14 +138,14 @@ var JSFOURMIS = JSFOURMIS || {};
 			creerUnPointDeNourriture : function(x, y) {
 				var nbDeNourriture = this.random(this.nourriture.nombreParPoint.min, this.nourriture.nombreParPoint.max);
 
-				//Cr�ation du point centrale aux coordonn�es donn�es
+				//Création du point centrale aux coordonnées données
 				var pointCentral = new JSFOURMIS.Nourriture(this); 
 				pointCentral.x = x; 
 				pointCentral.y = y;
 				pointCentral.quantitee = this.random(this.nourriture.quantitee.min, this.nourriture.quantitee.max);
 				this.nourritures.push(pointCentral);
 				
-				//Cr�ation des points autour
+				//Création des points autour
 				var maxEssais = 100;
 				for(var i=nbDeNourriture -1; i >=0 ; i--) {
 					var px = x;
@@ -173,11 +173,11 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			/**
-			 * Indique la pr�sence ou non d'une entit� � la position donn�e
+			 * Indique la présence ou non d'une entité à la position donnée
 			 * 
 			 * @param x
 			 * @param y
-			 * @return bool: vrai s'il n'y � rien, faux sinon.
+			 * @return bool: vrai s'il n'y à rien, faux sinon.
 			 */
 			laPlaceEstElleLibre : function(x, y) {
 				for ( var uneEntite in this.entites) {
@@ -192,14 +192,14 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			/**
-			 * Random born� (t�tu celui-l�..)
+			 * Random borné (têtu celui-là..)
 			 */
 			random : function(lower, higher) {
 				return ((Math.random() * (higher - lower)) + lower)|0;
 			},
 			
 			/**
-			 * D�placement des fourmis
+			 * Déplacement des fourmis
 			 */
 			deplacement: {
 				chancesDeFaireDemiTour: 3, 
@@ -209,11 +209,11 @@ var JSFOURMIS = JSFOURMIS || {};
 
 			/**
 			 * Fait avancer une fourmi (pour un cycle).
-			 * D�roulement:
+			 * Déroulement:
 			 * 1- Si la fourmis n'a pas de direction, on lui en donne une au pif 
-			 * 2- La fourmi � un % (faible) de chance de faire demi-tour
-			 * 3- Si la fourmi ne fait pas demi-tour, % de chance d'aller sur le c�t�
-			 * 4- On demande � la fourmis d'avancer.
+			 * 2- La fourmi à un % (faible) de chance de faire demi-tour
+			 * 3- Si la fourmi ne fait pas demi-tour, % de chance d'aller sur le côté
+			 * 4- On demande à la fourmis d'avancer.
 			 */
 			avance : function(fourmi) {
 				if(fourmi.direction == JSFOURMIS.Directions.AUCUNE) {
@@ -261,7 +261,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			
 
 			/**
-			 * Emplacement de la fourmili�re. En principe choisi dans le
+			 * Emplacement de la fourmilière. En principe choisi dans le
 			 * constructeur ou le start()
 			 */
 			foyer : {
@@ -270,9 +270,9 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			/**
-			 * Indique si la position donn�e est incluse dans la zone de dessin
-			 * ou d�passe
-			 * @param padding: marge de "s�curit�"
+			 * Indique si la position donnée est incluse dans la zone de dessin
+			 * ou dépasse
+			 * @param padding: marge de "sécurité"
 			 */
 			estDansLaZone : function(x, y, padding) {
 				var yEst = true;
@@ -305,8 +305,8 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			/**
-			 * Dessine chaque entit�e dessinable. Cette m�thode est donc appell�
-			 * logiquement quand leurs positions sont d�j� mises � jour
+			 * Dessine chaque entitée dessinable. Cette méthode est donc appellé
+			 * logiquement quand leurs positions sont déjà mises à jour
 			 */
 			dessineTout : function() {
 				for ( var uneEntite in this.entites) {
@@ -327,7 +327,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			/**
-			 * Liste les diff�rentes entit�s et le tableau les stockant pour
+			 * Liste les différentes entités et le tableau les stockant pour
 			 * chaqune d'entre elles
 			 */
 			
@@ -370,12 +370,12 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			/**
-			 * D�lai entre 2 cycles, en ms
+			 * Délai entre 2 cycles, en ms
 			 */
 			delaiCycle : 20,
 
 			/**
-			 * Nombre de cycles � �xecuter
+			 * Nombre de cycles à éxecuter
 			 */
 			nbCycles : 0,
 
@@ -394,7 +394,7 @@ var JSFOURMIS = JSFOURMIS || {};
 				} 
 			},
 			/**
-			 * Drapeau indiquant l'�tat actuel de la boucle principale
+			 * Drapeau indiquant l'état actuel de la boucle principale
 			 */
 			running : false,
 			
@@ -441,7 +441,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 			
 			/**
-			 * Param�tres "systeme", "navigateur"
+			 * Paramètres "systeme", "navigateur"
 			 */
 			navigateur: {
 				totalCancasOffset: {left:0, top:0 },
@@ -449,20 +449,20 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 			
 			/**
-			 * Initialisation D�clench� au clic du bouton start
+			 * Initialisation Déclenché au clic du bouton start
 			 */
 			start : function() {
-				// R�cup du canvas et de sa taille
+				// Récup du canvas et de sa taille
 				this.canvas = document.getElementById("canvas");
 				this.ctx = this.canvas.getContext("2d");
 				this.height = parseInt(this.canvas.getAttribute('height'), 10);
 				this.width = parseInt(this.canvas.getAttribute('width'), 10);
 
-				// on place la fourmili�re au centre
+				// on place la fourmilière au centre
 				this.foyer.y = this.height / 2;
 				this.foyer.x = this.width / 2;
 
-				// cr�� une "imageData", zone de travail par pixel
+				// cré une "imageData", zone de travail par pixel
 				this.imageData = this.ctx.createImageData(this.width, this.height); // /!\
 
 				var nbfourmis = parseInt($('nbFourmis').value);
@@ -484,13 +484,13 @@ var JSFOURMIS = JSFOURMIS || {};
 				this.canvas.addEventListener('mouseout', bind(this, this.mouse.onOut), false);
 				this.canvas.addEventListener('click', bind(this, this.mouse.onClick), false);
 
-				// A chaque nouveau d�part, on r�-init le compteur
+				// A chaque nouveau départ, on ré-init le compteur
 				JSFOURMIS.Kanvas.compteurCycles = 0;
 
-				// dispersion du mang�
+				// dispersion du mangé
 				this.disperseDeLaNourriture();
 
-				// cr�ation des fourmis
+				// création des fourmis
 				for ( var i = 0; i < nbfourmis; i++) {
 					this.fourmis.push(new JSFOURMIS.Fourmi(this, {numero: this.fourmis.length}));
 				}
@@ -510,7 +510,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			nourritures: [],
 
 			/**
-			 * Stoppe l'�coulement des cycles
+			 * Stoppe l'écoulement des cycles
 			 */
 			stop : function() {
 				JSFOURMIS.Kanvas.compteurCycles = this.nbCycles + 1;

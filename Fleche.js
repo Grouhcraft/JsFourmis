@@ -1,5 +1,4 @@
-/*******************************************************************************
- * ---------------------------------------------------
+/** ---------------------------------------------------
  * 
  * @class Fourmi Fait tout ce que fait une fourmi :)
  * 
@@ -9,7 +8,7 @@ var JSFOURMIS = JSFOURMIS || {};
 (function() {
 
 	/**
-	 * Constructeur On la place dans la direction passée en paramètre. 
+	 * Constructeur On la place dans la direction passÃ©e en paramÃ¨tre. 
 	 * @param kanvasObj:
 	 *            instance de JSFOURMIS.Kanvas appellante (son "this" quoi)
 	 */
@@ -20,7 +19,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		this.y = this.kanvasObj.foyer.y;
 	};
 	/**
-	 * Méthodes publiques
+	 * MÃ©thodes publiques
 	 */
 	JSFOURMIS.Fleche.prototype = {
 		kanvasObj : {}, // cf. Constructeur
@@ -30,8 +29,8 @@ var JSFOURMIS = JSFOURMIS || {};
 		couleur : { r:0, g:0, b:0, a:0xff }, // Couleur de la fleche
 
 		/**
-		 * Dessine la flèche. Définit la forme de la flèche, et apelle la
-		 * méthode de JSFOURMIS.Kanvas de dessin de forme (dessineForme()) avec
+		 * Dessine la flÃªche. DÃ©finit la forme de la flÃªche, et apelle la
+		 * mÃ©thode de JSFOURMIS.Kanvas de dessin de forme (dessineForme()) avec
 		 * la bonne position, forme, et couleur.
 		 * 
 		 * @param x
