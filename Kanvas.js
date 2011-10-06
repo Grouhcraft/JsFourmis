@@ -216,24 +216,44 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * 4- On demande à la fourmis d'avancer.
 			 */
 			avance : function(fourmi) {
-				if(fourmi.direction == JSFOURMIS.Directions.AUCUNE) {
-					fourmi.direction = this.choisiUneDirectionAuHasard();
-				} else {
-					//TODO: KNOO: Ben..
-					var cvision = fourmi.champVision();
-					if(this.ilYADeLaNourriture(cvision.devant.x, cvision.devant.y)) {
-						//alert('fourmi #' + fourmi.numero + ' à trouvé de la bouffe devant elle!');
+				if(fourmi.aller) { // Recherche de nourriture
+					
+					// Déjà dans une direction ?
+					if(fourmi.direction == JSFOURMIS.Directions.AUCUNE) {
+						fourmi.direction = this.choisiUneDirectionAuHasard();
+					} 
+					else { // Oui..
+						
+						// Nourriture à proximité ? alors on se place dans sa direction
+						var aTrouveUneDirectionInteressante = false;
+						var vision = fourmi.champVision();
+						for(var sens in vision) {
+							if(this.ilYADeLaNourriture(vision[sens].x, vision[sens].y)) {
+								fourmi.direction = vision[sens].direction;
+								aTrouveUneDirectionInteressante = true;
+								break;
+							} 	
+						}
+						// Pas trouvé de bouffe..
+						if(!aTrouveUneDirectionInteressante) {
+							// Déplacement aléatoire
+							if(this.random(1,100) < this.deplacement.chancesDeFaireDemiTour) {
+								 fourmi.direction = -fourmi.direction;
+							} else if(this.random(1,100) < this.deplacement.chanceDeChangerDeDirection) {
+								var nouvelleDirection = fourmi.direction; 
+								while(nouvelleDirection == fourmi.direction || nouvelleDirection == -fourmi.direction) {
+									nouvelleDirection = this.choisiUneDirectionAuHasard();
+								}
+								fourmi.direction = nouvelleDirection; 
+							}
+						}
 					}
 				}
-				if(this.random(1,100) < this.deplacement.chancesDeFaireDemiTour) {
-					 fourmi.direction = -fourmi.direction;
-				} else if(this.random(1,100) < this.deplacement.chanceDeChangerDeDirection) {
-					var nouvelleDirection = fourmi.direction; 
-					while(nouvelleDirection == fourmi.direction || nouvelleDirection == -fourmi.direction) {
-						nouvelleDirection = this.choisiUneDirectionAuHasard();
-					}
-					fourmi.direction = nouvelleDirection; 
+				else { // Retour à la fourmilière (fourmi.aller == false)
+					fourmi.direction = fourmi.directionVersFoyer();
 				}
+				
+				// effectue son pas.
 				fourmi.avanceDansSaDirection(this.deplacement.distanceAParcourrirParFourmis);
 			},
 			
@@ -259,6 +279,11 @@ var JSFOURMIS = JSFOURMIS || {};
 				}
 			},
 			
+			dessineLaFourmiliere: function () {
+				var data = [1,1,1,1,1,1,1,1,1];
+				var matrice =  new JSFOURMIS.Matrice(3,3,data).agrandir(3);
+				this.dessineForme(matrice, this.foyer.x, this.foyer.y, {r:160, g:160, b:160});
+			},
 
 			/**
 			 * Emplacement de la fourmilière. En principe choisi dans le
@@ -309,6 +334,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * logiquement quand leurs positions sont déjà mises à jour
 			 */
 			dessineTout : function() {
+				this.dessineLaFourmiliere();
 				for ( var uneEntite in this.entites) {
 					for ( var i = this.entites[uneEntite].length -1; i >= 0; i--) {
 						if (this.entites[uneEntite][i].estDessinable()) {
@@ -347,7 +373,14 @@ var JSFOURMIS = JSFOURMIS || {};
 				this.effaceTout();
 
 				for ( var i = this.fourmis.length -1; i >=0; i--) {
-					var nouvellePos = this.avance(this.fourmis[i]);
+					if(this.ilYADeLaNourriture(this.fourmis[i].x, this.fourmis[i].y)) {
+						this.fourmis[i].ramasseLaNourriture();
+					} 
+					// arrivé à la fourmilière  
+					else if (this.fourmis[i].x === this.foyer.x && this.fourmis[i].y === this.foyer.y) {
+						this.fourmis[i].deposeLaNourriture();
+					}
+					this.avance(this.fourmis[i]);
 				}
 
 				for (i = this.entites.fourmis.length -1; i >=0; i--) {

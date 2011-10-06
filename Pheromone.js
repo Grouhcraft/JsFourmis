@@ -6,7 +6,10 @@
  */
 var JSFOURMIS = JSFOURMIS || {};
 (function() {
-	JSFOURMIS.Pheromone = function (){ 
+	JSFOURMIS.Pheromone = function (kanvasObj, options){
+		this.kanvasObj = kanvasObj;
+		options = options || {};
+		this.quantite = options.quantite || 1;
 	};
 	
 	JSFOURMIS.Pheromone.prototype = {
@@ -17,11 +20,17 @@ var JSFOURMIS = JSFOURMIS || {};
 		numero: 0,
 		quantite: 0,
 		
+		estDessinable: function() {
+			return true;
+		},
+		
 		dessine: function () {
-			var data = [1,1,
-						1,1];
-			var matrice = new JSFOURMIS.Matrice(2,2, data);
+			var data = [0,1,0,
+						1,0,1,
+						0,1,0];
+			var matrice = new JSFOURMIS.Matrice(3,3, data);
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
 		}
 	};
+	
 })();

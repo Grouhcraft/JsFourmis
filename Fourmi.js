@@ -34,7 +34,13 @@ var JSFOURMIS = JSFOURMIS || {};
 		direction : null,	// Direction de la fourmi. cf. l'Enum "JSFOURMIS.Direction"
 		nourritures : [],	// instances des "Nourriture" transportées
 		age : 0,			// Age de la fourmi (en Cycles)
-		couleur : { r:0, g:0, b:0, a:0xff },	// Couleur de la fourmi
+		couleur : function(){
+			if(this.aller) { 
+				return { r:0, g:0, b:254, a:0xff };
+			} else {
+				return { r:254, g:0, b:0, a:0xff };
+			} 
+		},
 
 		/**
 		 * Indique si la fourmi doit mourir (parcequ'elle est trop vielle par
@@ -99,6 +105,53 @@ var JSFOURMIS = JSFOURMIS || {};
 			}
 		},
 		
+		deposeLaNourriture: function () {
+			this.retour = false;
+			this.aller = true;
+			///TODO: deposer la bouffe
+		},
+		
+		ramasseLaNourriture: function() {
+			if(!this.kanvasObj.ilYADeLaNourriture(this.x, this.y)) {
+				throw('Fourmi #' + this.numero + ' dit: Je ne peux pas ramasser de nourriture ici, y\'en à pas..');
+			}
+			this.aller = false;
+			this.retour = true;
+			///TODO ramene la bouffe
+		},
+		
+		directionVersFoyer: function() {
+			var fx = this.kanvasObj.foyer.x;
+			var fy = this.kanvasObj.foyer.y;
+			var ecart_x = this.x - fx;
+			var ecart_y = this.y - fy;
+			var direction;
+			
+			if(Math.abs(ecart_x) > Math.abs(ecart_y)) {
+				if(this.x < fx ) {
+					direction = JSFOURMIS.Directions.OUEST;
+				} else {
+					direction = JSFOURMIS.Directions.EST;
+				}
+			} else {
+				if(this.y < fy ) {
+					direction = JSFOURMIS.Directions.SUD;
+				} else {
+					direction = JSFOURMIS.Directions.NORD;
+				}
+			}
+			return direction;
+		},
+		
+		/**
+		 * Retourne les coordonées et directions des points dans le champ de vision
+		 * note: la fourmi DOIT avoir une direction (!= aucune)
+		 * @return <code>{
+		 *		devant: {x, y, direction}
+		 *		droite: {x, y, direction}
+		 *		gauche: {x, y, direction}
+		 * }</code>
+		 */
 		champVision : function (distance, versAvant) {
 			var posDroite;
 			var posGauche;
@@ -109,24 +162,24 @@ var JSFOURMIS = JSFOURMIS || {};
 			
 			switch(this.direction) {
 				case JSFOURMIS.Directions.NORD :
-					posDevant = {x : this.x-1, y : this.y-distance};
-					posDroite = {x: this.x-distance-1, y : this.y-versAvant};
-					posGauche = {x: this.x+distance-1, y : this.y-versAvant};
+					posDevant = {x : this.x-1, y : this.y-distance, direction: JSFOURMIS.Directions.NORD };
+					posDroite = {x: this.x-distance-1, y : this.y-versAvant, direction: JSFOURMIS.Directions.EST };
+					posGauche = {x: this.x+distance-1, y : this.y-versAvant, direction: JSFOURMIS.Directions.OUEST };
 					break;
 				case JSFOURMIS.Directions.SUD :
-					posDevant = {x : this.x-1, y : this.y+distance};
-					posDroite = {x: this.x+distance-1, y : this.y+versAvant};
-					posGauche = {x: this.x-distance-1, y : this.y+versAvant};
+					posDevant = {x : this.x-1, y : this.y+distance, direction: JSFOURMIS.Directions.SUD };
+					posDroite = {x: this.x+distance-1, y : this.y+versAvant, direction: JSFOURMIS.Directions.OUEST };
+					posGauche = {x: this.x-distance-1, y : this.y+versAvant, direction: JSFOURMIS.Directions.EST };
 					break;
 				case JSFOURMIS.Directions.EST :
-					posDevant = {x: this.x-distance, y : this.y-1};
-					posDroite = {x : this.x-versAvant, y : this.y+distance-1};
-					posGauche = {x : this.x-versAvant, y : this.y-distance-1};
+					posDevant = {x: this.x-distance, y : this.y-1, direction: JSFOURMIS.Directions.EST };
+					posDroite = {x : this.x-versAvant, y : this.y+distance-1, direction: JSFOURMIS.Directions.SUD };
+					posGauche = {x : this.x-versAvant, y : this.y-distance-1, direction: JSFOURMIS.Directions.NORD };
 					break;
 				case JSFOURMIS.Directions.OUEST:
-					posDevant = {x: this.x+distance, y : this.y-1};
-					posDroite = {x : this.x+versAvant, y : this.y-distance-1};
-					posGauche = {x : this.x+versAvant, y : this.y+distance-1};
+					posDevant = {x: this.x+distance, y : this.y-1, direction: JSFOURMIS.Directions.OUEST };
+					posDroite = {x : this.x+versAvant, y : this.y-distance-1, direction: JSFOURMIS.Directions.NORD };
+					posGauche = {x : this.x+versAvant, y : this.y+distance-1, direction: JSFOURMIS.Directions.SUD };
 					break;
 				default :
 					throw("Aucune direction n'est encore fixée..");
@@ -135,17 +188,21 @@ var JSFOURMIS = JSFOURMIS || {};
 				devant: posDevant,
 				droite: posDroite,
 				gauche: posGauche
-			}
+			};
 		},
 		
+		/**
+		 * Retourne les coordonnées de la prochaine position
+		 * @return {x,y} 
+		 */
 		prochainePosition : function (distance)
 		{
 			switch (this.direction) {
-				case JSFOURMIS.Directions.NORD:		return {x : this.x, y : this.y-distance}; break;
-				case JSFOURMIS.Directions.SUD:		return {x : this.x, y : this.y+distance}; break; 
-				case JSFOURMIS.Directions.EST:		return {x: this.x-distance, y : this.y}; break;
-				case JSFOURMIS.Directions.OUEST:	return {x: this.x+distance, y : this.y}; break;
-				default:							return {x: this.x, y : this.y}; break;
+				case JSFOURMIS.Directions.NORD:		return {x : this.x, y : this.y-distance};
+				case JSFOURMIS.Directions.SUD:		return {x : this.x, y : this.y+distance};  
+				case JSFOURMIS.Directions.EST:		return {x: this.x-distance, y : this.y};
+				case JSFOURMIS.Directions.OUEST:	return {x: this.x+distance, y : this.y};
+				default:							return {x: this.x, y : this.y};
 			}
 		},
 		
@@ -194,7 +251,7 @@ var JSFOURMIS = JSFOURMIS || {};
 				matrice = matrice.rotation(angle);
 				//matrice.rotation_optimise(angle);
 			}
-			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
+			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur());
 			// Test : dessin du champ de vision
 			//this.dessineChampVision();
 		},
