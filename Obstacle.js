@@ -12,20 +12,16 @@ var JSFOURMIS = JSFOURMIS || {};
 		this.type = options.type || 1;
 		this.x = options.x || 0;
 		this.y = options.y || 0;
-		this.rayonX = options.rayonX || 0;
-		this.rayonY = options.rayonY || 0;
-		this.hauteur = this.rayonX*2 + 1;
-		this.largeur = this.rayonY*2 + 1;
-		this.size = this.hauteur*this.largeur;
+		this.hauteur = options.hauteur|| 1;
+		this.largeur = options.largeur || 1;
 		this.numero = this.kanvasObj.entites.obstacles.length;
+		this.size = this.hauteur*this.largeur;
 	};
 	
 	JSFOURMIS.Obstacle.prototype = {
 		kanvasObj: {},
 		x: 0,
 		y: 0,
-		rayonX: 0,
-		rayony: 0,
 		hauteur: 1,
 		largeur:1,
 		couleur: { r:50, g:200, b:50, a:0xff },
@@ -40,12 +36,24 @@ var JSFOURMIS = JSFOURMIS || {};
 			for (var i=0;i<this.size;i++) {
 				data.push(1);
 			}
-			var matrice = new JSFOURMIS.Matrice(this.hauteur,this.largeur, data);
+			var matrice = new JSFOURMIS.Matrice(this.largeur, this.hauteur, data);
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
 		},
 		estDessinable : function() {
 			return true;
 		},
+		bloqueEmplacement: function(x, y, hauteur, largeur) {	
+			var rh1 = (hauteur-1)/2;
+			var rl1 = (largeur-1)/2;
+			var rh2 = (this.hauteur-1)/2;
+			var rl2 = (this.largeur-1)/2;
+			var distx = Math.abs(this.x-x);
+			var disty = Math.abs(this.y-y);
+			if ((distx<=hauteur || distx<=this.hauteur)&&(disty<=largeur || disty<=this.largeur)){
+				return true;
+			}
+			return false;
+		}
 	};
 	
 })();
