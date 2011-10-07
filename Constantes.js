@@ -24,5 +24,10 @@ var JSFOURMIS = JSFOURMIS || {};
 	JSFOURMIS.TypesPheromones = {
 			ALLER : 1,
 			NOURRITURE : 2
-		};
+	};
+	
+	JSFOURMIS.FormesObstacles = {
+			CARRE: 1
+	};
+	
 })();

@@ -13,6 +13,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			this.entites.fourmis = this.fourmis;
 			this.entites.nourritures = this.nourritures;
 			this.entites.pheromones = this.pheromones;
+			this.entites.obstacles = this.obstacles;
 		};
 		/**
 		 * Méthodes publiques
@@ -403,7 +404,6 @@ var JSFOURMIS = JSFOURMIS || {};
 					}
 				}
 			}
-				
 				this.dessineTout();
 				
 				if (this.running) {
@@ -542,6 +542,8 @@ var JSFOURMIS = JSFOURMIS || {};
 				for ( var i = 0; i < nbfourmis; i++) {
 					this.fourmis.push(new JSFOURMIS.Fourmi(this, {numero: this.fourmis.length}));
 				}
+				//var options = {x:50, y:50, rayonX:50, rayonY:30};
+				//this.entites.obstacles[0]=new JSFOURMIS.Obstacle(this,options);
 				this.running = true;
 				this.navigateur.startTime = (new Date).getTime();
 				this.main();
@@ -558,6 +560,8 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * Tableau des JSFOURMIS.Nourritures
 			 */
 			nourritures: [],
+			
+			obstacles: [],
 
 			/**
 			 * Stoppe l'écoulement des cycles
