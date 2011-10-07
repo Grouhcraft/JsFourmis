@@ -55,13 +55,13 @@ var JSFOURMIS = JSFOURMIS || {};
 
 		/**
 		 * Fait mourir la fourmi.
-		 * 
-		 * @TODO
 		 */
 		meurt : function() {
-			// TODO: 
-			//delete this.kanvasObj.entites.fourmis[this.numero];
 			this.vivante = false;
+			this.kanvasObj.entites.fourmis.splice(this.numero,1);
+			for (var i=this.numero; i<this.kanvasObj.entites.fourmis.length; i++) {
+				this.kanvasObj.entites.fourmis[i].numero--;
+			}
 		},
 		
 		vivante: true,
