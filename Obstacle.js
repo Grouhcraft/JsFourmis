@@ -43,13 +43,11 @@ var JSFOURMIS = JSFOURMIS || {};
 			return true;
 		},
 		bloqueEmplacement: function(x, y, hauteur, largeur) {	
-			var rh1 = (hauteur-1)/2;
-			var rl1 = (largeur-1)/2;
-			var rh2 = (this.hauteur-1)/2;
-			var rl2 = (this.largeur-1)/2;
+			var minDistCentresX = (hauteur + this.hauteur) / 2;
+			var minDistCentresY = (largeur + this.largeur) / 2;
 			var distx = Math.abs(this.x-x);
 			var disty = Math.abs(this.y-y);
-			if ((distx<=hauteur || distx<=this.hauteur)&&(disty<=largeur || disty<=this.largeur)){
+			if ((distx<=minDistCentresX) && (disty<=minDistCentresY)) {
 				return true;
 			}
 			return false;
