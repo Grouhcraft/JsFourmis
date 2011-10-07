@@ -183,10 +183,10 @@ var JSFOURMIS = JSFOURMIS || {};
 			 */
 			laPlaceEstElleLibre : function(x, y) {
 				for ( var uneEntite in this.entites) {
-					for ( var i = this.entites[uneEntite].length -1; i >= 0; i--) {
-						if (this.entites[uneEntite][i].x == x &&
-							this.entites[uneEntite][i].y == y) {
-							return false;
+						for ( var i = this.entites[uneEntite].length -1; i >= 0; i--) {
+							if (this.entites[uneEntite][i].x == x &&
+								this.entites[uneEntite][i].y == y) {
+								return false;
 						}
 					}
 				}
@@ -198,91 +198,6 @@ var JSFOURMIS = JSFOURMIS || {};
 			 */
 			random : function(lower, higher) {
 				return ((Math.random() * (higher - lower)) + lower)|0;
-			},
-			
-			/**
-			 * Déplacement des fourmis
-			 */
-			deplacement: {
-				chancesDeFaireDemiTour: 3, 
-				chanceDeChangerDeDirection: 8,
-				distanceAParcourrirParFourmis: 1
-			},		
-
-			/**
-			 * Fait avancer une fourmi (pour un cycle).
-			 * Déroulement:
-			 * 1- Si la fourmis n'a pas de direction, on lui en donne une au pif 
-			 * 2- La fourmi à un % (faible) de chance de faire demi-tour
-			 * 3- Si la fourmi ne fait pas demi-tour, % de chance d'aller sur le côté
-			 * 4- On demande à la fourmis d'avancer.
-			 */
-			avance : function(fourmi) {
-				if(fourmi.aller) { // Recherche de nourriture
-					
-					// Déjà dans une direction ?
-					if(fourmi.direction == JSFOURMIS.Directions.AUCUNE) {
-						fourmi.direction = this.choisiUneDirectionAuHasard();
-					} 
-					else { // Oui..
-						
-						// Nourriture à proximité ? alors on se place dans sa direction
-						var aTrouveUneDirectionInteressante = false;
-						var vision = fourmi.champVision();
-						for(var sens in vision) {
-							if(this.ilYADeLaNourriture(vision[sens].x, vision[sens].y)) {
-								fourmi.direction = vision[sens].direction;
-								aTrouveUneDirectionInteressante = true;
-								break;
-							} 	
-						}
-						// Pas trouvé de bouffe..
-						if(!aTrouveUneDirectionInteressante) {
-							// Déplacement aléatoire
-							if(this.random(1,100) < this.deplacement.chancesDeFaireDemiTour) {
-								 fourmi.direction = -fourmi.direction;
-							} else if(this.random(1,100) < this.deplacement.chanceDeChangerDeDirection) {
-								var nouvelleDirection = fourmi.direction; 
-								while(nouvelleDirection == fourmi.direction || nouvelleDirection == -fourmi.direction) {
-									nouvelleDirection = this.choisiUneDirectionAuHasard();
-								}
-								fourmi.direction = nouvelleDirection; 
-							}
-						}
-					}
-				}
- 				else { // Retour à la fourmilière (fourmi.aller == false)
-					fourmi.direction = fourmi.directionVersFoyer();
-					if (fourmi.age % JSFOURMIS.Constantes.PAS_PHEROMONES_NOURRITURE == 0) {
-						fourmi.posePheromone(JSFOURMIS.TypesPheromones.NOURRITURE,
-								JSFOURMIS.Constantes.DUREE_PHEROMONES_NOURRITURE);
-				}
-			}
-				
-				// effectue son pas.
-				fourmi.avanceDansSaDirection(this.deplacement.distanceAParcourrirParFourmis);
-			},
-			
-			/**
-			 * Comme son titre l'indique, choisi
-			 * une direction au hazard parmis JSFOURMIS.Directions
-			 */
-			choisiUneDirectionAuHasard: function() {
-				var xOuY = this.random(1, 100);
-				var moinsOuPlus = this.random(1, 100);
-				if (xOuY <= 50) {
-					if (moinsOuPlus <= 50) {
-						return JSFOURMIS.Directions.EST;
-					} else {
-						return JSFOURMIS.Directions.OUEST;
-					}
-				} else {
-					if (moinsOuPlus <= 50) {
-						return JSFOURMIS.Directions.SUD;
-					} else {
-						return JSFOURMIS.Directions.NORD;
-					}
-				}
 			},
 			
 			dessineLaFourmiliere: function () {
@@ -386,7 +301,7 @@ var JSFOURMIS = JSFOURMIS || {};
 					else if (this.fourmis[i].x === this.foyer.x && this.fourmis[i].y === this.foyer.y) {
 						this.fourmis[i].deposeLaNourriture();
 					}
-					this.avance(this.fourmis[i]);
+					this.fourmis[i].avance();
 				}
 
 				for (i = this.entites.fourmis.length -1; i >=0; i--) {
@@ -535,6 +450,9 @@ var JSFOURMIS = JSFOURMIS || {};
 				// A chaque nouveau départ, on ré-init le compteur
 				JSFOURMIS.Kanvas.compteurCycles = 0;
 
+				//var options = {x:50, y:70, hauteur:11, largeur:21};
+				//this.entites.obstacles[0]=new JSFOURMIS.Obstacle(this,options);
+				
 				// dispersion du mangé
 				this.disperseDeLaNourriture();
 
@@ -542,8 +460,6 @@ var JSFOURMIS = JSFOURMIS || {};
 				for ( var i = 0; i < nbfourmis; i++) {
 					this.fourmis.push(new JSFOURMIS.Fourmi(this, {numero: this.fourmis.length}));
 				}
-				//var options = {x:50, y:50, rayonX:50, rayonY:30};
-				//this.entites.obstacles[0]=new JSFOURMIS.Obstacle(this,options);
 				this.running = true;
 				this.navigateur.startTime = (new Date).getTime();
 				this.main();
