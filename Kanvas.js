@@ -470,13 +470,19 @@ var JSFOURMIS = JSFOURMIS || {};
 			 */
 			fourmis : [],
 			
-			pheromones : [],
-			
 			/**
-			 * Tableau des JSFOURMIS.Nourritures
+			 * Tableau des JSFOURMIS.Nourriture
 			 */
 			nourritures: [],
 			
+			/**
+			 * Tableau des JSFOURMIS.Pheromone
+			 */
+			pheromones : [],
+			
+			/**
+			 * Tableau des JSFOURMIS.Obstacle
+			 */
 			obstacles: [],
 
 			/**

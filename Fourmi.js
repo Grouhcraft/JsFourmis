@@ -146,8 +146,12 @@ var JSFOURMIS = JSFOURMIS || {};
 			}
 		}
 			var pos = this.prochainePosition(this.deplacement.distanceAParcourirParFourmis);
-			while (this.rencontreObstacle(pos.x, pos.y)) {
-				this.direction = this.choisiUneDirectionAuHasard();
+			var directionsExclues = [];
+			// Lorsque l'on touche le bord ou un obstacle, on change de direction
+			while (!this.kanvasObj.estDansLaZone(pos.x, pos.y) || this.rencontreObstacle(pos.x, pos.y)) {
+				var dir = this.direction;
+				directionsExclues.push(dir);
+				this.direction = this.choisiUneDirectionAuHasardSauf(directionsExclues);
 				pos = this.prochainePosition(this.deplacement.distanceAParcourirParFourmis);
 			}
 			
@@ -177,6 +181,43 @@ var JSFOURMIS = JSFOURMIS || {};
 			}
 		},
 		
+		choisiUneDirectionAuHasardSauf: function(directionsExclues) {
+			if (directionsExclues==null||directionsExclues.length==0) {
+				return this.choisiUneDirectionAuHasard();
+			}
+			if (directionsExclues.length>=4) {
+				return JSFOURMIS.Directions.AUCUNE;
+			}
+			var directionsRestantes = [
+						JSFOURMIS.Directions.NORD,
+						JSFOURMIS.Directions.SUD,
+						JSFOURMIS.Directions.EST,
+						JSFOURMIS.Directions.OUEST
+					];
+			for (var j = directionsExclues.length-1; j>=0; j--) {
+					for (var i=directionsRestantes.length-1; i>=0; i--) {
+						if (directionsRestantes[i]==directionsExclues[j]) {
+							directionsRestantes.splice(i,1);
+						}
+					}
+			}
+			if(directionsRestantes.length==1) {
+				return directionsRestantes[0];
+			}
+			var randomSample = this.kanvasObj.random(1,50*directionsRestantes.length);
+			if (randomSample<=50) {
+				return directionsRestantes[0];
+			}
+			else {
+				if (randomSample<=100) {
+					return directionsRestantes[1];
+				}
+				else {
+					return directionsRestantes[2];
+				}
+			}
+		},
+		
 		/**
 		 *  Avec de <distance> dans la direction enregistrée
 		 */
@@ -193,16 +234,8 @@ var JSFOURMIS = JSFOURMIS || {};
 					throw("Aucune direction n'est encore fixée..");
 					break;
 			};
-			
-			// Lorsque l'on touche le bord, on repart en arrière
-			if(!this.kanvasObj.estDansLaZone(x, y)) {
-				this.direction = -this.direction;
-				this.avanceDansSaDirection(distance);
-			}
-			else {
-					this.x = x;
-					this.y = y;
-			}
+			this.x = x;
+			this.y = y;
 		},
 		
 		rencontreObstacle: function(x, y)  {
