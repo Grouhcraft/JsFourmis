@@ -152,6 +152,9 @@ var JSFOURMIS = JSFOURMIS || {};
 				var dir = this.direction;
 				directionsExclues.push(dir);
 				this.direction = this.choisiUneDirectionAuHasardSauf(directionsExclues);
+				if (this.direction==JSFOURMIS.Directions.AUCUNE) {
+					break;
+				}
 				pos = this.prochainePosition(this.deplacement.distanceAParcourirParFourmis);
 			}
 			
@@ -231,7 +234,7 @@ var JSFOURMIS = JSFOURMIS || {};
 				case JSFOURMIS.Directions.EST:		x-=distance; break;
 				case JSFOURMIS.Directions.OUEST:	x+=distance; break;
 				case JSFOURMIS.Directions.AUCUNE:
-					throw("Aucune direction n'est encore fixée..");
+					//throw("Aucune direction n'est encore fixée..");
 					break;
 			};
 			this.x = x;
@@ -332,7 +335,10 @@ var JSFOURMIS = JSFOURMIS || {};
 					posGauche = {x : this.x+versAvant, y : this.y+distance-1, direction: JSFOURMIS.Directions.SUD };
 					break;
 				default :
-					throw("Aucune direction n'est encore fixée..");
+					posDevant = {x: this.x, y : this.y, direction: JSFOURMIS.Directions.AUCUNE };
+					posDroite = {x : this.x, y : this.y, direction: JSFOURMIS.Directions.AUCUNE };
+					posGauche = {x : this.x, y : this.y, direction: JSFOURMIS.Directions.AUCUNE };
+					//throw("Aucune direction n'est encore fixée..");
 			}
 			return {
 				devant: posDevant,
