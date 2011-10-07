@@ -145,6 +145,11 @@ var JSFOURMIS = JSFOURMIS || {};
 							JSFOURMIS.Constantes.DUREE_PHEROMONES_NOURRITURE);
 			}
 		}
+			var pos = this.prochainePosition(this.deplacement.distanceAParcourirParFourmis);
+			while (this.rencontreObstacle(pos.x, pos.y)) {
+				this.direction = this.choisiUneDirectionAuHasard();
+				pos = this.prochainePosition(this.deplacement.distanceAParcourirParFourmis);
+			}
 			
 			// effectue son pas.
 			this.avanceDansSaDirection(this.deplacement.distanceAParcourirParFourmis);

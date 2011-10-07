@@ -450,8 +450,8 @@ var JSFOURMIS = JSFOURMIS || {};
 				// A chaque nouveau départ, on ré-init le compteur
 				JSFOURMIS.Kanvas.compteurCycles = 0;
 
-				//var options = {x:50, y:70, hauteur:11, largeur:21};
-				//this.entites.obstacles[0]=new JSFOURMIS.Obstacle(this,options);
+				var options = {x:50, y:70, hauteur:21, largeur:31};
+				this.entites.obstacles[0]=new JSFOURMIS.Obstacle(this,options);
 				
 				// dispersion du mangé
 				this.disperseDeLaNourriture();
