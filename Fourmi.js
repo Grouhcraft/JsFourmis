@@ -34,6 +34,20 @@ var JSFOURMIS = JSFOURMIS || {};
 		direction : null,	// Direction de la fourmi. cf. l'Enum "JSFOURMIS.Direction"
 		nourritures : [],	// instances des "Nourriture" transportées
 		age : 0,			// Age de la fourmi (en Cycles)
+		vivante: true,
+		
+		/**
+		 * Déplacement de la fourmi
+		 */
+		deplacement: {
+			chancesDeFaireDemiTour: 3, 
+			chanceDeChangerDeDirection: 8,
+			distanceAParcourrirParFourmis: 1
+		},
+		
+		/*
+		 * Couleur de la fourmi
+		 */
 		couleur : function(){
 			if(this.aller) { 
 				return { r:0, g:0, b:254, a:0xff };
@@ -63,8 +77,6 @@ var JSFOURMIS = JSFOURMIS || {};
 				this.kanvasObj.entites.fourmis[i].numero--;
 			}
 		},
-		
-		vivante: true,
 
 		/**
 		 * La fourmi est-elle dessinable ? Exemple: on peut vouloir une fourmi
@@ -76,6 +88,82 @@ var JSFOURMIS = JSFOURMIS || {};
 		 */
 		estDessinable : function() {
 			return this.vivante;
+		},
+		
+		/**
+		 * Fait avancer la fourmi (pour un cycle).
+		 * Déroulement:
+		 * 1- Si la fourmi n'a pas de direction, on lui en donne une au pif 
+		 * 2- La fourmi à un % (faible) de chance de faire demi-tour
+		 * 3- Si la fourmi ne fait pas demi-tour, % de chance d'aller sur le côté
+		 * 4- On demande à la fourmi d'avancer.
+		 */
+		avance : function() {
+			if(this.aller) { // Recherche de nourriture
+				
+				// Déjà dans une direction ?
+				if(this.direction == JSFOURMIS.Directions.AUCUNE) {
+					this.direction = this.choisiUneDirectionAuHasard();
+				} 
+				else { // Oui..
+					
+					// Nourriture à proximité ? alors on se place dans sa direction
+					var aTrouveUneDirectionInteressante = false;
+					var vision = this.champVision();
+					for (var sens in vision) {
+						if(this.kanvasObj.ilYADeLaNourriture(vision[sens].x, vision[sens].y)) {
+							this.direction = vision[sens].direction;
+							aTrouveUneDirectionInteressante = true;
+							break;
+						} 	
+					}
+					// Pas trouvé de bouffe..
+					if(!aTrouveUneDirectionInteressante) {
+						// Déplacement aléatoire
+						if(this.kanvasObj.random(1,100) < this.deplacement.chancesDeFaireDemiTour) {
+							 this.direction = - this.direction;
+						} else if(this.kanvasObj.random(1,100) < this.deplacement.chanceDeChangerDeDirection) {
+							var nouvelleDirection = this.direction; 
+							while(nouvelleDirection == this.direction || nouvelleDirection == - this.direction) {
+								nouvelleDirection = this.choisiUneDirectionAuHasard();
+							}
+							this.direction = nouvelleDirection; 
+						}
+					}
+				}
+			}
+				else { // Retour à la fourmilière (this.aller == false)
+				this.direction = this.directionVersFoyer();
+				if (this.age % JSFOURMIS.Constantes.PAS_PHEROMONES_NOURRITURE == 0) {
+					this.posePheromone(JSFOURMIS.TypesPheromones.NOURRITURE,
+							JSFOURMIS.Constantes.DUREE_PHEROMONES_NOURRITURE);
+			}
+		}
+			
+			// effectue son pas.
+			this.avanceDansSaDirection(this.deplacement.distanceAParcourrirParFourmis);
+		},
+		
+		/**
+		 * Comme son titre l'indique, choisi
+		 * une direction au hasard parmis JSFOURMIS.Directions
+		 */
+		choisiUneDirectionAuHasard: function() {
+			var xOuY = this.kanvasObj.random(1, 100);
+			var moinsOuPlus = this.kanvasObj.random(1, 100);
+			if (xOuY <= 50) {
+				if (moinsOuPlus <= 50) {
+					return JSFOURMIS.Directions.EST;
+				} else {
+					return JSFOURMIS.Directions.OUEST;
+				}
+			} else {
+				if (moinsOuPlus <= 50) {
+					return JSFOURMIS.Directions.SUD;
+				} else {
+					return JSFOURMIS.Directions.NORD;
+				}
+			}
 		},
 		
 		/**
