@@ -35,6 +35,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		nourritures : [],	// instances des "Nourriture" transportées
 		age : 0,			// Age de la fourmi (en Cycles)
 		vivante: true,
+		test: false,
 		
 		/**
 		 * Déplacement de la fourmi
@@ -42,18 +43,23 @@ var JSFOURMIS = JSFOURMIS || {};
 		deplacement: {
 			chancesDeFaireDemiTour: 3, 
 			chanceDeChangerDeDirection: 8,
-			distanceAParcourrirParFourmis: 1
+			distanceAParcourirParFourmis: 1
 		},
 		
 		/*
 		 * Couleur de la fourmi
 		 */
 		couleur : function(){
-			if(this.aller) { 
-				return { r:0, g:0, b:254, a:0xff };
-			} else {
-				return { r:254, g:0, b:0, a:0xff };
-			} 
+			if(this.test) {
+				return { r:128, g:0, b:128, a:0xff };
+			}
+			else {
+				if(this.aller) { 
+					return { r:0, g:0, b:254, a:0xff };
+				} else {
+					return { r:254, g:0, b:0, a:0xff };
+				}
+			}
 		},
 
 		/**
@@ -141,7 +147,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		}
 			
 			// effectue son pas.
-			this.avanceDansSaDirection(this.deplacement.distanceAParcourrirParFourmis);
+			this.avanceDansSaDirection(this.deplacement.distanceAParcourirParFourmis);
 		},
 		
 		/**
@@ -184,13 +190,31 @@ var JSFOURMIS = JSFOURMIS || {};
 			};
 			
 			// Lorsque l'on touche le bord, on repart en arrière
-			if(!this.kanvasObj.estDansLaZone(x,y)) {
+			if(!this.kanvasObj.estDansLaZone(x, y)) {
 				this.direction = -this.direction;
 				this.avanceDansSaDirection(distance);
-			} else {
-				this.x = x;
-				this.y = y;
 			}
+			else {
+					this.x = x;
+					this.y = y;
+			}
+		},
+		
+		rencontreObstacle: function(x, y)  {
+			for (var i = this.kanvasObj.entites.obstacles.length -1; i >= 0; i--) {
+				if (this.direction==JSFOURMIS.Directions.EST || this.direction==JSFOURMIS.Directions.OUEST) {
+					hauteur = 5;
+					largeur = 7;
+				}
+				else {
+					hauteur = 7;
+					largeur = 5;
+				}
+				if (this.kanvasObj.entites.obstacles[i].bloqueEmplacement(x,y,hauteur,largeur)) {
+					return true;
+				}
+			}
+			return false;
 		},
 		
 		deposeLaNourriture: function () {
