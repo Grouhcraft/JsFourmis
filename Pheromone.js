@@ -15,6 +15,9 @@ var JSFOURMIS = JSFOURMIS || {};
 		this.y = options.y || 0;
 		this.duree = options.duree || -1;
 		this.numero = this.kanvasObj.entites.pheromones.length;
+		if (this.type == JSFOURMIS.TypesPheromones.ALLER) {
+			this.couleur = { r:220, g:100, b:220, a:0xff };
+		}
 	};
 	
 	JSFOURMIS.Pheromone.prototype = {
