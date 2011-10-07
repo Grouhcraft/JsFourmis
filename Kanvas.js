@@ -250,12 +250,13 @@ var JSFOURMIS = JSFOURMIS || {};
 						}
 					}
 				}
-				else { // Retour à la fourmilière (fourmi.aller == false)
+ 				else { // Retour à la fourmilière (fourmi.aller == false)
 					fourmi.direction = fourmi.directionVersFoyer();
-					if (fourmi.age%10 == 0) {
-						fourmi.posePheromone(JSFOURMIS.TypesPheromones.NOURRITURE,30);
-					}
+					if (fourmi.age % JSFOURMIS.Constantes.PAS_PHEROMONES_NOURRITURE == 0) {
+						fourmi.posePheromone(JSFOURMIS.TypesPheromones.NOURRITURE,
+								JSFOURMIS.Constantes.DUREE_PHEROMONES_NOURRITURE);
 				}
+			}
 				
 				// effectue son pas.
 				fourmi.avanceDansSaDirection(this.deplacement.distanceAParcourrirParFourmis);
