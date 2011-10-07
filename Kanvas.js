@@ -12,6 +12,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		JSFOURMIS.Kanvas = function() {
 			this.entites.fourmis = this.fourmis;
 			this.entites.nourritures = this.nourritures;
+			this.entites.pheromones = this.pheromones;
 		};
 		/**
 		 * Méthodes publiques
@@ -251,6 +252,9 @@ var JSFOURMIS = JSFOURMIS || {};
 				}
 				else { // Retour à la fourmilière (fourmi.aller == false)
 					fourmi.direction = fourmi.directionVersFoyer();
+					if (fourmi.age%10 == 0) {
+						fourmi.posePheromone(JSFOURMIS.TypesPheromones.NOURRITURE,30);
+					}
 				}
 				
 				// effectue son pas.
@@ -354,13 +358,13 @@ var JSFOURMIS = JSFOURMIS || {};
 
 			/**
 			 * Liste les différentes entités et le tableau les stockant pour
-			 * chaqune d'entre elles
+			 * chacune d'entre elles
 			 */
 			
 			entites : {
 				fourmis : this.fourmis,
-				nourritures: this.nourritures
-			    // pheromones: this.pheromones
+				nourritures: this.nourritures,
+			    pheromones: this.pheromones,
 			},
 
 			/**
@@ -389,6 +393,16 @@ var JSFOURMIS = JSFOURMIS || {};
 						this.entites.fourmis[i].meurt();
 					}
 				}
+				
+				if (this.entites.pheromones!=null) {
+				for (i = this.entites.pheromones.length -1; i >=0; i--) {
+					this.entites.pheromones[i].duree--;
+					if (this.entites.pheromones[i].duree<=0) {
+						this.entites.pheromones[i].disparait();
+					}
+				}
+			}
+				
 				this.dessineTout();
 				
 				if (this.running) {
@@ -536,6 +550,8 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * Tableau des JSFOURMIS.Fourmi (des fourmis quoi)
 			 */
 			fourmis : [],
+			
+			pheromones : [],
 			
 			/**
 			 * Tableau des JSFOURMIS.Nourritures

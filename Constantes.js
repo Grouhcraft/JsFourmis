@@ -15,4 +15,9 @@ var JSFOURMIS = JSFOURMIS || {};
 		DEMITOUR : 3,
 		AUCUN: 4
 	};
+	
+	JSFOURMIS.TypesPheromones = {
+			ALLER : 1,
+			NOURRITURE : 2
+		};
 })();

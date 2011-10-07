@@ -269,6 +269,11 @@ var JSFOURMIS = JSFOURMIS || {};
 			this.kanvasObj.dessineForme(m, champVision.devant.x,  champVision.devant.y, { r:255, g:255, b:0, a:0xff });
 			this.kanvasObj.dessineForme(m, champVision.droite.x,  champVision.droite.y, { r:255, g:128, b:0, a:0xff });
 			this.kanvasObj.dessineForme(m, champVision.gauche.x,  champVision.gauche.y, { r:128, g:255, b:0, a:0xff });
+		},
+		
+		posePheromone:function (type, duree) {
+			var options = {type: type, duree: duree, x: this.x, y : this.y};
+			this.kanvasObj.entites.pheromones.push(new JSFOURMIS.Pheromone(this.kanvasObj, options));
 		}
 	};
 })();
