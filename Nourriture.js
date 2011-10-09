@@ -14,10 +14,12 @@ var JSFOURMIS = JSFOURMIS || {};
 	 * @param parentObj:
 	 *            instance de l'objet dans lequel se trouve la nourriture.
 	 */
-	JSFOURMIS.Nourriture = function(kanvasObj, parentObj) {
+	JSFOURMIS.Nourriture = function(kanvasObj, parentObj, quantitee) {
 		parentObj = parentObj || kanvasObj;
+		
 		this.kanvasObj = kanvasObj;
 		this.parentObj = parentObj;
+		this.quantitee = quantitee || 1;
 	};
 	
 	/**
@@ -32,8 +34,36 @@ var JSFOURMIS = JSFOURMIS || {};
 		y : 0,
 		quantitee : 0,
 		estDessinable : function() {
-			return true; /* @TODO: sauf si transporté par une fourmi, etc.. */
+			// Déssiné que si gisant sur le kanvas
+			if(! this.parentObj instanceof JSFOURMIS.Kanvas) {
+				return false;
+			} else {
+				return true;
+			}
 		},
+		
+		preleve: function (quantitee) {
+			if(quantitee > this.quantitee) {
+				throw ("Impossible de prélever plus de nourriture que ce que y'en a voyons !");
+			}
+			else if (quantitee < this.quantitee) {
+				this.quantitee--;
+			}
+			else {
+				this.meurt();
+			}
+		},
+		
+		meurt : function() {
+			for(var i=0; i<this.kanvasObj.entites.nourritures.length; i++) {
+				if(this.kanvasObj.entites.nourritures[i].x === this.x &&
+					this.kanvasObj.entites.nourritures[i].y === this.y ) {
+						this.kanvasObj.entites.nourritures.splice(i,1);		
+						break;				
+					}
+			}
+		},
+
 		dessine : function() {/* @TODO */
 			var data = [0,1,1,1,0,
 						1,0,0,0,1,

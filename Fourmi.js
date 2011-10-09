@@ -261,7 +261,14 @@ var JSFOURMIS = JSFOURMIS || {};
 		deposeLaNourriture: function () {
 			this.retour = false;
 			this.aller = true;
+			
 			///TODO: deposer la bouffe
+			// En attendant.. = ==
+			for(var i=0; i<this.nourritures.length; i++) {
+				delete this.nourritures;
+				this.nourritures = [];
+			}
+			/// == == == == == ==
 		},
 		
 		ramasseLaNourriture: function() {
@@ -270,7 +277,21 @@ var JSFOURMIS = JSFOURMIS || {};
 			}
 			this.aller = false;
 			this.retour = true;
-			///TODO ramene la bouffe
+			
+			var nourritureTransportee = new JSFOURMIS.Nourriture(this.kanvasObj, this, 1);
+			this.nourritures.push(nourritureTransportee);
+			for(var i=0; i<this.kanvasObj.entites.nourritures.length; i++ ) {
+				if(this.kanvasObj.entites.nourritures[i].x === this.x && this.kanvasObj.entites.nourritures[i].y === this.y) {
+					this.kanvasObj.entites.nourritures[i].preleve(1);
+					break;
+				}
+			}
+			//for(var nourriture in this.kanvasObj.entites.nourritures) {
+				//if(nourriture.x === this.x && nourriture.y === this.y) {
+					//nourriture.preleve(1);
+					//break;
+				//}
+			//}
 		},
 		
 		directionVersFoyer: function() {

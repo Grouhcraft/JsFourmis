@@ -272,13 +272,12 @@ var JSFOURMIS = JSFOURMIS || {};
 				}
 				this.ctx.putImageData(this.imageData, 0, 0); // at coords 0,0
 			},
-
+			
 			/**
 			 * Liste les différentes entités et le tableau les stockant pour
 			 * chacune d'entre elles
 			 */
-			
-			entites : {
+			 entites : {
 				fourmis : this.fourmis,
 				nourritures: this.nourritures,
 			    pheromones: this.pheromones,
@@ -292,6 +291,8 @@ var JSFOURMIS = JSFOURMIS || {};
 					JSFOURMIS.Kanvas.compteurCycles++;
 				}
 				this.effaceTout();
+
+				$('log').value = this.entites.nourritures.length;
 
 				for ( var i = this.fourmis.length -1; i >=0; i--) {
 					if(this.ilYADeLaNourriture(this.fourmis[i].x, this.fourmis[i].y)) {
@@ -322,9 +323,15 @@ var JSFOURMIS = JSFOURMIS || {};
 				this.dessineTout();
 				
 				if (this.running) {
-					if (JSFOURMIS.Kanvas.compteurCycles <= this.nbCycles ||
-						this.nbCycles == -1) {
+					// Cycles infinis = vitesse normale
+					if (this.nbCycles == -1) {
 						window.setTimeout(function(thisObj) { thisObj.main(); }, this.delaiCycle, this);
+						
+					// Cycles définis = aussi rapide que possible.  
+					} else if (JSFOURMIS.Kanvas.compteurCycles <= this.nbCycles ) {
+						window.setTimeout(function(thisObj) { thisObj.main(); }, 0, this);
+						
+					// Terminée.
 					} else {
 						var diff = (new Date).getTime() - this.navigateur.startTime;
 						alert('time elapsed:' + diff);
@@ -367,8 +374,8 @@ var JSFOURMIS = JSFOURMIS || {};
 			mouse: {
 				onMove: function(ev) {
 					this.curseur.position = {
-						x: ev.clientX - this.navigateur.totalCancasOffset.left,
-						y: ev.clientY - this.navigateur.totalCancasOffset.top
+						x: ev.clientX - this.navigateur.totalCanvasOffset.left,
+						y: ev.clientY - this.navigateur.totalCanvasOffset.top
 					};					
 				},
 				
@@ -381,8 +388,8 @@ var JSFOURMIS = JSFOURMIS || {};
 				},
 				
 				onClick: function(ev){
-					var x = ev.clientX - this.navigateur.totalCancasOffset.left;
-					var y = ev.clientY - this.navigateur.totalCancasOffset.top;
+					var x = ev.clientX - this.navigateur.totalCanvasOffset.left;
+					var y = ev.clientY - this.navigateur.totalCanvasOffset.top;
 					var rayon = 8;
 					for (i = 0; i < this.entites.fourmis.length; i++) {
 						if(	this.entites.fourmis[i].x <= x + rayon  && this.entites.fourmis[i].x >= x - rayon && 
@@ -407,7 +414,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * Paramètres "systeme", "navigateur"
 			 */
 			navigateur: {
-				totalCancasOffset: {left:0, top:0 },
+				totalCanvasOffset: {left:0, top:0 },
 				startTime: 0
 			},
 			
@@ -428,8 +435,9 @@ var JSFOURMIS = JSFOURMIS || {};
 				// cré une "imageData", zone de travail par pixel
 				this.imageData = this.ctx.createImageData(this.width, this.height); // /!\
 
-				var nbfourmis = parseInt($('nbFourmis').value);
-				this.nbCycles = parseInt($('nbCycles').value);
+				var nbfourmis = JSFOURMIS.Parametres.nbFourmis.valeur;
+				this.nbCycles = JSFOURMIS.Parametres.nbCycles.valeur;
+				this.nourriture.nbInitialDePoints = JSFOURMIS.Parametres.nourriture_nbInitialDePoints.valeur
 
 				// Curseur & autre broutilles "systeme"
 				this.curseur.matrice = new JSFOURMIS.Matrice(7,7,[
@@ -441,7 +449,7 @@ var JSFOURMIS = JSFOURMIS || {};
 									0,1,0,0,0,1,0,
 									0,0,1,1,1,0,0]).agrandir(3);
 
-				this.navigateur.totalCancasOffset = $totalOffset(this.canvas); 
+				this.navigateur.totalCanvasOffset = $totalOffset(this.canvas); 
 				this.canvas.addEventListener('mousemove', bind(this, this.mouse.onMove), false);
 				this.canvas.addEventListener('mouseover', bind(this, this.mouse.onOver), false);
 				this.canvas.addEventListener('mouseout', bind(this, this.mouse.onOut), false);
@@ -450,8 +458,8 @@ var JSFOURMIS = JSFOURMIS || {};
 				// A chaque nouveau départ, on ré-init le compteur
 				JSFOURMIS.Kanvas.compteurCycles = 0;
 
-				var options = {x:50, y:70, hauteur:21, largeur:31};
-				this.entites.obstacles[0]=new JSFOURMIS.Obstacle(this,options);
+				//var options = {x:50, y:70, hauteur:21, largeur:31};
+				//this.entites.obstacles[0]=new JSFOURMIS.Obstacle(this,options);
 				
 				// dispersion du mangé
 				this.disperseDeLaNourriture();
