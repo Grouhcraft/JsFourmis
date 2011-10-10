@@ -1,0 +1,29 @@
+td.orientation { text-align: center;}
+.fourmis { height: 500px;}
+.slider {
+	width: 600px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+}
+table#parametres {
+	margin-top: 20px;
+	//border: 1px solid #DDD;	
+}
+button {
+	-moz-border-radius: 10%;
+	background: #AA3333;
+	color: #FFF;
+	font-weight: bold;
+	border: none;
+	height: 25px;
+}
+button:hover {
+	background: #882222;	
+}
+
+input.slidersInputs {
+	border: none;
+	font-family: sans-serif;
+	font-weight: bold;
+	color: #333;	
+}

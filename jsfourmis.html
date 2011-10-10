@@ -1,5 +1,7 @@
 <html>
  <head>
+  <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
+  
   <!-- Slider control (cf. LICENSE for opensource license) -->
   <link rel="stylesheet" type="text/css" href="slider/slider.css" />
   <script type="application/javascript" src="slider/slider.js"></script>
@@ -31,84 +33,13 @@
   <script type="application/javascript" src="Pheromone.js"></script>  
   <script type="application/javascript" src="Obstacle.js"></script>  
   <script type="application/javascript" src="Kanvas.js"></script>
+  <script type="application/javascript" src="ui.js"></script>
   <script type="application/javascript">
 	var $ = function(e){ return document.getElementById(e); };
 	var $$ = function (e) { return document.getElementsByClassName(e); };
 	var k = new JSFOURMIS.Kanvas();
-	var valeurConcrete = function (min, max, pourcentage) {
-		return  pourcentage * (max - min)|0;
-	};
-	var onBodyLoad = function() {
-		var paramTable = $('parametres');
-		var doc = document;
-		for(var param in JSFOURMIS.Parametres) 
-		{
-			if(JSFOURMIS.Parametres[param].parametrable) 
-			{
-				var tr = document.createElement('TR');
-				var td = [null, null, null];
-				td[0] = doc.createElement('TD');
-				td[1] = doc.createElement('TD');
-				td[2] = doc.createElement('TD');
-				td[0].innerHTML = JSFOURMIS.Parametres[param].label;
-				td[0].style.width = '175px';
-				var inputId = 'valeur_' + param;
-				var divSlider	= doc.createElement('DIV');
-				var divHandler	= doc.createElement('DIV');
-				divSlider.setAttribute('id', param);
-				divSlider.setAttribute('class', 'slider');
-				divHandler.setAttribute('class', 'handle');
-				divSlider.appendChild(divHandler);
-				td[1].appendChild(divSlider);
-				
-				td[2].setAttribute('class', 'valeur');
-				var inputValeur = doc.createElement('INPUT');
-				inputValeur.setAttribute('type', 'text');
-				inputValeur.setAttribute('id', inputId);
-				inputValeur.setAttribute('value', '');
-				td[2].appendChild(inputValeur);
-				
-				tr.appendChild(td[0]);
-				tr.appendChild(td[1]);
-				tr.appendChild(td[2]);
-				
-				paramTable.appendChild(tr);
-					 
-				new Slider(param, {
-					callback: function(value, opts) {
-						$(opts.inputId).value = valeurConcrete(
-								JSFOURMIS.Parametres[opts.param_name].min, 
-								JSFOURMIS.Parametres[opts.param_name].max, 
-								value);
-						JSFOURMIS.Parametres[opts.param_name].valeur = valeurConcrete(
-							JSFOURMIS.Parametres[opts.param_name].min, 
-							JSFOURMIS.Parametres[opts.param_name].max, 
-							value);
-					},
-					steps: JSFOURMIS.Parametres[param].steps,
-					value: JSFOURMIS.Parametres[param].valeur,
-					params: {
-						'inputId' : inputId,
-						'param_name': param  
-					}
-				});
-				inputValeur.value = JSFOURMIS.Parametres[param].valeur;
-			}
-		}	
-	};
   </script>
-  <style type="text/css">
-	td.orientation { text-align: center;}
-	.fourmis { height: 500px;}
-	.slider {
-		width: 600px;
-		font-family: Helvetica, Arial, sans-serif;
-		font-size: 12px;
-	}
-	table#parametres {
-		border: 1px solid #DDD;	
-	}
-  </style>
+  <link rel="stylesheet" type="text/css" href="main.css" />
   <title>JsFourmis</title>
  </head>
  <body onload="onBodyLoad();">

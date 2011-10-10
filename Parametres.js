@@ -1,18 +1,19 @@
 JSFOURMIS = JSFOURMIS || {};
 JSFOURMIS.Parametres = {
 	nbCycles: {
-		min: -1,
+		min: 0,
 		max: 5000,
-		steps: 50,
+		steps: 5000,
 		valeur: 5,
 		label: 'Nombre de cycles',
-		parametrable: true
+		parametrable: true,
+		illimitable: true
 	}, 
 		
 	nbFourmis: {
-		min: 1,
+		min: 0,
 		max: 500,
-		steps: 250,
+		steps: 500,
 		valeur: 20,
 		label: 'Nombre de fourmis',
 		parametrable: true
