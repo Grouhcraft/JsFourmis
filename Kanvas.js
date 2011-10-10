@@ -437,7 +437,9 @@ var JSFOURMIS = JSFOURMIS || {};
 
 				var nbfourmis = JSFOURMIS.Parametres.nbFourmis.valeur;
 				this.nbCycles = JSFOURMIS.Parametres.nbCycles.valeur;
-				this.nourriture.nbInitialDePoints = JSFOURMIS.Parametres.nourriture_nbInitialDePoints.valeur
+				this.nourriture.nbInitialDePoints = JSFOURMIS.Parametres.nourriture_nbInitialDePoints.valeur;
+				this.nourriture.nombreParPoint.min = JSFOURMIS.Parametres.nourriture_nombreParPoint_min.valeur;
+				this.nourriture.nombreParPoint.max = JSFOURMIS.Parametres.nourriture_nombreParPoint_max.valeur;
 
 				// Curseur & autre broutilles "systeme"
 				this.curseur.matrice = new JSFOURMIS.Matrice(7,7,[

@@ -1,6 +1,12 @@
 var valeurConcrete = function (min, max, pourcentage) {
 		return  pourcentage * (max - min)|0;
 };
+
+var valeurSlider = function (min, max, valeur) {
+	var vv = valeur - min;
+	var vm = max - min;
+	return vv / vm;
+} 
 var onBodyLoad = function() {
 	var paramTable = $('parametres');
 	var doc = document;
@@ -14,7 +20,7 @@ var onBodyLoad = function() {
 			td[1] = doc.createElement('TD');
 			td[2] = doc.createElement('TD');
 			td[0].innerHTML = JSFOURMIS.Parametres[param].label;
-			td[0].style.width = '175px';
+			td[0].style.width = '200px';
 			var inputId = 'valeur_' + param;
 			var divSlider	= doc.createElement('DIV');
 			var divHandler	= doc.createElement('DIV');
@@ -55,7 +61,10 @@ var onBodyLoad = function() {
 					}
 				},
 				steps: JSFOURMIS.Parametres[param].steps,
-				value: JSFOURMIS.Parametres[param].valeur,
+				value: valeurSlider(
+					JSFOURMIS.Parametres[param].min,
+					JSFOURMIS.Parametres[param].max, 
+					JSFOURMIS.Parametres[param].valeur),
 				params: {
 					'inputId' : inputId,
 					'param_name': param  

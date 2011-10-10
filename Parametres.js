@@ -4,7 +4,7 @@ JSFOURMIS.Parametres = {
 		min: 0,
 		max: 5000,
 		steps: 5000,
-		valeur: 5,
+		valeur: 500,
 		label: 'Nombre de cycles',
 		parametrable: true,
 		illimitable: true
@@ -14,7 +14,7 @@ JSFOURMIS.Parametres = {
 		min: 0,
 		max: 500,
 		steps: 500,
-		valeur: 20,
+		valeur: 60,
 		label: 'Nombre de fourmis',
 		parametrable: true
 	},
@@ -24,12 +24,25 @@ JSFOURMIS.Parametres = {
 		max: 100,
 		steps: 100,
 		valeur: 15,
-		label: 'Nb de <i>zones</i> nourriture',
+		label: 'Nb de <i>spots</i> nourriture',
 		parametrable: true		
 	},
 	
-	test_a_virer: {
-		valeur: 15,
-		parametrable: false		
+	nourriture_nombreParPoint_min: {
+		min: 0,
+		max: 100,
+		steps: 100,
+		valeur: 0,
+		label: 'Nb Nourriture <b>min</b> par <i>spot</i>',
+		parametrable: true		
+	},
+	
+	nourriture_nombreParPoint_max: {
+		min: 0,
+		max: 100,
+		steps: 100,
+		valeur: 20,
+		label: 'Nb Nourriture <b>max</b> par <i>spot</i>',
+		parametrable: true		
 	}
 };
