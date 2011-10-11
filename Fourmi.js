@@ -425,8 +425,8 @@ var JSFOURMIS = JSFOURMIS || {};
 				case JSFOURMIS.Directions.EST:	angle = JSFOURMIS.AnglesRotation.DROITE ; break;
 			}
 			if(angle !== null) {
-				matrice = matrice.rotation(angle);
-				//matrice.rotation_optimise(angle);
+				//matrice = matrice.rotation(angle);
+				matrice.rotation_optimise(angle);
 			}
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur());
 			// Test : dessin du champ de vision

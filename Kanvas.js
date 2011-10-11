@@ -233,11 +233,12 @@ var JSFOURMIS = JSFOURMIS || {};
 
 			ilYADeLaNourriture : function(x, y) {
 				for (var i = this.entites.nourritures.length - 1; i >= 0; i--){
-					if(this.entites.nourritures[i].estDessinable()) {
-						if(	this.entites.nourritures[i].x === x &&
-							this.entites.nourritures[i].y === y) {
+					// Test KNOO perfs
+					//if(this.entites.nourritures[i].estDessinable()) {
+					if( this.entites.nourritures[i].estDessinable === true &&
+						this.entites.nourritures[i].x === x &&
+						this.entites.nourritures[i].y === y) {
 								return true;
-							}			
 					}
 				}
 				return false;

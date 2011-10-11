@@ -103,30 +103,43 @@ var JSFOURMIS = JSFOURMIS || {};
 			return null;
 		},
 		
+		/**
+		 * FIXME:TODO: probleme avec la rotation gauche (et demi-tour ? pas essayé)
+		 * La rotation droite est OK. 
+		 * Si tu peux jeter un oeil..
+		 */
 		rotation_optimise : function(angle) {
 			var nouvelleMatrice = new Array(this.data.length); // déjà la bonne taille
-			var w = this.width;
-			var h = this.height;
 			if (angle === JSFOURMIS.AnglesRotation.DROITE) {
+				var w = this.h;
+				var h = this.w;
 				for (var x = h-1; x >=0; x--) {
 					for (var y = w-1; y >=0; y--) {
-						nouvelleMatrice[y * w + x] = this.data[x * w + y];
+						nouvelleMatrice[x * w + y] = this.data[y * h + x];
 					}
 				}
+				this.w = w;
+				this.h = h;
 			}
 			else if (angle === JSFOURMIS.AnglesRotation.DEMITOUR) {
+				var w = this.w;
+				var h = this.h;
 				for (var x = h-1; x >= 0 ; x--) {
 					for (var y = w-1; y >=0 ; y--) {
-						nouvelleMatrice[h-x-1 * w + w-y-1] = this.data[x * w + y];
+						nouvelleMatrice[x * w + y] = this.data[h-x-1 * w + w-y-1];
 					}
 				}
 			}
 			else if (angle === JSFOURMIS.AnglesRotation.GAUCHE) {
+				var w = this.h;
+				var h = this.w;
 				for (var x = h-1; x >= 0; x--) {
 					for (var y = w-1; y >= 0; y--) {
-						nouvelleMatrice[w-y-1 * w + h-x-1] = this.data[x * w + y];
+						nouvelleMatrice[w-y-1 * w + h-x-1] = this.data[x * h + y];
 					}
 				}
+				this.w = w;
+				this.h = h;
 			}
 			delete this.data; // utile ???
 			this.data = nouvelleMatrice;

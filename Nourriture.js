@@ -20,6 +20,9 @@ var JSFOURMIS = JSFOURMIS || {};
 		this.kanvasObj = kanvasObj;
 		this.parentObj = parentObj;
 		this.quantitee = quantitee || 1;
+		
+		// Test KNOO perfs 
+		this.prop_estDessinable = this.parentObj instanceof JSFOURMIS.Kanvas;
 	};
 	
 	/**
@@ -33,13 +36,12 @@ var JSFOURMIS = JSFOURMIS || {};
 		x : 0,
 		y : 0,
 		quantitee : 0,
+		
+		prop_estDessinable: true, // Test KNOO perfs
 		estDessinable : function() {
 			// Déssiné que si gisant sur le kanvas
-			if(! this.parentObj instanceof JSFOURMIS.Kanvas) {
-				return false;
-			} else {
-				return true;
-			}
+			this.prop_estDessinable = this.parentObj instanceof JSFOURMIS.Kanvas;
+			return this.prop_estDessinable;
 		},
 		
 		preleve: function (quantitee) {
