@@ -39,11 +39,10 @@ var JSFOURMIS = JSFOURMIS || {};
 			 */
 			setPixel : function(x, y, couleur) {
 				var index = (x + y * this.imageData.width) * 4;
-				couleur.a = couleur.a || 0xff;
 				this.imageData.data[index + 0] = couleur.r;
 				this.imageData.data[index + 1] = couleur.g;
 				this.imageData.data[index + 2] = couleur.b;
-				this.imageData.data[index + 3] = couleur.a;
+				this.imageData.data[index + 3] = couleur.a || 0xff;
 			},
 
 			/**
@@ -235,7 +234,7 @@ var JSFOURMIS = JSFOURMIS || {};
 				for (var i = this.entites.nourritures.length - 1; i >= 0; i--){
 					// Test KNOO perfs
 					//if(this.entites.nourritures[i].estDessinable()) {
-					if( this.entites.nourritures[i].estDessinable === true &&
+					if( this.entites.nourritures[i].prop_estDessinable === true &&
 						this.entites.nourritures[i].x === x &&
 						this.entites.nourritures[i].y === y) {
 								return true;

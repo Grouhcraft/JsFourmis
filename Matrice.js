@@ -113,29 +113,29 @@ var JSFOURMIS = JSFOURMIS || {};
 			if (angle === JSFOURMIS.AnglesRotation.DROITE) {
 				var w = this.h;
 				var h = this.w;
-				for (var x = h-1; x >=0; x--) {
-					for (var y = w-1; y >=0; y--) {
-						nouvelleMatrice[x * w + y] = this.data[y * h + x];
+				for (var x = w-1; x >=0; x--) {
+					for (var y = h-1; y >=0; y--) {
+						nouvelleMatrice[y * w + x] = this.data[x * h + y];
 					}
 				}
 				this.w = w;
 				this.h = h;
 			}
-			else if (angle === JSFOURMIS.AnglesRotation.DEMITOUR) {
+			else if (angle === JSFOURMIS.AnglesRotation.DEMITOUR) { ///KNOO Jamais utilisé ?? a vérifier
 				var w = this.w;
 				var h = this.h;
 				for (var x = h-1; x >= 0 ; x--) {
 					for (var y = w-1; y >=0 ; y--) {
-						nouvelleMatrice[x * w + y] = this.data[h-x-1 * w + w-y-1];
+						nouvelleMatrice[(h-x-1) * w + w-y-1] = this.data[x * w + y];
 					}
 				}
 			}
 			else if (angle === JSFOURMIS.AnglesRotation.GAUCHE) {
 				var w = this.h;
 				var h = this.w;
-				for (var x = h-1; x >= 0; x--) {
-					for (var y = w-1; y >= 0; y--) {
-						nouvelleMatrice[w-y-1 * w + h-x-1] = this.data[x * h + y];
+				for (var x = this.h-1; x >= 0; x--) {
+					for (var y = this.w-1; y >= 0; y--) {
+						nouvelleMatrice[(h-y-1) * w + w-x-1] = this.data[x * h + y];
 					}
 				}
 				this.w = w;

@@ -12,7 +12,7 @@ JSFOURMIS.Parametres = {
 		
 	nbFourmis: {
 		min: 0,
-		max: 500,
+		max: 5000,
 		steps: 500,
 		valeur: 60,
 		label: 'Nombre de fourmis',
