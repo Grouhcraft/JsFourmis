@@ -68,11 +68,11 @@ var JSFOURMIS = JSFOURMIS || {};
 			return agrandi;
 		},
 		
-		// KNOO: Mis quelques optimisations, impact à voir..
-		// (variables d'avantage locales, comparaison strict (===) et for() optimisés)
-		// Evidament, s'il était possible de NE PAS instancier une nouvelle matrice à 
-		// chaque fois... 
-		rotation : function(angle) {
+		/**
+		 * @deprecated
+		 * @see rotation()
+		 */ 
+		_old_rotation : function(angle) {
 			if (angle === JSFOURMIS.AnglesRotation.DROITE) {
 				var tourne = new JSFOURMIS.Matrice(this.w, this.h, []);
 				for (var x = this.h-1; x >=0; x--) {
@@ -104,11 +104,9 @@ var JSFOURMIS = JSFOURMIS || {};
 		},
 		
 		/**
-		 * FIXME:TODO: probleme avec la rotation gauche (et demi-tour ? pas essayé)
-		 * La rotation droite est OK. 
-		 * Si tu peux jeter un oeil..
+		 * tourne la matrice
 		 */
-		rotation_optimise : function(angle) {
+		rotation : function(angle) {
 			var nouvelleMatrice = new Array(this.data.length); // déjà la bonne taille
 			if (angle === JSFOURMIS.AnglesRotation.DROITE) {
 				var w = this.h;
@@ -141,11 +139,8 @@ var JSFOURMIS = JSFOURMIS || {};
 				this.w = w;
 				this.h = h;
 			}
-			delete this.data; // utile ???
+			delete this.data; //FIXME: utile ??? a verifier
 			this.data = nouvelleMatrice;
-			// éventuellement:
-			//	return this;
-			// pour préserver la compatibilité
 		}
 	};
 })();

@@ -21,7 +21,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		this.parentObj = parentObj;
 		this.quantitee = quantitee || 1;
 		
-		// Test KNOO perfs 
+		// déssiné que si non-transporté, etc..
 		this.prop_estDessinable = this.parentObj instanceof JSFOURMIS.Kanvas;
 	};
 	
@@ -37,9 +37,9 @@ var JSFOURMIS = JSFOURMIS || {};
 		y : 0,
 		quantitee : 0,
 		
-		prop_estDessinable: true, // Test KNOO perfs
+		// déssiné que si non-transporté, etc..
+		prop_estDessinable: true,	
 		estDessinable : function() {
-			// Déssiné que si gisant sur le kanvas
 			this.prop_estDessinable = this.parentObj instanceof JSFOURMIS.Kanvas;
 			return this.prop_estDessinable;
 		},
