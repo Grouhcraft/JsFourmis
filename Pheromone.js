@@ -10,7 +10,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		this.kanvasObj = kanvasObj;
 		options = options || {};
 		this.quantite = options.quantite || 1;
-		this.type = options.type || 1;
+		this.type = options.type || JSFOURMIS.TypesPheromones.ALLER;
 		this.x = options.x || 0;
 		this.y = options.y || 0;
 		this.duree = options.duree || -1;
@@ -18,13 +18,14 @@ var JSFOURMIS = JSFOURMIS || {};
 		if (this.type == JSFOURMIS.TypesPheromones.ALLER) {
 			this.couleur = { r:220, g:100, b:220, a:0xff };
 		}
+		this.matrice = new JSFOURMIS.Matrice(1,1,[1]);
 	};
 	
 	JSFOURMIS.Pheromone.prototype = {
 		kanvasObj: {},
 		x: 0,
 		y: 0,
-		couleur: { r:127, g:0, b:127, a:0xff },
+		couleur: { r:200, g:200, b:0, a:100 }, // jaune
 		numero: 0,
 		quantite: 0,
 		duree: 0,
@@ -33,12 +34,9 @@ var JSFOURMIS = JSFOURMIS || {};
 			return true;
 		},
 		
+		matrice: {},
 		dessine: function () {
-			var data = [0,1,0,
-						1,0,1,
-						0,1,0];
-			var matrice = new JSFOURMIS.Matrice(3,3, data);
-			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
+			this.kanvasObj.dessineForme(this.matrice, this.x, this.y, this.couleur);
 		},
 		
 		/**

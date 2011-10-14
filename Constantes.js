@@ -1,11 +1,6 @@
 var JSFOURMIS = JSFOURMIS || {};
 (function() {
-	
-	JSFOURMIS.Constantes = {
-			PAS_PHEROMONES_NOURRITURE : 10,
-			DUREE_PHEROMONES_NOURRITURE : 200
-	}
-	
+		
 	JSFOURMIS.Directions = {
 			NORD : 1,
 			SUD : -1,
@@ -29,5 +24,7 @@ var JSFOURMIS = JSFOURMIS || {};
 	JSFOURMIS.FormesObstacles = {
 			CARRE: 1
 	};
+	
+	JSFOURMIS.ILLIMITE = -1;
 	
 })();

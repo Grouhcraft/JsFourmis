@@ -113,18 +113,29 @@ var JSFOURMIS = JSFOURMIS || {};
 				} 
 				else { // Oui..
 					
-					// Nourriture à proximité ? alors on se place dans sa direction
+					// Nourriture ou phéromones ? à proximité ? alors on se place dans sa direction
 					var aTrouveUneDirectionInteressante = false;
 					var vision = this.champVision();
 					for (var sens in vision) {
+						
+						// Nourriture ?
 						if(this.kanvasObj.ilYADeLaNourriture(vision[sens].x, vision[sens].y)) {
 							this.direction = vision[sens].direction;
 							aTrouveUneDirectionInteressante = true;
 							break;
-						} 	
+						}
+						
+						// de 2ème importance apres la bouffe: Phéromons ?
+						else if (this.kanvasObj.ilYADesPheromones(vision[sens].x, vision[sens].y, JSFOURMIS.TypesPheromones.NOURRITURE)) {
+							this.direction = vision[sens].direction;
+							aTrouveUneDirectionInteressante = true;
+							break;							
+						}
 					}
+					
 					// Pas trouvé de bouffe..
-					if(!aTrouveUneDirectionInteressante) {
+					if(!aTrouveUneDirectionInteressante) {	 
+						
 						// Déplacement aléatoire
 						if(this.kanvasObj.random(1,100) < this.deplacement.chancesDeFaireDemiTour) {
 							 this.direction = - this.direction;
@@ -137,18 +148,27 @@ var JSFOURMIS = JSFOURMIS || {};
 						}
 					}
 				}
-			}
-				else { // Retour à la fourmilière (this.aller == false)
+				
+			} else { // Retour à la fourmilière (this.aller == false)
+				 
 				this.direction = this.directionVersFoyer();
-				if (this.age % JSFOURMIS.Constantes.PAS_PHEROMONES_NOURRITURE == 0) {
-					this.posePheromone(JSFOURMIS.TypesPheromones.NOURRITURE,
-							JSFOURMIS.Constantes.DUREE_PHEROMONES_NOURRITURE);
+				if (this.age % JSFOURMIS.Parametres.PAS_PHEROMONES_NOURRITURE.valeur === 0) {
+					this.posePheromone(
+						JSFOURMIS.TypesPheromones.NOURRITURE,
+						JSFOURMIS.Parametres.DUREE_PHEROMONES_NOURRITURE.valeur);
+				}
 			}
-		}
+			
 			var pos = this.prochainePosition(this.deplacement.distanceAParcourirParFourmis);
 			var directionsExclues = [];
+			var limiteSecurite=50; 
+			var compteur=0;
+			
 			// Lorsque l'on touche le bord ou un obstacle, on change de direction
-			while (!this.kanvasObj.estDansLaZone(pos.x, pos.y) || this.rencontreObstacle(pos.x, pos.y)) {
+			while (!this.kanvasObj.estDansLaZone(pos.x, pos.y) || 
+					this.rencontreObstacle(pos.x, pos.y) ||
+					compteur > limiteSecurite ) {
+						
 				var dir = this.direction;
 				directionsExclues.push(dir);
 				this.direction = this.choisiUneDirectionAuHasardSauf(directionsExclues);
@@ -156,6 +176,7 @@ var JSFOURMIS = JSFOURMIS || {};
 					break;
 				}
 				pos = this.prochainePosition(this.deplacement.distanceAParcourirParFourmis);
+				compteur++;
 			}
 			
 			// effectue son pas.
@@ -222,7 +243,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		},
 		
 		/**
-		 *  Avec de <distance> dans la direction enregistrée
+		 *  Avance de <distance> dans la direction enregistrée
 		 */
 		avanceDansSaDirection: function (distance) {
 			distance = distance || 1;
@@ -242,8 +263,11 @@ var JSFOURMIS = JSFOURMIS || {};
 		},
 		
 		rencontreObstacle: function(x, y)  {
+			var hauteur;
+			var largeur;
 			for (var i = this.kanvasObj.entites.obstacles.length -1; i >= 0; i--) {
-				if (this.direction==JSFOURMIS.Directions.EST || this.direction==JSFOURMIS.Directions.OUEST) {
+				if (this.direction === JSFOURMIS.Directions.EST || 
+					this.direction === JSFOURMIS.Directions.OUEST) {
 					hauteur = 5;
 					largeur = 7;
 				}
@@ -286,12 +310,6 @@ var JSFOURMIS = JSFOURMIS || {};
 					break;
 				}
 			}
-			//for(var nourriture in this.kanvasObj.entites.nourritures) {
-				//if(nourriture.x === this.x && nourriture.y === this.y) {
-					//nourriture.preleve(1);
-					//break;
-				//}
-			//}
 		},
 		
 		directionVersFoyer: function() {
@@ -330,9 +348,9 @@ var JSFOURMIS = JSFOURMIS || {};
 			var posDroite;
 			var posGauche;
 			var posDevant;
-			
-			versAvant = versAvant || 1;
-			distance = distance || 1; 
+
+			versAvant = versAvant || JSFOURMIS.Parametres.fourmi_vision_versAvant.valeur;
+			distance = distance || JSFOURMIS.Parametres.fourmi_vision_rayon.valeur; 
 			
 			switch(this.direction) {
 				case JSFOURMIS.Directions.NORD :
@@ -433,8 +451,8 @@ var JSFOURMIS = JSFOURMIS || {};
 		},
 		
 		dessineChampVision : function () {
-			var rayon = 7;
-			var versAvant = 5;
+			var rayon = JSFOURMIS.Parametres.fourmi_vision_rayon.valeur;
+			var versAvant = JSFOURMIS.Parametres.fourmi_vision_versAvant.valeur;
 			var champVision = this.champVision(rayon, versAvant);
 			var t = [];
 			var tailleChamp = rayon*rayon;

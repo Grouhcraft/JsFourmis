@@ -27,3 +27,11 @@ input.slidersInputs {
 	font-weight: bold;
 	color: #333;	
 }
+
+textarea#logArea {
+	width: 80%;
+	font-size: small;
+	font-family: System;
+	border: 1px dashed black;
+	height: 80px;
+}

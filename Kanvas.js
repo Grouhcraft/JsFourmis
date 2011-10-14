@@ -240,6 +240,23 @@ var JSFOURMIS = JSFOURMIS || {};
 				}
 				return false;
 			},
+			
+			log: function(txt) {
+				this.logArea.value += txt + "\n"; 
+				this.logArea.scrollTop = this.logArea.scrollHeight;
+			},
+			
+			ilYADesPheromones: function (x,y, typePheromone) {
+				for (var i = this.entites.pheromones.length - 1; i >= 0; i--){
+					if( /*this.entites.pheromones[i].type == typePheromone &&*/
+						this.entites.pheromones[i].x === x &&
+						this.entites.pheromones[i].y === y) {
+								//this.log("Pheromone trouvé à " + x + "/" + y); 
+								return true;
+					}
+				}
+				return false;
+			},
 
 			/**
 			 * Efface tout le contenu du canvas
@@ -276,16 +293,16 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * chacune d'entre elles
 			 */
 			 entites : {
-				fourmis : this.fourmis,
+				pheromones: this.pheromones,
 				nourritures: this.nourritures,
-			    pheromones: this.pheromones,
+				fourmis : this.fourmis
 			},
 
 			/**
 			 * Boucle principale
 			 */
 			main : function() {
-				if (this.nbCycles != -1) {
+				if (this.nbCycles != JSFOURMIS.ILLIMITE) {
 					JSFOURMIS.Kanvas.compteurCycles++;
 				}
 				this.effaceTout();
@@ -310,14 +327,15 @@ var JSFOURMIS = JSFOURMIS || {};
 					}
 				}
 				
-				if (this.entites.pheromones!=null) {
-				for (i = this.entites.pheromones.length -1; i >=0; i--) {
-					this.entites.pheromones[i].duree--;
-					if (this.entites.pheromones[i].duree<=0) {
-						this.entites.pheromones[i].disparait();
+				if (this.entites.pheromones!=null &&
+					JSFOURMIS.Parametres.DUREE_PHEROMONES_NOURRITURE.valeur !== JSFOURMIS.ILLIMITE ) {
+					for (i = this.entites.pheromones.length -1; i >=0; i--) {
+						this.entites.pheromones[i].duree--;
+						if (this.entites.pheromones[i].duree === 0) {
+							this.entites.pheromones[i].disparait();
+						}
 					}
 				}
-			}
 				this.dessineTout();
 				
 				if (this.running) {
@@ -416,10 +434,14 @@ var JSFOURMIS = JSFOURMIS || {};
 				startTime: 0
 			},
 			
+			premiereFois: true,
+			
 			/**
 			 * Initialisation Déclenché au clic du bouton start
 			 */
 			start : function() {
+				if(!this.premiereFois) this.reset();
+				 
 				// Récup du canvas et de sa taille
 				this.canvas = document.getElementById("canvas");
 				this.ctx = this.canvas.getContext("2d");
@@ -429,7 +451,7 @@ var JSFOURMIS = JSFOURMIS || {};
 				// on place la fourmilière au centre
 				this.foyer.y = this.height / 2;
 				this.foyer.x = this.width / 2;
-
+				
 				// cré une "imageData", zone de travail par pixel
 				this.imageData = this.ctx.createImageData(this.width, this.height); // /!\
 
@@ -438,7 +460,8 @@ var JSFOURMIS = JSFOURMIS || {};
 				this.nourriture.nbInitialDePoints = JSFOURMIS.Parametres.nourriture_nbInitialDePoints.valeur;
 				this.nourriture.nombreParPoint.min = JSFOURMIS.Parametres.nourriture_nombreParPoint_min.valeur;
 				this.nourriture.nombreParPoint.max = JSFOURMIS.Parametres.nourriture_nombreParPoint_max.valeur;
-
+				this.delaiCycle = JSFOURMIS.Parametres.delaiCycle.valeur;
+				
 				// Curseur & autre broutilles "systeme"
 				this.curseur.matrice = new JSFOURMIS.Matrice(7,7,[
 									0,0,1,1,1,0,0,
@@ -449,17 +472,20 @@ var JSFOURMIS = JSFOURMIS || {};
 									0,1,0,0,0,1,0,
 									0,0,1,1,1,0,0]).agrandir(3);
 
-				this.navigateur.totalCanvasOffset = $totalOffset(this.canvas); 
-				this.canvas.addEventListener('mousemove', bind(this, this.mouse.onMove), false);
-				this.canvas.addEventListener('mouseover', bind(this, this.mouse.onOver), false);
-				this.canvas.addEventListener('mouseout', bind(this, this.mouse.onOut), false);
-				this.canvas.addEventListener('click', bind(this, this.mouse.onClick), false);
+				this.navigateur.totalCanvasOffset = $totalOffset(this.canvas);
+				if(this.premiereFois) { 
+					this.canvas.addEventListener('mousemove', bind(this, this.mouse.onMove), false);
+					this.canvas.addEventListener('mouseover', bind(this, this.mouse.onOver), false);
+					this.canvas.addEventListener('mouseout', bind(this, this.mouse.onOut), false);
+					this.canvas.addEventListener('click', bind(this, this.mouse.onClick), false);
+				}
 
 				// A chaque nouveau départ, on ré-init le compteur
 				JSFOURMIS.Kanvas.compteurCycles = 0;
 
 				//var options = {x:50, y:70, hauteur:21, largeur:31};
 				//this.entites.obstacles[0]=new JSFOURMIS.Obstacle(this,options);
+				this.logArea = $('logArea');
 				
 				// dispersion du mangé
 				this.disperseDeLaNourriture();
@@ -497,8 +523,16 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * Stoppe l'écoulement des cycles
 			 */
 			stop : function() {
-				JSFOURMIS.Kanvas.compteurCycles = this.nbCycles + 1;
 				this.running = false;
+				this.premiereFois = false;
+			},
+			
+			reset: function () {
+				JSFOURMIS.Kanvas.compteurCycles = 0;
+				this.effaceTout();
+				for(var nom_entite in this.entites) {
+					this.entites[nom_entite].length = 0;
+				}
 			}
 		};
 })();
