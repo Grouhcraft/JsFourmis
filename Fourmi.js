@@ -115,21 +115,22 @@ var JSFOURMIS = JSFOURMIS || {};
 					
 					// Nourriture ou phéromones ? à proximité ? alors on se place dans sa direction
 					var aTrouveUneDirectionInteressante = false;
-					var vision = this.champVision();
-					for (var sens in vision) {
-						
-						// Nourriture ?
-						if(this.kanvasObj.ilYADeLaNourriture(vision[sens].x, vision[sens].y)) {
-							this.direction = vision[sens].direction;
-							aTrouveUneDirectionInteressante = true;
-							break;
-						}
-						
-						// de 2ème importance apres la bouffe: Phéromons ?
-						else if (this.kanvasObj.ilYADesPheromones(vision[sens].x, vision[sens].y, JSFOURMIS.TypesPheromones.NOURRITURE)) {
-							this.direction = vision[sens].direction;
-							aTrouveUneDirectionInteressante = true;
-							break;							
+
+					var limitesVision = this.limitesVision();
+					for (var i=limitesVision.minX; i<limitesVision.maxX; i++) {
+						for (var j=limitesVision.minY; j<limitesVision.maxY; j++) {
+							// Nourriture ?
+							if(this.kanvasObj.ilYADeLaNourriture(i, j)) {
+								this.direction = this.directionParRapport(i, j, limitesVision.minX, limitesVision.maxX, limitesVision.minY, limitesVision.maxY);
+								aTrouveUneDirectionInteressante = true;
+								break;
+							}
+							// de 2ème importance apres la bouffe: Phéromones ?
+							else if (this.kanvasObj.ilYADesPheromones(i, j, JSFOURMIS.TypesPheromones.NOURRITURE)) {
+								this.direction = this.directionParRapport(i, j, limitesVision.minX, limitesVision.maxX, limitesVision.minY, limitesVision.maxY);
+								aTrouveUneDirectionInteressante = true;
+								break;							
+							}
 						}
 					}
 					
@@ -336,57 +337,6 @@ var JSFOURMIS = JSFOURMIS || {};
 		},
 		
 		/**
-		 * Retourne les coordonées et directions des points dans le champ de vision
-		 * note: la fourmi DOIT avoir une direction (!= aucune)
-		 * @return <code>{
-		 *		devant: {x, y, direction}
-		 *		droite: {x, y, direction}
-		 *		gauche: {x, y, direction}
-		 * }</code>
-		 */
-		champVision : function (distance, versAvant) {
-			var posDroite;
-			var posGauche;
-			var posDevant;
-
-			versAvant = versAvant || JSFOURMIS.Parametres.fourmi_vision_versAvant.valeur;
-			distance = distance || JSFOURMIS.Parametres.fourmi_vision_rayon.valeur; 
-			
-			switch(this.direction) {
-				case JSFOURMIS.Directions.NORD :
-					posDevant = {x : this.x-1, y : this.y-distance, direction: JSFOURMIS.Directions.NORD };
-					posDroite = {x: this.x-distance-1, y : this.y-versAvant, direction: JSFOURMIS.Directions.EST };
-					posGauche = {x: this.x+distance-1, y : this.y-versAvant, direction: JSFOURMIS.Directions.OUEST };
-					break;
-				case JSFOURMIS.Directions.SUD :
-					posDevant = {x : this.x-1, y : this.y+distance, direction: JSFOURMIS.Directions.SUD };
-					posDroite = {x: this.x+distance-1, y : this.y+versAvant, direction: JSFOURMIS.Directions.OUEST };
-					posGauche = {x: this.x-distance-1, y : this.y+versAvant, direction: JSFOURMIS.Directions.EST };
-					break;
-				case JSFOURMIS.Directions.EST :
-					posDevant = {x: this.x-distance, y : this.y-1, direction: JSFOURMIS.Directions.EST };
-					posDroite = {x : this.x-versAvant, y : this.y+distance-1, direction: JSFOURMIS.Directions.SUD };
-					posGauche = {x : this.x-versAvant, y : this.y-distance-1, direction: JSFOURMIS.Directions.NORD };
-					break;
-				case JSFOURMIS.Directions.OUEST:
-					posDevant = {x: this.x+distance, y : this.y-1, direction: JSFOURMIS.Directions.OUEST };
-					posDroite = {x : this.x+versAvant, y : this.y-distance-1, direction: JSFOURMIS.Directions.NORD };
-					posGauche = {x : this.x+versAvant, y : this.y+distance-1, direction: JSFOURMIS.Directions.SUD };
-					break;
-				default :
-					posDevant = {x: this.x, y : this.y, direction: JSFOURMIS.Directions.AUCUNE };
-					posDroite = {x : this.x, y : this.y, direction: JSFOURMIS.Directions.AUCUNE };
-					posGauche = {x : this.x, y : this.y, direction: JSFOURMIS.Directions.AUCUNE };
-					//throw("Aucune direction n'est encore fixée..");
-			}
-			return {
-				devant: posDevant,
-				droite: posDroite,
-				gauche: posGauche
-			};
-		},
-		
-		/**
 		 * Retourne les coordonnées de la prochaine position
 		 * @return {x,y} 
 		 */
@@ -450,21 +400,144 @@ var JSFOURMIS = JSFOURMIS || {};
 			//this.dessineChampVision();
 		},
 		
-		dessineChampVision : function () {
-			var rayon = JSFOURMIS.Parametres.fourmi_vision_rayon.valeur;
+		/**
+		 * Retourne les limites min et max en x et en y du champ de vision
+		 * note: la fourmi DOIT avoir une direction (!= aucune), sinon elle est aveugle
+		 * @return <code>{minX, maxX, minY, maxY}</code>
+		 */
+		limitesVision : function(){
 			var versAvant = JSFOURMIS.Parametres.fourmi_vision_versAvant.valeur;
-			var champVision = this.champVision(rayon, versAvant);
-			var t = [];
-			var tailleChamp = rayon*rayon;
-			for (var i=0; i<tailleChamp; i++) {
-				t.push(1);
+			var distance = JSFOURMIS.Parametres.fourmi_vision_rayon.valeur;
+			var minX, minY, maxX, maxY;
+			switch(this.direction) {
+				case JSFOURMIS.Directions.NORD :
+					minX = this.x-distance;
+					maxX = this.x+distance+1;
+					minY = this.y-distance-versAvant;
+					maxY = this.y-versAvant;
+					break;
+				case JSFOURMIS.Directions.SUD :
+					minX = this.x-distance;
+					maxX = this.x+distance+1;
+					minY = this.y+versAvant;
+					maxY = this.y+versAvant+distance;
+					break;
+				case JSFOURMIS.Directions.EST : // attention, l'est c'est l'ouest et inversement
+					minX = this.x-versAvant-distance;
+					maxX = this.x-versAvant;
+					minY = this.y-distance;
+					maxY = this.y+distance+1;
+					break;
+				case JSFOURMIS.Directions.OUEST:
+					minX = this.x+versAvant;
+					maxX = this.x+versAvant+distance;
+					minY = this.y-distance;
+					maxY = this.y+distance+1;
+					break;
+				default :
+					minX = this.x;
+					maxX = this.x;
+					minY = this.y;
+					maxY = this.y;
 			}
-			var m = new JSFOURMIS.Matrice(rayon,rayon,t);
-			this.kanvasObj.dessineForme(m, champVision.devant.x,  champVision.devant.y, { r:255, g:255, b:0, a:0xff });
-			this.kanvasObj.dessineForme(m, champVision.droite.x,  champVision.droite.y, { r:255, g:128, b:0, a:0xff });
-			this.kanvasObj.dessineForme(m, champVision.gauche.x,  champVision.gauche.y, { r:128, g:255, b:0, a:0xff });
+			return {minX: minX, maxX: maxX, minY: minY, maxY: maxY};
 		},
 		
+		/**
+		 * Détermine dans quelle direction la fourmi doit s'orienter pour aller vers le point de coordonnées (i,j)
+		 * situé dans le rectangle [minX, maxX, minY, maxY] qui constitue son champ de vision
+		 */
+		directionParRapport : function (i, j, minX, maxX, minY, maxY) {
+			switch(this.direction) {
+			case JSFOURMIS.Directions.NORD :
+				if(maxY-j<=this.x-i) {
+					return JSFOURMIS.Directions.EST;
+				}
+				else {
+					if(maxY-j>i-this.x) {
+						return JSFOURMIS.Directions.NORD;
+					}
+					else {
+						return JSFOURMIS.Directions.OUEST;
+					}
+				}
+				break;
+			case JSFOURMIS.Directions.SUD :
+				if(j-minY<this.x-i) {
+					return JSFOURMIS.Directions.EST;
+				}
+				else {
+					if(j-minY>=i-this.x) {
+						return JSFOURMIS.Directions.SUD;
+					}
+					else {
+						return JSFOURMIS.Directions.OUEST;
+					}
+				}
+				break;
+			case JSFOURMIS.Directions.EST :
+				if(maxX-i<=this.y-j) {
+					return JSFOURMIS.Directions.NORD;
+				}
+				else {
+					if(maxX-i>j-this.y) {
+						return JSFOURMIS.Directions.EST;
+					}
+					else {
+						return JSFOURMIS.Directions.SUD;
+					}
+				}
+				break;
+			case JSFOURMIS.Directions.OUEST:
+				if(i-minX<this.y-j) {
+					return JSFOURMIS.Directions.NORD;
+				}
+				else {
+					if(i-minX>=j-this.y) {
+						return JSFOURMIS.Directions.OUEST;
+					}
+					else {
+						return JSFOURMIS.Directions.SUD;
+					}
+				}
+				break;
+			default : 
+				return this.direction;
+			}
+			return this.direction;
+		},
+		
+		/**
+		 * Permet de tester la/les fonction(s) qui calcule(nt) le champ de vision
+		 */
+		dessineChampVision : function () {
+			var limitesVision = this.limitesVision();
+			for (var i=limitesVision.minX; i<limitesVision.maxX; i++) {
+				for (var j=limitesVision.minY; j<limitesVision.maxY; j++) {
+					if (this.directionParRapport(i, j, limitesVision.minX, limitesVision.maxX, limitesVision.minY, limitesVision.maxY) == JSFOURMIS.Directions.NORD) {
+						this.kanvasObj.setPixel(i, j, { r:128, g:255, b:0, a:0xff });
+					}
+					else {
+						if (this.directionParRapport(i, j, limitesVision.minX, limitesVision.maxX, limitesVision.minY, limitesVision.maxY) == JSFOURMIS.Directions.SUD) {
+							this.kanvasObj.setPixel(i, j, { r:255, g:128, b:0, a:0xff });
+						}
+						else
+						{
+							if(this.directionParRapport(i, j, limitesVision.minX, limitesVision.maxX, limitesVision.minY, limitesVision.maxY) == JSFOURMIS.Directions.EST) {
+								this.kanvasObj.setPixel(i, j, { r:200, g:200, b:200, a:0xff });
+							}
+							else {
+								this.kanvasObj.setPixel(i, j, { r:200, g:200, b:0, a:0xff });
+							}
+						}
+					}
+				}
+			}
+		},
+		
+		/**
+		 * Pose une phéromone à l'emplacement actuel de la fourmi
+		 */
 		posePheromone:function (type, duree) {
 			var options = {type: type, duree: duree, x: this.x, y : this.y};
 			this.kanvasObj.entites.pheromones.push(new JSFOURMIS.Pheromone(this.kanvasObj, options));

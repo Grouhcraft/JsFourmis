@@ -48,7 +48,7 @@ JSFOURMIS.Parametres = {
 	
 	// Si valeur -1, illimité 
 	DUREE_PHEROMONES_NOURRITURE: {
-		valeur: 500,
+		valeur: 300,
 		min: 100,
 		max: 1200,
 		steps: 23,
@@ -58,29 +58,29 @@ JSFOURMIS.Parametres = {
 	},
 	
 	PAS_PHEROMONES_NOURRITURE: {
-		valeur: 1,
+		valeur: 3,
 		min: 1,
 		max: 15,
 		steps: 15,
-		label: 'distance entre 2 Phéromones',
+		label: 'Distance entre 2 Phéromones',
 		parametrable: true
 	},
 	
 	fourmi_vision_rayon: {
-		valeur: 3,
+		valeur: 4,
 		min: 1,
 		max: 30,
 		steps: 30,
-		label: 'fourmi_vision_rayon',
+		label: 'Rayon du champ de vision',
 		parametrable: true
 	},
 	
 	fourmi_vision_versAvant: {
-		min: 1, 
-		max: 30,
-		steps: 30,
-		valeur: 5,
-		label: 'fourmi_vision_versAvant',
+		min: 0, 
+		max: 3,
+		steps: 4,
+		valeur: 0,
+		label: 'Vision vers l\'avant ?',
 		parametrable: true
 	},
 	
