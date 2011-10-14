@@ -49,11 +49,11 @@ var JSFOURMIS = JSFOURMIS || {};
 				throw ("Impossible de prélever plus de nourriture que ce que y'en a voyons !");
 			}
 			else if (quantitee < this.quantitee) {
-				this.kanvasObj.localiseNourriture[this.x + this.y * this.kanvasObj.imageData.width]--;
+				this.kanvasObj.localiseNourriture[this.x + this.y * this.kanvasObj.width]--;
 				this.quantitee--;
 			}
 			else {
-				this.kanvasObj.localiseNourriture[this.x + this.y * this.kanvasObj.imageData.width]=0;
+				this.kanvasObj.localiseNourriture[this.x + this.y * this.kanvasObj.width] = 0;
 				this.meurt();
 			}
 		},

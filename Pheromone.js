@@ -20,7 +20,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		}
 		this.matrice = new JSFOURMIS.Matrice(1,1,[1]);
 		if (this.type==JSFOURMIS.TypesPheromones.NOURRITURE) {
-			this.kanvasObj.localisePheromonesNourriture[this.x + this.y * this.kanvasObj.imageData.width]++;
+			this.kanvasObj.localisePheromonesNourriture[this.x + this.y * this.kanvasObj.width]++;
 		}
 	};
 	
@@ -47,7 +47,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		 */
 		disparait : function() {
 			if (this.type==JSFOURMIS.TypesPheromones.NOURRITURE) {
-				this.kanvasObj.localisePheromonesNourriture[this.x + this.y * this.kanvasObj.imageData.width]--;
+				this.kanvasObj.localisePheromonesNourriture[this.x + this.y * this.kanvasObj.width]--;
 			}
 			this.kanvasObj.entites.pheromones.splice(this.numero,1);
 			for (var i=this.numero; i<this.kanvasObj.entites.pheromones.length; i++) {
