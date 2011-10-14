@@ -14,6 +14,12 @@ var JSFOURMIS = JSFOURMIS || {};
 			this.entites.nourritures = this.nourritures;
 			this.entites.pheromones = this.pheromones;
 			this.entites.obstacles = this.obstacles;
+			for (var y=0; y<this.imageData.length; y++) {
+				for (var x=0; x<this.imageData.width; x++) {
+					this.localiseNourriture[x + y * this.imageData.width]=0;
+					this.localisePheromonesNourriture[x + y * this.imageData.width]=0;
+				}
+			}	
 		};
 		/**
 		 * Méthodes publiques
@@ -27,6 +33,8 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * normalement.
 			 */
 			imageData : {},
+			localiseNourriture : [],
+			localisePheromonesNourriture : [],
 
 			/**
 			 * Dessine un pixel sur la zone de dessin.
@@ -145,6 +153,7 @@ var JSFOURMIS = JSFOURMIS || {};
 				pointCentral.y = y;
 				pointCentral.quantitee = this.random(this.nourriture.quantitee.min, this.nourriture.quantitee.max);
 				this.nourritures.push(pointCentral);
+				this.localiseNourriture[x + y * this.imageData.width] = pointCentral.quantitee;
 				
 				//Création des points autour
 				var maxEssais = 100;
@@ -170,6 +179,7 @@ var JSFOURMIS = JSFOURMIS || {};
 					pointAnnexe.y = py;
 					pointAnnexe.quantitee = this.random(this.nourriture.quantitee.min, this.nourriture.quantitee.max);
 					this.nourritures.push(pointAnnexe);	
+					this.localiseNourriture[px + py * this.imageData.width] = pointAnnexe.quantitee;
 				}
 			},
 
@@ -231,14 +241,20 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 
 			ilYADeLaNourriture : function(x, y) {
-				for (var i = this.entites.nourritures.length - 1; i >= 0; i--){
+				/*for (var i = this.entites.nourritures.length - 1; i >= 0; i--){
 					if( this.entites.nourritures[i].prop_estDessinable === true &&
 						this.entites.nourritures[i].x === x &&
 						this.entites.nourritures[i].y === y) {
 								return true;
 					}
 				}
-				return false;
+				return false;*/
+				if (this.localiseNourriture[x + y * this.imageData.width]>0) {
+					return true;
+				}
+				else {
+					return false;
+				}
 			},
 			
 			log: function(txt) {
@@ -247,12 +263,21 @@ var JSFOURMIS = JSFOURMIS || {};
 			},
 			
 			ilYADesPheromones: function (x,y, typePheromone) {
-				for (var i = this.entites.pheromones.length - 1; i >= 0; i--){
-					if( /*this.entites.pheromones[i].type == typePheromone &&*/
-						this.entites.pheromones[i].x === x &&
-						this.entites.pheromones[i].y === y) {
-								//this.log("Pheromone trouvé à " + x + "/" + y); 
-								return true;
+				//for (var i = this.entites.pheromones.length - 1; i >= 0; i--){
+				//	if( /*this.entites.pheromones[i].type == typePheromone &&*/
+				//		this.entites.pheromones[i].x === x &&
+				//		this.entites.pheromones[i].y === y) {
+				//				//this.log("Pheromone trouvé à " + x + "/" + y); 
+				//				return true;
+				//	}
+				//}
+				//return false;
+				if (typePheromone==JSFOURMIS.TypesPheromones.NOURRITURE) {
+					if (this.localisePheromonesNourriture[x + y * this.imageData.width]>0) {
+						return true;
+					}
+					else {
+						return false;
 					}
 				}
 				return false;

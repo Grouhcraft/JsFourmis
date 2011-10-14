@@ -19,6 +19,9 @@ var JSFOURMIS = JSFOURMIS || {};
 			this.couleur = { r:220, g:100, b:220, a:0xff };
 		}
 		this.matrice = new JSFOURMIS.Matrice(1,1,[1]);
+		if (this.type==JSFOURMIS.TypesPheromones.NOURRITURE) {
+			this.kanvasObj.localisePheromonesNourriture[this.x + this.y * this.kanvasObj.imageData.width]++;
+		}
 	};
 	
 	JSFOURMIS.Pheromone.prototype = {
@@ -43,6 +46,9 @@ var JSFOURMIS = JSFOURMIS || {};
 		 * Fait disparaître la phéromone.
 		 */
 		disparait : function() {
+			if (this.type==JSFOURMIS.TypesPheromones.NOURRITURE) {
+				this.kanvasObj.localisePheromonesNourriture[this.x + this.y * this.kanvasObj.imageData.width]--;
+			}
 			this.kanvasObj.entites.pheromones.splice(this.numero,1);
 			for (var i=this.numero; i<this.kanvasObj.entites.pheromones.length; i++) {
 				this.kanvasObj.entites.pheromones[i].numero--;
