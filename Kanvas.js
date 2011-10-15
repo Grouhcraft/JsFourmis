@@ -243,12 +243,7 @@ var JSFOURMIS = JSFOURMIS || {};
 					}
 				}
 				return false;*/
-				if (this.localiseNourriture[x + y * this.width] > 0) {
-					return true;
-				}
-				else {
-					return false;
-				}
+				return this.localiseNourriture[x + y * this.width] > 0;
 			},
 			
 			log: function(txt) {
@@ -256,23 +251,22 @@ var JSFOURMIS = JSFOURMIS || {};
 				this.logArea.scrollTop = this.logArea.scrollHeight;
 			},
 			
+			getPheromoneAt: function (x, y, typePheromone) {
+				for (var i = this.entites.pheromones.length - 1; i >= 0; i--){
+					if( this.entites.pheromones[i].type === typePheromone &&
+						this.entites.pheromones[i].x === x &&
+						this.entites.pheromones[i].y === y) {
+							return this.entites.pheromones[i];
+					}
+				}
+			},
+			
+			/**
+			 * Renvoi la quantité de phéromones à l'emplacement donné
+			 */
 			ilYADesPheromones: function (x, y, typePheromone) {
-				//for (var i = this.entites.pheromones.length - 1; i >= 0; i--){
-				//	if( /*this.entites.pheromones[i].type == typePheromone &&*/
-				//		this.entites.pheromones[i].x === x &&
-				//		this.entites.pheromones[i].y === y) {
-				//				//this.log("Pheromone trouvé à " + x + "/" + y); 
-				//				return true;
-				//	}
-				//}
-				//return false;
-				if (typePheromone==JSFOURMIS.TypesPheromones.NOURRITURE) {
-					if (this.localisePheromonesNourriture[x + y * this.width] > 0) {
-						return true;
-					}
-					else {
-						return false;
-					}
+				if (typePheromone === JSFOURMIS.TypesPheromones.NOURRITURE) {
+					return this.localisePheromonesNourriture[x + y * this.width];
 				}
 				return false;
 			},
@@ -351,7 +345,7 @@ var JSFOURMIS = JSFOURMIS || {};
 					for (i = this.entites.pheromones.length -1; i >=0; i--) {
 						this.entites.pheromones[i].duree--;
 						if (this.entites.pheromones[i].duree === 0) {
-							this.entites.pheromones[i].disparait();
+							this.entites.pheromones[i].preleve();
 						}
 					}
 				}

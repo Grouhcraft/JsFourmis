@@ -110,29 +110,57 @@ var JSFOURMIS = JSFOURMIS || {};
 				// Déjà dans une direction ?
 				if(this.direction == JSFOURMIS.Directions.AUCUNE) {
 					this.direction = this.choisiUneDirectionAuHasard();
-				} 
-				else { // Oui..
+					
+					
+				} else { // Oui..
 					
 					// Nourriture ou phéromones ? à proximité ? alors on se place dans sa direction
 					var aTrouveUneDirectionInteressante = false;
 
+					// Recherche dans le champ de vision..
 					var limitesVision = this.limitesVision();
+					var pheromonesTrouvee = {quantite:0, x:0, y:0};
 					for (var i=limitesVision.minX; i<limitesVision.maxX; i++) {
 						for (var j=limitesVision.minY; j<limitesVision.maxY; j++) {
+							
 							// Nourriture ?
 							if(this.kanvasObj.ilYADeLaNourriture(i, j)) {
 								this.direction = this.directionParRapport(i, j, limitesVision.minX, limitesVision.maxX, limitesVision.minY, limitesVision.maxY);
 								aTrouveUneDirectionInteressante = true;
 								break;
 							}
-							// de 2ème importance apres la bouffe: Phéromones ?
-							else if (this.kanvasObj.ilYADesPheromones(i, j, JSFOURMIS.TypesPheromones.NOURRITURE)) {
-								this.direction = this.directionParRapport(i, j, limitesVision.minX, limitesVision.maxX, limitesVision.minY, limitesVision.maxY);
-								aTrouveUneDirectionInteressante = true;
-								break;							
+							
+							// de 2ème importance apres la bouffe: Phéromones
+							else {
+								
+								// Si on trouve des pheromone, on continue de chercher 
+								// en ne gardant que le pheromone le + fort 
+								if(this.kanvasObj.ilYADesPheromones(i, j, JSFOURMIS.TypesPheromones.NOURRITURE) > pheromonesTrouvee.quantite) {
+									pheromonesTrouvee.quantite = this.kanvasObj.ilYADesPheromones(i, j, JSFOURMIS.TypesPheromones.NOURRITURE);
+									pheromonesTrouvee.x = i;
+									pheromonesTrouvee.y = j;
+								}
 							}
 						}
 					}
+					
+					// Si n'a pas trouvé de nourriture
+					if(!aTrouveUneDirectionInteressante) {
+						if(pheromonesTrouvee.quantite > 0) {
+							
+							// % de suivre la piste relatif à la quantité
+							if(this.kanvasObj.random(1,100) < 5 * pheromonesTrouvee.quantite) {
+								this.direction = this.directionParRapport(
+									pheromonesTrouvee.x, 
+									pheromonesTrouvee.y, 
+									limitesVision.minX, 
+									limitesVision.maxX, 
+									limitesVision.minY, 
+									limitesVision.maxY);
+								aTrouveUneDirectionInteressante = true;
+							}
+						}
+					}							
 					
 					// Pas trouvé de bouffe..
 					if(!aTrouveUneDirectionInteressante) {	 
@@ -152,7 +180,37 @@ var JSFOURMIS = JSFOURMIS || {};
 				
 			} else { // Retour à la fourmilière (this.aller == false)
 				 
-				this.direction = this.directionVersFoyer();
+				 
+				// Déplacement aléatoire en direction générale du foyer
+				var aTrouveLeFoyer = false;
+				var limitesVision = this.limitesVision();
+				for (var i=limitesVision.minX; i<limitesVision.maxX; i++) {
+					for (var j=limitesVision.minY; j<limitesVision.maxY; j++) {
+						if(i === this.kanvasObj.foyer.x && j === this.kanvasObj.foyer.y) {
+							this.direction = this.directionVersFoyer();		
+							aTrouveLeFoyer = true;
+							break;					
+						}
+					}
+				}
+				if(!aTrouveLeFoyer) {			
+					if(this.kanvasObj.random(1,100) < 10) {
+						this.direction = this.directionVersFoyer();
+					} else {
+						if(this.kanvasObj.random(1,100) < this.deplacement.chancesDeFaireDemiTour) {
+							 this.direction = - this.direction;
+						} else if(this.kanvasObj.random(1,100) < this.deplacement.chanceDeChangerDeDirection) {
+							var nouvelleDirection = this.direction; 
+							while(nouvelleDirection == this.direction || nouvelleDirection == - this.direction) {
+								nouvelleDirection = this.choisiUneDirectionAuHasard();
+							}
+							this.direction = nouvelleDirection; 
+						}
+					}
+				}
+				
+				
+				// Pose de phéromone
 				if (this.age % JSFOURMIS.Parametres.PAS_PHEROMONES_NOURRITURE.valeur === 0) {
 					this.posePheromone(
 						JSFOURMIS.TypesPheromones.NOURRITURE,
@@ -449,60 +507,60 @@ var JSFOURMIS = JSFOURMIS || {};
 		 */
 		directionParRapport : function (i, j, minX, maxX, minY, maxY) {
 			switch(this.direction) {
-			case JSFOURMIS.Directions.NORD :
-				if(maxY-j<=this.x-i) {
-					return JSFOURMIS.Directions.EST;
-				}
-				else {
-					if(maxY-j>i-this.x) {
-						return JSFOURMIS.Directions.NORD;
-					}
-					else {
-						return JSFOURMIS.Directions.OUEST;
-					}
-				}
-				break;
-			case JSFOURMIS.Directions.SUD :
-				if(j-minY<this.x-i) {
-					return JSFOURMIS.Directions.EST;
-				}
-				else {
-					if(j-minY>=i-this.x) {
-						return JSFOURMIS.Directions.SUD;
-					}
-					else {
-						return JSFOURMIS.Directions.OUEST;
-					}
-				}
-				break;
-			case JSFOURMIS.Directions.EST :
-				if(maxX-i<=this.y-j) {
-					return JSFOURMIS.Directions.NORD;
-				}
-				else {
-					if(maxX-i>j-this.y) {
+				case JSFOURMIS.Directions.NORD :
+					if(maxY-j<=this.x-i) {
 						return JSFOURMIS.Directions.EST;
 					}
 					else {
-						return JSFOURMIS.Directions.SUD;
+						if(maxY-j>i-this.x) {
+							return JSFOURMIS.Directions.NORD;
+						}
+						else {
+							return JSFOURMIS.Directions.OUEST;
+						}
 					}
-				}
-				break;
-			case JSFOURMIS.Directions.OUEST:
-				if(i-minX<this.y-j) {
-					return JSFOURMIS.Directions.NORD;
-				}
-				else {
-					if(i-minX>=j-this.y) {
-						return JSFOURMIS.Directions.OUEST;
+					break;
+				case JSFOURMIS.Directions.SUD :
+					if(j-minY<this.x-i) {
+						return JSFOURMIS.Directions.EST;
 					}
 					else {
-						return JSFOURMIS.Directions.SUD;
+						if(j-minY>=i-this.x) {
+							return JSFOURMIS.Directions.SUD;
+						}
+						else {
+							return JSFOURMIS.Directions.OUEST;
+						}
 					}
-				}
-				break;
-			default : 
-				return this.direction;
+					break;
+				case JSFOURMIS.Directions.EST :
+					if(maxX-i<=this.y-j) {
+						return JSFOURMIS.Directions.NORD;
+					}
+					else {
+						if(maxX-i>j-this.y) {
+							return JSFOURMIS.Directions.EST;
+						}
+						else {
+							return JSFOURMIS.Directions.SUD;
+						}
+					}
+					break;
+				case JSFOURMIS.Directions.OUEST:
+					if(i-minX<this.y-j) {
+						return JSFOURMIS.Directions.NORD;
+					}
+					else {
+						if(i-minX>=j-this.y) {
+							return JSFOURMIS.Directions.OUEST;
+						}
+						else {
+							return JSFOURMIS.Directions.SUD;
+						}
+					}
+					break;
+				default : 
+					return this.direction;
 			}
 			return this.direction;
 		},
@@ -539,8 +597,12 @@ var JSFOURMIS = JSFOURMIS || {};
 		 * Pose une phéromone à l'emplacement actuel de la fourmi
 		 */
 		posePheromone:function (type, duree) {
-			var options = {type: type, duree: duree, x: this.x, y : this.y};
-			this.kanvasObj.entites.pheromones.push(new JSFOURMIS.Pheromone(this.kanvasObj, options));
+			if(this.kanvasObj.ilYADesPheromones(this.x, this.y, JSFOURMIS.TypesPheromones.NOURRITURE) > 0) {
+				this.kanvasObj.getPheromoneAt(this.x, this.y, JSFOURMIS.TypesPheromones.NOURRITURE).renforce();
+			} else {
+				var options = {type: type, duree: duree, x: this.x, y : this.y};
+				this.kanvasObj.entites.pheromones.push(new JSFOURMIS.Pheromone(this.kanvasObj, options));
+			}
 		}
 	};
 })();
