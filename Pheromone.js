@@ -58,7 +58,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		 */
 		renforce: function() {
 			this.quantite++;
-			this.duree = JSFOURMIS.Parametres.DUREE_PHEROMONES_NOURRITURE.valeur;
+			//this.duree = JSFOURMIS.Parametres.DUREE_PHEROMONES_NOURRITURE.valeur;
 			if (this.type === JSFOURMIS.TypesPheromones.NOURRITURE) {
 				this.kanvasObj.localisePheromonesNourriture[this.x + this.y * this.kanvasObj.width]++;
 			}
@@ -68,6 +68,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			if (this.type === JSFOURMIS.TypesPheromones.NOURRITURE) {
 				this.kanvasObj.localisePheromonesNourriture[this.x + this.y * this.kanvasObj.width]--;
 				this.quantite--;
+				this.duree = JSFOURMIS.Parametres.DUREE_PHEROMONES_NOURRITURE.valeur;
 			}
 			if(this.quantite === 0) {
 				this.disparait();
