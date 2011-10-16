@@ -596,7 +596,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		/**
 		 * Pose une phéromone à l'emplacement actuel de la fourmi
 		 */
-		posePheromone:function (type, duree) {
+		posePheromone : function (type, duree) {
 			if(this.kanvasObj.ilYADesPheromones(this.x, this.y, JSFOURMIS.TypesPheromones.NOURRITURE) > 0) {
 				this.kanvasObj.getPheromoneAt(this.x, this.y, JSFOURMIS.TypesPheromones.NOURRITURE).renforce();
 			} else {
