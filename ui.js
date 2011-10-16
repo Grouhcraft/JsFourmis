@@ -1,8 +1,11 @@
+var $info = function (nomInfo, valeur) {
+	$('info_' + nomInfo).value = valeur;
+};
 var valeurConcrete = function (min, max, pourcentage) {
 		return  pourcentage * (max - min)|0;
 };
-
 var valeurSlider = function (min, max, valeur) {
+	if(valeur === -1) return 1.0;
 	var vv = valeur - min;
 	var vm = max - min;
 	return vv / vm;
@@ -42,6 +45,10 @@ var onBodyLoad = function() {
 			tr.appendChild(td[1]);
 			tr.appendChild(td[2]);
 			
+			if(JSFOURMIS.Parametres[param].couleur) {
+				tr.setAttribute('class','c_' + JSFOURMIS.Parametres[param].couleur);
+			}
+			
 			paramTable.appendChild(tr);
 				 
 			new Slider(param, {
@@ -70,7 +77,9 @@ var onBodyLoad = function() {
 					'param_name': param  
 				}
 			});
-			inputValeur.value = JSFOURMIS.Parametres[param].valeur;
+			inputValeur.value = JSFOURMIS.Parametres[param].valeur === -1 ?
+				'illimité' :
+				JSFOURMIS.Parametres[param].valeur;
 		}
 	}	
 };

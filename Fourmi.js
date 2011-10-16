@@ -347,6 +347,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			
 			///TODO: deposer la bouffe
 			// En attendant.. = ==
+			JSFOURMIS.Kanvas.BouffeRameneeTotal += this.nourritures.length;
 			for(var i=0; i<this.nourritures.length; i++) {
 				delete this.nourritures;
 				this.nourritures = [];

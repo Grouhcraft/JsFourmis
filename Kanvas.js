@@ -148,6 +148,7 @@ var JSFOURMIS = JSFOURMIS || {};
 				pointCentral.quantitee = this.random(this.nourriture.quantitee.min, this.nourriture.quantitee.max);
 				this.nourritures.push(pointCentral);
 				this.localiseNourriture[x + y * this.width] = pointCentral.quantitee;
+				JSFOURMIS.Nourriture.total += pointCentral.quantitee; 
 				
 				//Création des points autour
 				var maxEssais = 100;
@@ -172,6 +173,7 @@ var JSFOURMIS = JSFOURMIS || {};
 					pointAnnexe.x = px; 
 					pointAnnexe.y = py;
 					pointAnnexe.quantitee = this.random(this.nourriture.quantitee.min, this.nourriture.quantitee.max);
+					JSFOURMIS.Nourriture.total += pointAnnexe.quantitee;
 					this.nourritures.push(pointAnnexe);	
 					this.localiseNourriture[px + py * this.width] = pointAnnexe.quantitee;
 				}
@@ -246,11 +248,6 @@ var JSFOURMIS = JSFOURMIS || {};
 				return this.localiseNourriture[x + y * this.width] > 0;
 			},
 			
-			log: function(txt) {
-				this.logArea.value += txt + "\n"; 
-				this.logArea.scrollTop = this.logArea.scrollHeight;
-			},
-			
 			getPheromoneAt: function (x, y, typePheromone) {
 				for (var i = this.entites.pheromones.length - 1; i >= 0; i--){
 					if( this.entites.pheromones[i].type === typePheromone &&
@@ -314,13 +311,12 @@ var JSFOURMIS = JSFOURMIS || {};
 			/**
 			 * Boucle principale
 			 */
-			main : function() {
-				if (this.nbCycles != JSFOURMIS.ILLIMITE) {
-					JSFOURMIS.Kanvas.compteurCycles++;
-				}
+			main : function() { 
+				JSFOURMIS.Kanvas.compteurCycles++;
 				this.effaceTout();
 
-				$('log').value = this.entites.nourritures.length;
+				$info('nourriture_restante', this.entites.nourritures.length);
+				$info('nourriture_totale_restante', JSFOURMIS.Nourriture.total);
 
 				for ( var i = this.fourmis.length -1; i >=0; i--) {
 					if(this.ilYADeLaNourriture(this.fourmis[i].x, this.fourmis[i].y)) {
@@ -351,9 +347,12 @@ var JSFOURMIS = JSFOURMIS || {};
 				}
 				this.dessineTout();
 				
+				$info('nourriture_par_cycles', (JSFOURMIS.Kanvas.BouffeRameneeTotal / JSFOURMIS.Kanvas.compteurCycles)|0);  
+				 
+				
 				if (this.running) {
 					// Cycles infinis = vitesse normale
-					if (this.nbCycles == -1) {
+					if (this.nbCycles == JSFOURMIS.ILLIMITE) {
 						window.setTimeout(function(thisObj) { thisObj.main(); }, this.delaiCycle, this);
 						
 					// Cycles définis = aussi rapide que possible.  
@@ -498,7 +497,6 @@ var JSFOURMIS = JSFOURMIS || {};
 
 				//var options = {x:50, y:70, hauteur:21, largeur:31};
 				//this.entites.obstacles[0]=new JSFOURMIS.Obstacle(this,options);
-				this.logArea = $('logArea');
 				
 				// Initialisation des localisateurs de bouffe et de phéromones
 				for (var y=0; y<this.height; y++) {
@@ -563,4 +561,7 @@ var JSFOURMIS = JSFOURMIS || {};
 				}
 			}
 		};
+		
+		JSFOURMIS.Kanvas.BouffeRameneeCeCycle = 0;
+		JSFOURMIS.Kanvas.BouffeRameneeTotal = 0;
 })();

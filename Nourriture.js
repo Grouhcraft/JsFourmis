@@ -51,9 +51,11 @@ var JSFOURMIS = JSFOURMIS || {};
 			else if (quantitee < this.quantitee) {
 				this.kanvasObj.localiseNourriture[this.x + this.y * this.kanvasObj.width]--;
 				this.quantitee--;
+				JSFOURMIS.Nourriture.total--;
 			}
 			else {
 				this.kanvasObj.localiseNourriture[this.x + this.y * this.kanvasObj.width] = 0;
+				JSFOURMIS.Nourriture.total--;
 				this.meurt();
 			}
 		},
@@ -78,4 +80,6 @@ var JSFOURMIS = JSFOURMIS || {};
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, { r:0, g:127, b:0, a:0xff }); // FIXME: couleur provisoire
 		}
 	};
+	
+	JSFOURMIS.Nourriture.total = 0;
 })();

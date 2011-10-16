@@ -68,15 +68,20 @@
 			<tr>
 				<td></td>
 				<td style="text-align: center;">					
-					<button onclick="k.start();">START</button>
+					<button onclick="k.start(); ">START</button>
 					<button onclick="k.stop();">STOP</button>
 				</td>
 				<td></td>
 			</tr>
 		</table>
-		<input type="text" id="log" value="" style="width: 300px; border: none;" />
-		<table id="parametres"></table>
-		<textarea id="logArea"></textarea>
+		<div id='boite_infos'>
+			<span>Nourriture restante: </span><input id='info_nourriture_restante' type='text'><br/>
+			<span>Nourriture totale restante: </span><input id='info_nourriture_totale_restante' type='text'><br/>
+			<span>Nourriture / cycles: </span><input id='info_nourriture_par_cycles' type='text'>
+		</div>
+		<div id='boite_parametres'>
+			<table id="parametres"></table>
+		</div>
 	</center>
  </body>
 </html>

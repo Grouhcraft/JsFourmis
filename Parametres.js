@@ -1,10 +1,14 @@
+/**
+ *  Note: pour les couleurs dispo, pour l'instant: red, green et blue.
+ * 
+ */
 JSFOURMIS = JSFOURMIS || {};
 JSFOURMIS.Parametres = {
 	nbCycles: {
 		min: 0,
 		max: 5000,
 		steps: 5000,
-		valeur: 500,
+		valeur: -1,
 		label: 'Nombre de cycles',
 		parametrable: true,
 		illimitable: true
@@ -25,7 +29,8 @@ JSFOURMIS.Parametres = {
 		steps: 100,
 		valeur: 15,
 		label: 'Nb de <i>spots</i> nourriture',
-		parametrable: true		
+		parametrable: true,		
+		couleur: 'green',
 	},
 	
 	nourriture_nombreParPoint_min: {
@@ -34,7 +39,8 @@ JSFOURMIS.Parametres = {
 		steps: 100,
 		valeur: 0,
 		label: 'Nb Nourriture <b>min</b> par <i>spot</i>',
-		parametrable: true		
+		parametrable: true,
+		couleur: 'green'
 	},
 	
 	nourriture_nombreParPoint_max: {
@@ -43,7 +49,8 @@ JSFOURMIS.Parametres = {
 		steps: 100,
 		valeur: 20,
 		label: 'Nb Nourriture <b>max</b> par <i>spot</i>',
-		parametrable: true		
+		parametrable: true,
+		couleur: 'green',		
 	},
 	
 	// Si valeur -1, illimité 
