@@ -14,15 +14,21 @@ var JSFOURMIS = JSFOURMIS || {};
 	 * @param parentObj:
 	 *            instance de l'objet dans lequel se trouve la nourriture.
 	 */
-	JSFOURMIS.Nourriture = function(kanvasObj, parentObj, quantitee) {
+	JSFOURMIS.Nourriture = function(kanvasObj, parentObj, quantite, x, y) {
 		parentObj = parentObj || kanvasObj;
 		
 		this.kanvasObj = kanvasObj;
 		this.parentObj = parentObj;
-		this.quantitee = quantitee || 1;
+		this.quantite = quantite || 1;
+		this.x = x || 0;
+		this.y = y || 0;
 		
 		// déssiné que si non-transporté, etc..
 		this.prop_estDessinable = this.parentObj instanceof JSFOURMIS.Kanvas;
+		
+		if (this.parentObj instanceof JSFOURMIS.Kanvas) {
+			this.kanvasObj.localiseNourriture[this.x + this.y * this.kanvasObj.width] += this.quantite;
+		}
 	};
 	
 	/**
@@ -35,7 +41,7 @@ var JSFOURMIS = JSFOURMIS || {};
 		},
 		x : 0,
 		y : 0,
-		quantitee : 0,
+		quantite : 0,
 		
 		// déssiné que si non-transporté, etc..
 		prop_estDessinable: true,	
@@ -44,17 +50,18 @@ var JSFOURMIS = JSFOURMIS || {};
 			return this.prop_estDessinable;
 		},
 		
-		preleve: function (quantitee) {
-			if(quantitee > this.quantitee) {
+		preleve: function (quantite) {
+			if(quantite > this.quantite) {
 				throw ("Impossible de prélever plus de nourriture que ce que y'en a voyons !");
 			}
-			else if (quantitee < this.quantitee) {
-				this.kanvasObj.localiseNourriture[this.x + this.y * this.kanvasObj.width]--;
-				this.quantitee--;
-			}
 			else {
-				this.kanvasObj.localiseNourriture[this.x + this.y * this.kanvasObj.width] = 0;
-				this.meurt();
+				this.kanvasObj.localiseNourriture[this.x + this.y * this.kanvasObj.width] -= quantite;
+				if (quantite < this.quantite) {
+					this.quantite -= quantite;
+				}
+				else {
+					this.meurt();
+				}
 			}
 		},
 		
