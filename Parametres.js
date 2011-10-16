@@ -60,7 +60,7 @@ JSFOURMIS.Parametres = {
 		max: 1200,
 		steps: 23,
 		illimitable: true,
-		label: 'Durée des pheromones (ms)',
+		label: 'Durée des pheromones (cycles)',
 		parametrable: true
 	},
 	

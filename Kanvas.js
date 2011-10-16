@@ -141,24 +141,20 @@ var JSFOURMIS = JSFOURMIS || {};
 			creerUnPointDeNourriture : function(x, y) {
 				var nbDeNourriture = this.random(this.nourriture.nombreParPoint.min, this.nourriture.nombreParPoint.max);
 
-				//Création du point centrale aux coordonnées données
-				var pointCentral = new JSFOURMIS.Nourriture(this); 
-				pointCentral.x = x; 
-				pointCentral.y = y;
-				pointCentral.quantitee = this.random(this.nourriture.quantitee.min, this.nourriture.quantitee.max);
+				//Création du point central aux coordonnées données
+				var quantite = this.random(this.nourriture.quantite.min, this.nourriture.quantite.max);
+				var pointCentral = new JSFOURMIS.Nourriture(this, this, quantite, x, y);
 				this.nourritures.push(pointCentral);
-				this.localiseNourriture[x + y * this.width] = pointCentral.quantitee;
-				JSFOURMIS.Nourriture.total += pointCentral.quantitee; 
 				
 				//Création des points autour
-				var maxEssais = 100;
+				var maxEssais = 50;
 				for(var i=nbDeNourriture -1; i >=0 ; i--) {
 					var px = x;
 					var py = y;
 					var decalage_y, decalage_x;
 					var plusOuMoins;
 					var nbEssais = 0;
-					while(!this.laPlaceEstElleLibre(px, py) && nbEssais < 1 && nbEssais < maxEssais) {
+					while(!this.laPlaceEstElleLibre(px, py) && nbEssais < maxEssais) {
 						nbEssais++;
 						decalage_y = this.random(1, nbDeNourriture);
 						decalage_x = this.random(1, nbDeNourriture);
@@ -169,13 +165,11 @@ var JSFOURMIS = JSFOURMIS || {};
 						if(plusOuMoins) py = y + decalage_y;
 						else			py = y - decalage_y;
 					}
-					var pointAnnexe = new JSFOURMIS.Nourriture(this); 
-					pointAnnexe.x = px; 
-					pointAnnexe.y = py;
-					pointAnnexe.quantitee = this.random(this.nourriture.quantitee.min, this.nourriture.quantitee.max);
-					JSFOURMIS.Nourriture.total += pointAnnexe.quantitee;
-					this.nourritures.push(pointAnnexe);	
-					this.localiseNourriture[px + py * this.width] = pointAnnexe.quantitee;
+					if (this.laPlaceEstElleLibre(px, py)) {
+						var quantite = this.random(this.nourriture.quantite.min, this.nourriture.quantite.max);
+						var pointAnnexe = new JSFOURMIS.Nourriture(this, this, quantite, px, py); 
+						this.nourritures.push(pointAnnexe);
+					}
 				}
 			},
 
@@ -386,7 +380,7 @@ var JSFOURMIS = JSFOURMIS || {};
 					min: 0,
 					max: 20
 				}, 
-				quantitee: {
+				quantite: {
 					min: 1,
 					max: 10
 				} 
