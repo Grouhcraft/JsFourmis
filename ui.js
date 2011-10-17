@@ -1,16 +1,18 @@
 var $info = function (nomInfo, valeur) {
 	$('info_' + nomInfo).value = valeur;
 };
+
 var valeurConcrete = function (min, max, pourcentage) {
 		return  pourcentage * (max - min)|0;
 };
 var valeurSlider = function (min, max, valeur) {
-	if(valeur === -1) return 1.0;
+	if(valeur === -1){ return 1.0; }
 	var vv = valeur - min;
 	var vm = max - min;
 	return vv / vm;
-} 
-var onBodyLoad = function() {
+};
+
+var loadUI = function() {
 	var paramTable = $('parametres');
 	var doc = document;
 	for(var param in JSFOURMIS.Parametres) 

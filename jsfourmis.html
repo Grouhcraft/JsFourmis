@@ -1,48 +1,14 @@
 <html>
  <head>
-  <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Content-type" content="text/html; charset=UTF-8"/>  
   
-  <!-- Slider control (cf. LICENSE for opensource license) -->
   <link rel="stylesheet" type="text/css" href="slider/slider.css" />
-  <script type="application/javascript" src="slider/slider.js"></script>
-  
-  <script type="application/javascript">
-	var JSFOURMIS = {};	// namespace
-	function bind(scope, fn) {
-	    return function () {
-	        fn.apply(scope, arguments);
-	    };
-	}
-	function $totalOffset(e) {
-		var curleft = 0, curtop = 0;
-		if (e.offsetParent) {
-			do {
-				curleft += e.offsetLeft;
-				curtop += e.offsetTop;
-			} while (e = e.offsetParent);
-			return {left:curleft, top:curtop};
-		}
-	}
-  </script>
-  <script type="application/javascript" src="Parametres.js"></script>
-  <script type="application/javascript" src="Constantes.js"></script>
-  <script type="application/javascript" src="Matrice.js"></script>
-  <script type="application/javascript" src="Fourmi.js"></script>
-  <script type="application/javascript" src="Fleche.js"></script>
-  <script type="application/javascript" src="Nourriture.js"></script>
-  <script type="application/javascript" src="Pheromone.js"></script>  
-  <script type="application/javascript" src="Obstacle.js"></script>  
-  <script type="application/javascript" src="Kanvas.js"></script>
-  <script type="application/javascript" src="ui.js"></script>
-  <script type="application/javascript">
-	var $ = function(e){ return document.getElementById(e); };
-	var $$ = function (e) { return document.getElementsByClassName(e); };
-	var k = new JSFOURMIS.Kanvas();
-  </script>
   <link rel="stylesheet" type="text/css" href="main.css" />
+  
+  <script type="application/javascript" src="bootstrap.js"></script>
   <title>JsFourmis</title>
  </head>
- <body onload="onBodyLoad();">
+ <body>
 	<center>
 		<table summary="Boussole et Canvas">
 			<tr>

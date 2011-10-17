@@ -11,6 +11,7 @@ JSFOURMIS.Parametres = {
 		valeur: -1,
 		label: 'Nombre de cycles',
 		parametrable: true,
+		type: 'slider',
 		illimitable: true
 	}, 
 		
@@ -20,6 +21,7 @@ JSFOURMIS.Parametres = {
 		steps: 500,
 		valeur: 60,
 		label: 'Nombre de fourmis',
+		type: 'slider',
 		parametrable: true
 	},
 	
@@ -31,6 +33,7 @@ JSFOURMIS.Parametres = {
 		label: 'Nb de <i>spots</i> nourriture',
 		parametrable: true,		
 		couleur: 'green',
+		type: 'slider'
 	},
 	
 	nourriture_nombreParPoint_min: {
@@ -40,7 +43,8 @@ JSFOURMIS.Parametres = {
 		valeur: 0,
 		label: 'Nb Nourriture <b>min</b> par <i>spot</i>',
 		parametrable: true,
-		couleur: 'green'
+		couleur: 'green',
+		type: 'slider'
 	},
 	
 	nourriture_nombreParPoint_max: {
@@ -50,7 +54,8 @@ JSFOURMIS.Parametres = {
 		valeur: 20,
 		label: 'Nb Nourriture <b>max</b> par <i>spot</i>',
 		parametrable: true,
-		couleur: 'green',		
+		couleur: 'green',	
+		type: 'slider'	
 	},
 	
 	// Si valeur -1, illimité 
@@ -61,7 +66,8 @@ JSFOURMIS.Parametres = {
 		steps: 23,
 		illimitable: true,
 		label: 'Durée des pheromones (cycles)',
-		parametrable: true
+		parametrable: true,
+		type: 'slider'
 	},
 	
 	PAS_PHEROMONES_NOURRITURE: {
@@ -70,7 +76,8 @@ JSFOURMIS.Parametres = {
 		max: 15,
 		steps: 15,
 		label: 'Distance entre 2 Phéromones',
-		parametrable: true
+		parametrable: true,
+		type: 'slider'
 	},
 	
 	fourmi_vision_rayon: {
@@ -79,7 +86,8 @@ JSFOURMIS.Parametres = {
 		max: 30,
 		steps: 30,
 		label: 'Rayon du champ de vision',
-		parametrable: true
+		parametrable: true,
+		type: 'slider'
 	},
 	
 	fourmi_vision_versAvant: {
@@ -88,7 +96,8 @@ JSFOURMIS.Parametres = {
 		steps: 4,
 		valeur: 0,
 		label: 'Vision vers l\'avant ?',
-		parametrable: true
+		parametrable: true,
+		type: 'slider'
 	},
 	
 	delaiCycle: {
@@ -97,6 +106,7 @@ JSFOURMIS.Parametres = {
 		steps: 101,
 		valeur: 20,
 		label: 'Délai inter-cycles (ms)',
-		parametrable: true		
+		parametrable: true,
+		type: 'slider'	
 	}
 };
