@@ -107,6 +107,20 @@ JSFOURMIS.Parametres = {
 		valeur: 20,
 		label: 'Délai inter-cycles (ms)',
 		parametrable: true,
-		type: 'slider'	
+		type: 'slider'
+	},
+	
+	testA: {
+		parametrable: true,
+		type: 'checkbox',
+		valeur: true,
+		label: 'Autoriser ceci-cela'
+	},
+	
+	testB: {
+		parametrable: true,
+		type: 'text',
+		valeur: '5 * pheromonesTrouvee.quantite',
+		label: '%age de suivre la phéromone < '
 	}
 };

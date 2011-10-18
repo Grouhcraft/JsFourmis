@@ -15,6 +15,7 @@ td.orientation { text-align: center;}
 table#parametres {
 	margin-top: 20px;
 	//border: 1px solid #DDD;	
+	margin-bottom: 20%;
 }
 button {
 	-moz-border-radius: 10%;
@@ -57,6 +58,72 @@ textarea#logArea {
 	display: inline-block;
 	width: 200px;
 }
+
+input.inputParameter:hover,
+input.inputParameter:focus {
+	background-color: #fff;
+	color: #000;
+}
+input.inputParameter {
+	border: 2px solid #955;
+	color: #511;
+	padding: 2px;
+	padding-left: 5px;	
+	font-size: smaller;
+	width: 65%;
+	height: 20px;
+	background-color: #FEE;
+}
+button.inputParameterButton:hover {
+	background-color: #733;	
+}
+button.inputParameterButton {
+	width: 90px;
+	border: none;
+	background-color: #955;
+	font-weight: normal;
+	-moz-border-radius-bottomleft: 0;
+	-moz-border-radius-topleft: 0;
+	height: 20px;
+	padding-bottom: 5px;
+}
+input.checkboxParameter:checked + div.checkboxParameter:after {
+	content: 'oui';
+	margin-left: 20px;	
+}
+div.checkboxParameter:after {
+	content: 'non';
+	margin-left: 20px;
+	color: #955;
+}
+div.checkboxParameter {
+	visibility: visible;
+	margin-left: -26px;
+	margin-bottom: -4px;
+	border: 2px solid #955;
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	pointer-events:none;
+	color: transparent;
+	padding: 0;
+	padding-left: 3px;
+	line-height: 22px;
+	font-weight: bold;
+	font-size: 18pt;
+	font-family: Script;
+	-moz-border-radius: 12px;
+}
+input.checkboxParameter:checked + div.checkboxParameter {
+	color: #955;
+} 
+input.checkboxParameter {
+	visibility: visible;
+	opacity: 0;
+	-moz-appearance: none;
+	width: 20px;
+	height: 20px;
+} 
 
 /* Couleurs des parametres */
 /* green */

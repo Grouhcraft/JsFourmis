@@ -147,9 +147,9 @@ var JSFOURMIS = JSFOURMIS || {};
 					// Si n'a pas trouvé de nourriture
 					if(!aTrouveUneDirectionInteressante) {
 						if(pheromonesTrouvee.quantite > 0) {
-							
+							//alert(eval(JSFOURMIS.Parametres.testB.valeur));
 							// % de suivre la piste relatif à la quantité
-							if(this.kanvasObj.random(1,100) < 5 * pheromonesTrouvee.quantite) {
+							if(this.kanvasObj.random(1,100) < eval(JSFOURMIS.Parametres.testB.valeur)) {
 								this.direction = this.directionParRapport(
 									pheromonesTrouvee.x, 
 									pheromonesTrouvee.y, 
