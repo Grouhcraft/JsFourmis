@@ -101,11 +101,11 @@ var loadUI = function() {
 				var cbId = 'checkboxParameter_' + param;
 				cb.setAttribute('id', cbId);
 				div.textContent = 'X';
-				cb.onclick = (function(cbId){
+				cb.onclick = (function(id, paramName){
 					return function(){
-						JSFOURMIS.Parametres[param].valeur = $(cbId).checked ? true : false;
+						JSFOURMIS.Parametres[paramName].valeur = $(id).checked ? true : false;
 					};
-				})(cbId);
+				})(cbId, param);
 				tr.appendChild(td[0]);
 				tr.appendChild(td[1]);
 				paramTable.appendChild(tr);
@@ -121,11 +121,11 @@ var loadUI = function() {
 				inp.id = 'inputParameter_' + param;
 				updBtn.textContent = 'modifier';
 				updBtn.setAttribute('class', 'inputParameterButton');
-				updBtn.onclick = (function(inputId){
+				updBtn.onclick = (function(inputId, paramName){
 					return function () {
-						JSFOURMIS.Parametres[param].valeur = $(inputId).value;
+						JSFOURMIS.Parametres[paramName].valeur = $(inputId).value;
 					};
-				})(inp.id);
+				})(inp.id, param);
 				
 				td[1].appendChild(inp);
 				td[1].appendChild(updBtn);

@@ -37,7 +37,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			for(var i=this.quantite; i >=0 && intensite >= 0; i--) {
 				intensite -= 20;
 			}
-			return { r:intensite, g:intensite, b:intensite, a:0xff };
+			return { r:intensite, g:(intensite/2)|0, b:0, a:0xff };
 		},
 		 
 		numero: 0,

@@ -266,7 +266,12 @@ var JSFOURMIS = JSFOURMIS || {};
 			 * Efface tout le contenu du canvas
 			 */
 			effaceTout : function() {
-				this.imageData = this.ctx.createImageData(this.width, this.height);
+				if(JSFOURMIS.Parametres.afficherLeFond.valeur) {
+					this.ctx.drawImage(this.img, 0, 0);
+					this.imageData = this.ctx.getImageData(0, 0, this.width, this.height);
+				} else {
+					this.imageData = this.ctx.createImageData(this.width, this.height);
+				}
 			},
 
 			/**
@@ -390,10 +395,24 @@ var JSFOURMIS = JSFOURMIS || {};
 			 */
 			running : false,
 			
+			toolbar: {
+				onClick: function (divOutil) {
+					var outil = divOutil.getProperty('outil');
+					if(outil == 'pinceau') {
+						//TODO
+					}
+					else if (outil == 'tuefourmi') {
+						//TODO
+					} 
+				}
+			},
+			
 			/**
 			 * Gestion de la souris
 			 */
 			mouse: {
+				mode: null, // TODO 
+				
 				onMove: function(ev) {
 					this.curseur.position = {
 						x: ev.clientX - this.navigateur.totalCanvasOffset.left,
@@ -409,9 +428,14 @@ var JSFOURMIS = JSFOURMIS || {};
 					this.curseur.estSurLeCanvas = false;
 				},
 				
+				/**
+				 * @TODO
+				 */
 				onClick: function(ev){
 					var x = ev.clientX - this.navigateur.totalCanvasOffset.left;
 					var y = ev.clientY - this.navigateur.totalCanvasOffset.top;
+					
+					// Outil "tue-fourmi"
 					var rayon = 8;
 					for (i = 0; i < this.entites.fourmis.length; i++) {
 						if(	this.entites.fourmis[i].x <= x + rayon  && this.entites.fourmis[i].x >= x - rayon && 
@@ -460,6 +484,9 @@ var JSFOURMIS = JSFOURMIS || {};
 				
 				// cré une "imageData", zone de travail par pixel
 				this.imageData = this.ctx.createImageData(this.width, this.height); // /!\
+
+				this.img = new Image();
+				this.img.src = 'bg.jpg';
 
 				var nbfourmis = JSFOURMIS.Parametres.nbFourmis.valeur;
 				this.nbCycles = JSFOURMIS.Parametres.nbCycles.valeur;

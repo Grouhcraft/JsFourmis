@@ -110,14 +110,14 @@ JSFOURMIS.Parametres = {
 		type: 'slider'
 	},
 	
-	testA: {
+	afficherLeFond: {
 		parametrable: true,
 		type: 'checkbox',
 		valeur: true,
-		label: 'Autoriser ceci-cela'
+		label: 'Afficher le fond'
 	},
 	
-	testB: {
+	chanceDeSuivrePheromones: {
 		parametrable: true,
 		type: 'text',
 		valeur: '5 * pheromonesTrouvee.quantite',

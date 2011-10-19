@@ -55,9 +55,11 @@ var JSFOURMIS = JSFOURMIS || {};
 			}
 			else {
 				if(this.aller) { 
-					return { r:0, g:0, b:254, a:0xff };
+					//return { r:0, g:0, b:254, a:0xff };
+					return { r:0, g:0, b:0, a:0xff };
 				} else {
-					return { r:254, g:0, b:0, a:0xff };
+					//return { r:254, g:0, b:0, a:0xff };
+					return { r:127, g:0, b:0, a:0xff };
 				}
 			}
 		},
@@ -149,7 +151,7 @@ var JSFOURMIS = JSFOURMIS || {};
 						if(pheromonesTrouvee.quantite > 0) {
 							//alert(eval(JSFOURMIS.Parametres.testB.valeur));
 							// % de suivre la piste relatif à la quantité
-							if(this.kanvasObj.random(1,100) < eval(JSFOURMIS.Parametres.testB.valeur)) {
+							if(this.kanvasObj.random(1,100) < eval(JSFOURMIS.Parametres.chanceDeSuivrePheromones.valeur)) {
 								this.direction = this.directionParRapport(
 									pheromonesTrouvee.x, 
 									pheromonesTrouvee.y, 

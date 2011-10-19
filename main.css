@@ -160,3 +160,10 @@ input.checkboxParameter {
 .c_blue .slider .handle {
 	background-color: #004;
 }
+
+/* ******** Toolbar ************** */
+
+.toolbar button {
+	display: block;
+	margin-top: 20px;
+}

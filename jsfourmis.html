@@ -16,13 +16,17 @@
 				<td></td>
 				<td id='nord' class="orientation">Nord</td>
 				<td></td>
+				<td rowspan="4" class="toolbar">
+					<button id='tool_pinceau_obstacle' outil='pinceau' onclick="k.toolbar.onClick(this);">[Obst]</button>
+					<button id='tool_efface_fourmi' outil='tuefourmi' onclick="k.toolbar.onClick(this);">[FourX]</button>
+				</td>
 				<td rowspan="4"><img src="ant_02.jpg" class="fourmis"/></td>
 			</tr>
 			<tr>
 				<td id='est' class="orientation">Ouest</td>
 				<td>
 					<!-- ICI le CANVAS, ICI -->
-					<canvas style="border: 1px solid gray; cursor: none;" id="canvas" width="300" height="300"></canvas>
+					<canvas style="border: 1px solid gray; cursor: none;" id="canvas" width="500" height="500"></canvas>
 				</td>
 				<td id='ouest' class="orientation">Est</td>
 			</tr>
