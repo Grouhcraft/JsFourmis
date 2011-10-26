@@ -36,14 +36,19 @@ var JSFOURMIS = JSFOURMIS || {};
 		age : 0,			// Age de la fourmi (en Cycles)
 		vivante: true,
 		test: false,
+		aRencontreUnObstacle: 0, // si rencontre obstacle, est egal à nbCyclesMemoireObstacle puis decrementé
+		directionObstacle: JSFOURMIS.Directions.AUCUNE, 
 		
 		/**
 		 * Déplacement de la fourmi
 		 */
 		deplacement: {
-			chancesDeFaireDemiTour: 3, 
-			chanceDeChangerDeDirection: 8,
-			distanceAParcourirParFourmis: 1
+			chancesDeFaireDemiTour: 3, // 3
+			chanceDeChangerDeDirection: 8, // 8
+			distanceAParcourirParFourmis: 1,
+			chanceDirOpposeFoyerSiBloqueEnRentrant: 10,
+			chanceDirOptimumFoyer: 10,
+			nbCyclesMemoireObstacle: 5
 		},
 		
 		/*
@@ -55,11 +60,11 @@ var JSFOURMIS = JSFOURMIS || {};
 			}
 			else {
 				if(this.aller) { 
-					//return { r:0, g:0, b:254, a:0xff };
-					return { r:0, g:0, b:0, a:0xff };
+					return { r:0, g:0, b:254, a:0xff };
+					//return { r:0, g:0, b:0, a:0xff };
 				} else {
-					//return { r:254, g:0, b:0, a:0xff };
-					return { r:127, g:0, b:0, a:0xff };
+					return { r:254, g:0, b:0, a:0xff };
+					//return { r:127, g:0, b:0, a:0xff };
 				}
 			}
 		},
@@ -107,6 +112,12 @@ var JSFOURMIS = JSFOURMIS || {};
 		 * 4- On demande à la fourmi d'avancer.
 		 */
 		avance : function() {
+			// Si on a précédament rencontré un obstacle
+			if(this.aRencontreUnObstacle > 0) {
+				// on l'oublie petit a petit (c'est con une fourmis)
+				this.aRencontreUnObstacle--;
+			}
+			
 			if(this.aller) { // Recherche de nourriture
 				
 				// Déjà dans une direction ?
@@ -179,13 +190,19 @@ var JSFOURMIS = JSFOURMIS || {};
 						}
 					}
 				}
-				
+			
+			///
+			//@TODO Se servir des obstacles dont on se souvient à l'aller aussi !!
+			///
+			
 			} else { // Retour à la fourmilière (this.aller == false)
 				 
 				 
 				// Déplacement aléatoire en direction générale du foyer
 				var aTrouveLeFoyer = false;
 				var limitesVision = this.limitesVision();
+				
+				// On est arrivé au foyer ?
 				for (var i=limitesVision.minX; i<limitesVision.maxX; i++) {
 					for (var j=limitesVision.minY; j<limitesVision.maxY; j++) {
 						if(i === this.kanvasObj.foyer.x && j === this.kanvasObj.foyer.y) {
@@ -195,25 +212,41 @@ var JSFOURMIS = JSFOURMIS || {};
 						}
 					}
 				}
-				if(!aTrouveLeFoyer) {			
-					if(this.kanvasObj.random(1,100) < 10) {
+				
+				// Non, on est pas encore arrivé au foyer
+				if(!aTrouveLeFoyer) {
+					if(	this.kanvasObj.random(1,100) < this.deplacement.chanceDirOptimumFoyer &&
+						!(this.aRencontreUnObstacle > 0 && this.directionVersFoyer() === this.directionObstacle)) {
 						this.direction = this.directionVersFoyer();
-					} else {
-						if(this.kanvasObj.random(1,100) < this.deplacement.chancesDeFaireDemiTour) {
+					} 
+					else {
+						// Demi-tour
+						// Remarque: on fait pas demi-tour si demi-tour == souvenir d'obstacle
+						if(	this.kanvasObj.random(1,100) < this.deplacement.chancesDeFaireDemiTour &&
+							!(this.aRencontreUnObstacle > 0 && -this.direction !== this.directionObstacle)) {
 							 this.direction = - this.direction;
-						} else if(this.kanvasObj.random(1,100) < this.deplacement.chanceDeChangerDeDirection) {
+						} 
+						// Changement de direction aléatoire (a part souvenir obstacle) 
+						else if(this.kanvasObj.random(1,100) < this.deplacement.chanceDeChangerDeDirection) {
 							var nouvelleDirection = this.direction; 
 							while(nouvelleDirection == this.direction || nouvelleDirection == - this.direction) {
-								nouvelleDirection = this.choisiUneDirectionAuHasard();
+								if(this.aRencontreUnObstacle > 0) {
+									nouvelleDirection = this.choisiUneDirectionAuHasardSauf([ this.directionObstacle ]);
+								}
+								else {
+									nouvelleDirection = this.choisiUneDirectionAuHasard();
+								}
 							}
 							this.direction = nouvelleDirection; 
 						}
 					}
 				}
 				
-				
 				// Pose de phéromone
-				if (this.age % JSFOURMIS.Parametres.PAS_PHEROMONES_NOURRITURE.valeur === 0) {
+				if(	!aTrouveLeFoyer && 
+					this.aRencontreUnObstacle === 0 && 
+					this.age % JSFOURMIS.Parametres.PAS_PHEROMONES_NOURRITURE.valeur === 0
+				){
 					this.posePheromone(
 						JSFOURMIS.TypesPheromones.NOURRITURE,
 						JSFOURMIS.Parametres.DUREE_PHEROMONES_NOURRITURE.valeur);
@@ -229,9 +262,17 @@ var JSFOURMIS = JSFOURMIS || {};
 			while (!this.kanvasObj.estDansLaZone(pos.x, pos.y) || 
 					this.rencontreObstacle(pos.x, pos.y) ||
 					compteur > limiteSecurite ) {
-						
-				var dir = this.direction;
-				directionsExclues.push(dir);
+				
+				this.aRencontreUnObstacle = this.deplacement.nbCyclesMemoireObstacle;
+				this.directionObstacle = this.direction;
+				directionsExclues.push(this.direction);
+				
+				// Si on rentre, on évite au plus que possible de partir en direction opposée au foyer..
+				if(!this.aller) {
+					if(this.kanvasObj.random(1,100) > this.deplacement.chanceDirOpposeFoyerSiBloqueEnRentrant) { 
+						directionsExclues.push( - this.directionVersFoyer()); 
+					}
+				}
 				this.direction = this.choisiUneDirectionAuHasardSauf(directionsExclues);
 				if (this.direction==JSFOURMIS.Directions.AUCUNE) {
 					break;
@@ -600,12 +641,14 @@ var JSFOURMIS = JSFOURMIS || {};
 		 * Pose une phéromone à l'emplacement actuel de la fourmi
 		 */
 		posePheromone : function (type, duree) {
+			
 			if(this.kanvasObj.ilYADesPheromones(this.x, this.y, JSFOURMIS.TypesPheromones.NOURRITURE) > 0) {
 				this.kanvasObj.getPheromoneAt(this.x, this.y, JSFOURMIS.TypesPheromones.NOURRITURE).renforce();
 			} else {
 				var options = {type: type, duree: duree, x: this.x, y : this.y};
 				this.kanvasObj.entites.pheromones.push(new JSFOURMIS.Pheromone(this.kanvasObj, options));
 			}
+			
 		}
 	};
 })();

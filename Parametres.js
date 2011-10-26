@@ -19,7 +19,7 @@ JSFOURMIS.Parametres = {
 		min: 0,
 		max: 5000,
 		steps: 500,
-		valeur: 60,
+		valeur: 100,
 		label: 'Nombre de fourmis',
 		type: 'slider',
 		parametrable: true
@@ -29,7 +29,7 @@ JSFOURMIS.Parametres = {
 		min: 0,
 		max: 100,
 		steps: 100,
-		valeur: 15,
+		valeur: 7,
 		label: 'Nb de <i>spots</i> nourriture',
 		parametrable: true,		
 		couleur: 'green',
@@ -60,7 +60,7 @@ JSFOURMIS.Parametres = {
 	
 	// Si valeur -1, illimité 
 	DUREE_PHEROMONES_NOURRITURE: {
-		valeur: 300,
+		valeur: 350,
 		min: 100,
 		max: 1200,
 		steps: 23,
@@ -71,17 +71,17 @@ JSFOURMIS.Parametres = {
 	},
 	
 	PAS_PHEROMONES_NOURRITURE: {
-		valeur: 3,
-		min: 1,
+		valeur: 1,
+		min: 0,
 		max: 15,
-		steps: 15,
+		steps: 16,
 		label: 'Distance entre 2 Phéromones',
 		parametrable: true,
 		type: 'slider'
 	},
 	
 	fourmi_vision_rayon: {
-		valeur: 4,
+		valeur: 6,
 		min: 1,
 		max: 30,
 		steps: 30,
@@ -104,7 +104,7 @@ JSFOURMIS.Parametres = {
 		min: 0, 
 		max: 100,
 		steps: 101,
-		valeur: 20,
+		valeur: 0,
 		label: 'Délai inter-cycles (ms)',
 		parametrable: true,
 		type: 'slider'
@@ -113,14 +113,14 @@ JSFOURMIS.Parametres = {
 	afficherLeFond: {
 		parametrable: true,
 		type: 'checkbox',
-		valeur: true,
+		valeur: false,
 		label: 'Afficher le fond'
 	},
 	
 	chanceDeSuivrePheromones: {
 		parametrable: true,
 		type: 'text',
-		valeur: '5 * pheromonesTrouvee.quantite',
+		valeur: 'pheromonesTrouvee.quantite + Math.sqrt(pheromonesTrouvee.quantite) * 3',
 		label: '%age de suivre la phéromone < '
 	}
 };

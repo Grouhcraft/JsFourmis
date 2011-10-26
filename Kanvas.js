@@ -316,6 +316,12 @@ var JSFOURMIS = JSFOURMIS || {};
 
 				$info('nourriture_restante', this.entites.nourritures.length);
 				$info('nourriture_totale_restante', JSFOURMIS.Nourriture.total);
+				$info('cycles', JSFOURMIS.Kanvas.compteurCycles);
+				
+				if(JSFOURMIS.Nourriture.total <= 20) {
+					alert('Plus que ' + JSFOURMIS.Nourriture.total + ' nourritures en ' + JSFOURMIS.Kanvas.compteurCycles + ' cycles. Bravo les fourmis !');
+					this.stop();
+				}
 
 				for ( var i = this.fourmis.length -1; i >=0; i--) {
 					if(this.ilYADeLaNourriture(this.fourmis[i].x, this.fourmis[i].y)) {
@@ -346,7 +352,7 @@ var JSFOURMIS = JSFOURMIS || {};
 				}
 				this.dessineTout();
 				
-				$info('nourriture_par_cycles', (JSFOURMIS.Kanvas.BouffeRameneeTotal / JSFOURMIS.Kanvas.compteurCycles)|0);  
+				$info('nourriture_par_cycles', (JSFOURMIS.Kanvas.BouffeRameneeTotal / (JSFOURMIS.Kanvas.compteurCycles||1)) |0 );  
 				 
 				
 				if (this.running) {
@@ -396,8 +402,12 @@ var JSFOURMIS = JSFOURMIS || {};
 			running : false,
 			
 			toolbar: {
+				outil: 'tuefourmi',
+				
 				onClick: function (divOutil) {
-					var outil = divOutil.getProperty('outil');
+					var outil = divOutil.getAttribute('outil');
+					this.outil = outil;
+					
 					if(outil == 'pinceau') {
 						//TODO
 					}
@@ -417,7 +427,11 @@ var JSFOURMIS = JSFOURMIS || {};
 					this.curseur.position = {
 						x: ev.clientX - this.navigateur.totalCanvasOffset.left,
 						y: ev.clientY - this.navigateur.totalCanvasOffset.top
-					};					
+					};			
+					
+					if(this.toolbar.outil == 'pinceau') {
+						//TODO
+					}		
 				},
 				
 				onOver: function(ev) {
@@ -428,6 +442,8 @@ var JSFOURMIS = JSFOURMIS || {};
 					this.curseur.estSurLeCanvas = false;
 				},
 				
+				click: false,
+				
 				/**
 				 * @TODO
 				 */
@@ -435,15 +451,24 @@ var JSFOURMIS = JSFOURMIS || {};
 					var x = ev.clientX - this.navigateur.totalCanvasOffset.left;
 					var y = ev.clientY - this.navigateur.totalCanvasOffset.top;
 					
-					// Outil "tue-fourmi"
-					var rayon = 8;
-					for (i = 0; i < this.entites.fourmis.length; i++) {
-						if(	this.entites.fourmis[i].x <= x + rayon  && this.entites.fourmis[i].x >= x - rayon && 
-							this.entites.fourmis[i].y <= y + rayon  && this.entites.fourmis[i].y >= y - rayon) {
-							this.entites.fourmis[i].meurt();
+					if(this.toolbar.outil == 'tuefourmi') {
+						var rayon = 8;
+						for (i = 0; i < this.entites.fourmis.length; i++) {
+							if(	this.entites.fourmis[i].x <= x + rayon  && this.entites.fourmis[i].x >= x - rayon && 
+								this.entites.fourmis[i].y <= y + rayon  && this.entites.fourmis[i].y >= y - rayon) {
+								this.entites.fourmis[i].meurt();
+							}
 						}
 					}
 				},
+				
+				onMouseDown: function(ev){
+					this.mouse.click = true;
+				},
+				
+				onMouseUp: function(ev){
+					this.mouse.click = false;
+				}
 			}, 
 			
 			/**
@@ -513,11 +538,14 @@ var JSFOURMIS = JSFOURMIS || {};
 					this.canvas.addEventListener('click', bind(this, this.mouse.onClick), false);
 				}
 
-				// A chaque nouveau départ, on ré-init le compteur
+				// A chaque nouveau départ, on ré-init les compteur
 				JSFOURMIS.Kanvas.compteurCycles = 0;
+				JSFOURMIS.Kanvas.BouffeRameneeTotal = 0;
 
-				//var options = {x:50, y:70, hauteur:21, largeur:31};
-				//this.entites.obstacles[0]=new JSFOURMIS.Obstacle(this,options);
+				this.entites.obstacles.push(new JSFOURMIS.Obstacle(this,{ x:130, y:120, hauteur:7, largeur:50 	}));
+				this.entites.obstacles.push(new JSFOURMIS.Obstacle(this,{ x:170, y:170, hauteur:7, largeur:50	}));
+				//this.entites.obstacles.push(new JSFOURMIS.Obstacle(this,{ x:100, y:125, hauteur:33, largeur:7 	}));
+				//this.entites.obstacles.push(new JSFOURMIS.Obstacle(this,{ x:200, y:175, hauteur:33, largeur:7 	}));
 				
 				// Initialisation des localisateurs de bouffe et de phéromones
 				for (var y=0; y<this.height; y++) {
@@ -569,6 +597,7 @@ var JSFOURMIS = JSFOURMIS || {};
 			
 			reset: function () {
 				JSFOURMIS.Kanvas.compteurCycles = 0;
+				JSFOURMIS.Kanvas.BouffeRameneeTotal = 0;
 				this.effaceTout();
 				for(var nom_entite in this.entites) {
 					this.entites[nom_entite].length = 0;
@@ -582,7 +611,8 @@ var JSFOURMIS = JSFOURMIS || {};
 				}
 			}
 		};
-		
+			
+		JSFOURMIS.Kanvas.compteurCycles = 0;
 		JSFOURMIS.Kanvas.BouffeRameneeCeCycle = 0;
 		JSFOURMIS.Kanvas.BouffeRameneeTotal = 0;
 })();

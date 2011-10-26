@@ -24,6 +24,8 @@ var JSFOURMIS = JSFOURMIS || {};
 		}
 	};
 	
+	JSFOURMIS.Pheromone.quantiteMaximum = 90;
+	
 	JSFOURMIS.Pheromone.prototype = {
 		kanvasObj: {},
 		x: 0,
@@ -57,10 +59,15 @@ var JSFOURMIS = JSFOURMIS || {};
 		 * Renforce la pheromone (typiquement, une fourmi passe sur une pheromone pré-existante)
 		 */
 		renforce: function() {
-			this.quantite++;
-			//this.duree = JSFOURMIS.Parametres.DUREE_PHEROMONES_NOURRITURE.valeur;
-			if (this.type === JSFOURMIS.TypesPheromones.NOURRITURE) {
-				this.kanvasObj.localisePheromonesNourriture[this.x + this.y * this.kanvasObj.width]++;
+			if(JSFOURMIS.Pheromone.quantiteMaximum !== JSFOURMIS.ILLIMITE || 
+				this.quantite < JSFOURMIS.Pheromone.quantiteMaximum ) {
+				this.quantite++;
+				
+				//this.duree += (JSFOURMIS.Parametres.DUREE_PHEROMONES_NOURRITURE.valeur / this.quantite)|0;
+			
+				if (this.type === JSFOURMIS.TypesPheromones.NOURRITURE) {
+					this.kanvasObj.localisePheromonesNourriture[this.x + this.y * this.kanvasObj.width]++;
+				}
 			}
 		},
 		
@@ -68,7 +75,9 @@ var JSFOURMIS = JSFOURMIS || {};
 			if (this.type === JSFOURMIS.TypesPheromones.NOURRITURE) {
 				this.kanvasObj.localisePheromonesNourriture[this.x + this.y * this.kanvasObj.width]--;
 				this.quantite--;
-				this.duree = JSFOURMIS.Parametres.DUREE_PHEROMONES_NOURRITURE.valeur;
+				
+				//this.duree = JSFOURMIS.Parametres.DUREE_PHEROMONES_NOURRITURE.valeur;
+				this.duree =  JSFOURMIS.Parametres.DUREE_PHEROMONES_NOURRITURE.valeur / ((this.quantite / 5)|0||1);
 			}
 			if(this.quantite === 0) {
 				this.disparait();

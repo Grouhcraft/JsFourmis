@@ -36,15 +36,16 @@ var JSFOURMIS = JSFOURMIS || {};
 			for (var i=0;i<this.size;i++) {
 				data.push(1);
 			}
-			var matrice = new JSFOURMIS.Matrice(this.largeur, this.hauteur, data);
+			var matrice = new JSFOURMIS.Matrice(this.hauteur, this.largeur, data);
 			this.kanvasObj.dessineForme(matrice, this.x, this.y, this.couleur);
 		},
 		estDessinable : function() {
 			return true;
 		},
+		
 		bloqueEmplacement: function(x, y, hauteur, largeur) {	
-			var minDistCentresX = (hauteur + this.hauteur) / 2;
-			var minDistCentresY = (largeur + this.largeur) / 2;
+			var minDistCentresY = (hauteur + this.hauteur) / 2;
+			var minDistCentresX = (largeur + this.largeur) / 2;
 			var distx = Math.abs(this.x-x);
 			var disty = Math.abs(this.y-y);
 			if ((distx<=minDistCentresX) && (disty<=minDistCentresY)) {
